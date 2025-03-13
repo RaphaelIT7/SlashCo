@@ -14,15 +14,15 @@ local green = Color(64, 255, 64)
 
 local TimeLeft, StateOfLobby, LobbyInfoTable
 
-net.Receive("mantislashcoLobbyTimerTime", function()
+net.Receive("mantislashco_LobbyTimerTime", function()
 	TimeLeft = net.ReadUInt(6)
 end)
 
-net.Receive("mantislashcoGiveLobbyStatus", function()
+net.Receive("mantislashco_GiveLobbyStatus", function()
 	StateOfLobby = net.ReadUInt(3)
 end)
 
-net.Receive("mantislashcoGiveLobbyInfo", function()
+net.Receive("mantislashco_GiveLobbyInfo", function()
 	LobbyInfoTable = net.ReadTable()
 end)
 

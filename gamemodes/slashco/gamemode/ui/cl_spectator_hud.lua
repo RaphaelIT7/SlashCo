@@ -1,4 +1,4 @@
-net.Receive("mantislashcoLobbySlasherInformation", function()
+net.Receive("mantislashco_LobbySlasherInformation", function()
 	LobbySlasherInfo = net.ReadTable()
 end)
 

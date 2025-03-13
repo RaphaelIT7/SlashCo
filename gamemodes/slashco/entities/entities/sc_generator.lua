@@ -50,7 +50,7 @@ function ENT:ChangeCanProgress(amount)
 end
 
 function ENT:SendData(ply)
-	net.Start("mantislashcoGasPourProgress")
+	net.Start("mantislashco_GasPourProgress")
 	net.WriteUInt(TimeToFuel, 8)
 	net.WriteEntity(self.FuelingCan)
 	net.WriteBool(self.IsFueling)

@@ -115,7 +115,7 @@ function PANEL:OnKeyCodeReleased(keyCode)
         self:Remove()
 
         if self.CursorSelect then
-            net.Start("mantislashcoSurvivorVoicePrompt")
+            net.Start("mantislashco_SurvivorVoicePrompt")
             net.WriteString(self.CursorSelect)
             net.SendToServer()
         end

@@ -1,33 +1,33 @@
 local SlashCo = SlashCo
 
 util.AddNetworkString("octoSlashCoTestConfigHalos")
-util.AddNetworkString("mantislashcoGiveLobbyInfo")
-util.AddNetworkString("mantislashcoGiveLobbyStatus")
-util.AddNetworkString("mantislashcoRequestInfo")
-util.AddNetworkString("mantislashcoLobbyTimerTime")
-util.AddNetworkString("mantislashcoLobbyHelicopterReady")
-util.AddNetworkString("mantislashcoGasPourProgress")
-util.AddNetworkString("mantislashcoGiveSlasherData")
-util.AddNetworkString("mantislashcoSlasherChaseMode")
-util.AddNetworkString("mantislashcoSlasherKillPlayer")
-util.AddNetworkString("mantiSlashCoPickingSlasher")
-util.AddNetworkString("mantiSlashCoSelectSlasher")
-util.AddNetworkString("mantislashcoSendLobbyItemGlobal")
-util.AddNetworkString("mantislashcoSendGlobalInfoTable")
-util.AddNetworkString("mantislashcoGlobalSound")
-util.AddNetworkString("mantislashcoBriefing")
-util.AddNetworkString("mantislashcoOfferingVoteOut")
-util.AddNetworkString("mantislashcoVoteForOffering")
-util.AddNetworkString("mantislashcoOfferingEndVote")
-util.AddNetworkString("mantislashcoOfferingVoteFinished")
-util.AddNetworkString("mantislashcoGiveMasterDatabase")
-util.AddNetworkString("mantislashcoSendRoundData")
-util.AddNetworkString("mantislashcoHelicopterMusic")
-util.AddNetworkString("mantislashcoLobbySlasherInformation")
-util.AddNetworkString("mantislashcoSurvivorVoicePrompt")
-util.AddNetworkString("mantislashcoSurvivorPings")
-util.AddNetworkString("mantislashcoHelicopterVoice")
-util.AddNetworkString("mantislashcoMapAmbientPlay")
+util.AddNetworkString("mantislashco_GiveLobbyInfo")
+util.AddNetworkString("mantislashco_GiveLobbyStatus")
+util.AddNetworkString("mantislashco_RequestInfo")
+util.AddNetworkString("mantislashco_LobbyTimerTime")
+util.AddNetworkString("mantislashco_LobbyHelicopterReady")
+util.AddNetworkString("mantislashco_GasPourProgress")
+util.AddNetworkString("mantislashco_GiveSlasherData")
+util.AddNetworkString("mantislashco_SlasherChaseMode")
+util.AddNetworkString("mantislashco_SlasherKillPlayer")
+util.AddNetworkString("mantislashco_PickingSlasher")
+util.AddNetworkString("mantislashco_SelectSlasher")
+util.AddNetworkString("mantislashco_SendLobbyItemGlobal")
+util.AddNetworkString("mantislashco_SendGlobalInfoTable")
+util.AddNetworkString("mantislashco_GlobalSound")
+util.AddNetworkString("mantislashco_Briefing")
+util.AddNetworkString("mantislashco_OfferingVoteOut")
+util.AddNetworkString("mantislashco_VoteForOffering")
+util.AddNetworkString("mantislashco_OfferingEndVote")
+util.AddNetworkString("mantislashco_OfferingVoteFinished")
+util.AddNetworkString("mantislashco_GiveMasterDatabase")
+util.AddNetworkString("mantislashco_SendRoundData")
+util.AddNetworkString("mantislashco_HelicopterMusic")
+util.AddNetworkString("mantislashco_LobbySlasherInformation")
+util.AddNetworkString("mantislashco_SurvivorVoicePrompt")
+util.AddNetworkString("mantislashco_SurvivorPings")
+util.AddNetworkString("mantislashco_HelicopterVoice")
+util.AddNetworkString("mantislashco_MapAmbientPlay")
 
 local ENTITY = FindMetaTable("Entity")
 
@@ -44,13 +44,13 @@ function SlashCo.PlayGlobalSound(soundPath, soundLevel, ent, vol, permanent)
 	-- sound must be precached
 	ent:EmitSound(soundPath, 1, 1, 0)
 
-	net.Start("mantislashcoGlobalSound")
 	net.WriteBool(false)
 	net.WriteString(soundPath)
 	net.WriteUInt(ent:EntIndex(), 13)
 	net.WriteUInt(soundLevel, 14)
 	net.WriteFloat(vol)
 	net.WriteBool(permanent)
+	net.Start("mantislashco_GlobalSound")
 	net.Broadcast()
 end
 
@@ -60,10 +60,10 @@ function ENTITY:PlayGlobalSound(soundPath, soundLevel, vol, permanent)
 end
 
 function ENTITY:StopAllGlobalSounds()
-	net.Start("mantislashcoGlobalSound")
 	net.WriteBool(true)
 	net.WriteString("")
 	net.WriteUInt(self:EntIndex(), 13)
+	net.Start("mantislashco_GlobalSound")
 	net.Broadcast()
 end
 
@@ -71,10 +71,10 @@ ENTITY.OldStopSound = ENTITY.OldStopSound or ENTITY.StopSound
 function ENTITY:StopSound(soundPath)
 	self:OldStopSound(soundPath)
 
-	net.Start("mantislashcoGlobalSound")
 	net.WriteBool(true)
 	net.WriteString(soundPath)
 	net.WriteUInt(self:EntIndex(), 13)
+	net.Start("mantislashco_GlobalSound")
 	net.Broadcast()
 end
 
@@ -82,8 +82,8 @@ end
 PlayGlobalSound = SlashCo.PlayGlobalSound
 
 SlashCo.BroadcastLobbySlasherInformation = function()
-	net.Start("mantislashcoLobbySlasherInformation")
 	net.WriteTable({ player = SlashCo.LobbyData.AssignedSlasher, slasher = SlashCo.LobbyData.PickedSlasher })
+	net.Start("mantislashco_LobbySlasherInformation")
 	net.Broadcast()
 end
 
@@ -93,18 +93,18 @@ function SlashCo.LobbyRoundData()
 		offering = SCInfo.Offering[SlashCo.LobbyData.Offering].Name
 	end
 
-	net.Start("mantislashcoSendRoundData")
 	net.WriteTable({ survivors = SlashCo.LobbyData.AssignedSurvivors, slashers = SlashCo.LobbyData.AssignedSlashers, offering = offering })
+	net.Start("mantislashco_SendRoundData")
 	net.Broadcast()
 end
 
 SlashCo.BroadcastCurrentRoundData = function(readygame)
-	net.Start("mantislashcoSendRoundData")
 	net.WriteTable({ survivors = SlashCo.CurRound.SlasherData.AllSurvivors, slashers = SlashCo.CurRound.SlasherData.AllSlashers, offering = SlashCo.CurRound.OfferingData.OfferingName })
+	net.Start("mantislashco_SendRoundData")
 	net.Broadcast()
 
-	net.Start("mantislashcoGiveSlasherData")
 	local send_t = {}
+	net.Start("mantislashco_GiveSlasherData")
 
 	send_t.GameProgress = SlashCo.CurRound.GameProgress
 	send_t.AllSurvivors = SlashCo.CurRound.SlasherData.AllSurvivors
@@ -116,14 +116,14 @@ SlashCo.BroadcastCurrentRoundData = function(readygame)
 end
 
 SlashCo.EndOfferingVote = function(play)
-	net.Start("mantislashcoOfferingEndVote")
 	net.WriteTable({ ply = play:SteamID64() })
+	net.Start("mantislashco_OfferingEndVote")
 	net.Broadcast()
 end
 
 SlashCo.OfferingVoteFinished = function(result)
-	net.Start("mantislashcoOfferingVoteFinished")
 	net.WriteTable({ r = result })
+	net.Start("mantislashco_OfferingVoteFinished")
 	net.Broadcast()
 end
 
@@ -146,14 +146,14 @@ SlashCo.OfferingVote = function(ply, agreement)
 end
 
 SlashCo.BroadcastOfferingVote = function(offeror, o_id)
-	net.Start("mantislashcoOfferingVoteOut")
 	net.WriteTable({ ply = offeror, name = SCInfo.Offering[o_id].Name })
+	net.Start("mantislashco_OfferingVoteOut")
 	net.Broadcast()
 end
 
 SlashCo.LobbyPlayerBriefing = function()
-	net.Start("mantislashcoBriefing")
 	net.WriteTable(SlashCo.LobbyData.SelectedSlasherInfo)
+	net.Start("mantislashco_Briefing")
 	net.Broadcast()
 end
 
@@ -259,8 +259,8 @@ SlashCo.BroadcastGlobalData = function()
 		return
 	end
 
-	net.Start("mantislashcoSendGlobalInfoTable")
 	net.WriteTable(SCInfo)
+	net.Start("mantislashco_SendGlobalInfoTable")
 	net.Broadcast()
 end
 
@@ -278,14 +278,14 @@ SlashCo.BroadcastMasterDatabaseForClient = function(ply)
 		return
 	end
 
-	net.Start("mantislashcoGiveMasterDatabase")
 	net.WriteTable(sql.Query("SELECT * FROM slashco_master_database WHERE PlayerID ='" .. ply:SteamID64() .. "'; "))
+	net.Start("mantislashco_GiveMasterDatabase")
 	net.Send(ply)
 end
 
 SlashCo.HelicopterRadioVoice = function(_type)
-	net.Start("mantislashcoHelicopterVoice")
 	net.WriteUInt(_type, 4)
+	net.Start("mantislashco_HelicopterVoice")
 	net.Broadcast()
 end
 

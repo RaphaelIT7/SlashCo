@@ -1,4 +1,4 @@
-net.Receive("mantiSlashCoPickingSlasher", function()
+net.Receive("mantislashco_PickingSlasher", function()
 	readtable = net.ReadTable()
 
 	SlasherIcon = "slashco/ui/icons/slasher/s_0"
@@ -26,7 +26,7 @@ function HideSelection()
 end
 
 function SlasherChosen(My_Pick)
-	net.Start("mantiSlashCoSelectSlasher")
+	net.Start("mantislashco_SelectSlasher")
 	net.WriteTable({pick = My_Pick})
 	net.SendToServer()
 

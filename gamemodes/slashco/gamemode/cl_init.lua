@@ -36,7 +36,7 @@ function SlashCo.Language(key, ...)
 	end
 end
 
-net.Receive("mantislashcoGiveMasterDatabase", function(_, _)
+net.Receive("mantislashco_GiveMasterDatabase", function(_, _)
 	local t = net.ReadTable()
 	data_load = t
 
@@ -300,7 +300,7 @@ hook.Add("Think", "DynamicFlashlight.Rendering", function()
 	end
 end)
 
-net.Receive("mantislashcoGiveSlasherData", function()
+net.Receive("mantislashco_GiveSlasherData", function()
 	local SlasherTable = net.ReadTable()
 	if not LocalPlayer():IsValid() then
 		return
@@ -383,7 +383,7 @@ local function addSound(soundPath, entID)
 	SlashCo.GlobalSounds[entID .. soundPath] = { snd = snd, permanent = permanent, entID = entID }
 end
 
-net.Receive("mantislashcoGlobalSound", function()
+net.Receive("mantislashco_GlobalSound", function()
 	local isRemove = net.ReadBool()
 	local soundPath = net.ReadString()
 	local entID = net.ReadUInt(13)
@@ -475,11 +475,11 @@ hook.Add("HUDPaint", "AwaitingPlayersHUD", function()
 	end
 end)
 
-net.Receive("mantislashcoSendGlobalInfoTable", function()
+net.Receive("mantislashco_SendGlobalInfoTable", function()
 	SCInfo = net.ReadTable()
 end)
 
-net.Receive("mantislashcoBriefing", function()
+net.Receive("mantislashco_Briefing", function()
 	BriefingTable = net.ReadTable()
 end)
 
@@ -611,7 +611,7 @@ hook.Add("PostDrawOpaqueRenderables", "LobbyScreens", function()
 	end
 end)
 
-net.Receive("mantislashcoHelicopterVoice", function()
+net.Receive("mantislashco_HelicopterVoice", function()
 	local t = net.ReadUInt(4)
 
 	if t == 1 then
@@ -639,7 +639,7 @@ local AmbientMusic
 local AmbientLength
 local AmbientVol = 0.8
 
-net.Receive("mantislashcoMapAmbientPlay", function()
+net.Receive("mantislashco_MapAmbientPlay", function()
 	timer.Simple(math.random(1, 8), function()
 		SlashCoMapAmbience()
 	end)
