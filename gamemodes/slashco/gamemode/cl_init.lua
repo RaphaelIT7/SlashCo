@@ -10,9 +10,11 @@ local lang_files, _ = file.Find("slashco/lang/*.lua", "LUA")
 for _, v in ipairs(lang_files) do
 	if string.lower(language.GetPhrase("slashco.language")) == string.lower(string.Replace(v, ".lua", "")) then
 		include("slashco/lang/" .. v)
+
 		if file.Exists("slashco/patch/lang/" .. v, "LUA") then
 			include("slashco/patch/lang/" .. v)
 		end
+
 		break
 	end
 end
@@ -203,17 +205,19 @@ end
 hook.Add("PreDrawHalos", "octoSlashCoClientPreDrawHalos", function()
 	g_SlashCoDrawingHalos = true
 
-	if LocalPlayer():Team() == TEAM_SLASHER then
+	local ply = LocalPlayer()
+	local _team = ply:Team()
+	if _team == TEAM_SLASHER then
 		SlashCo.DrawHalo(ents.FindByClass("sc_generator"), "yellow")
 		SlashCo.DrawHalo(ents.FindByClass("sc_babaclone"))
 		SlashCo.DrawHalo(ents.FindByClass("sc_maleclone"))
-		LocalPlayer():SlasherFunction("PreDrawHalos")
+		ply:SlasherFunction("PreDrawHalos")
 
 		g_SlashCoDrawingHalos = false
 		return
 	end
 
-	if LocalPlayer():Team() == TEAM_SPECTATOR then
+	if _team == TEAM_SPECTATOR then
 		if showHalos then
 			SlashCo.DrawHalo(ents.FindByClass("sc_generator"), "yellow")
 			SlashCo.DrawHalo(team.GetPlayers(TEAM_SURVIVOR), "blue")
@@ -227,8 +231,8 @@ hook.Add("PreDrawHalos", "octoSlashCoClientPreDrawHalos", function()
 		return
 	end
 
-	if LocalPlayer():Team() == TEAM_SURVIVOR then
-		LocalPlayer():ItemFunction("PreDrawHalos")
+	if _team == TEAM_SURVIVOR then
+		ply:ItemFunction("PreDrawHalos")
 
 		g_SlashCoDrawingHalos = false
 		return
@@ -265,7 +269,8 @@ hook.Add("EntityRemoved", "DynamicFlashlight.PVS_Cache", function(entity)
 end)
 
 hook.Add("Think", "DynamicFlashlight.Rendering", function()
-	if not LocalPlayer():CanSeeFlashlights() then
+	local ply = LocalPlayer()
+	if not ply:CanSeeFlashlights() then
 		for _, target in ipairs(cache) do
 			if target.DynamicFlashlight then
 				target.DynamicFlashlight:Remove()
@@ -277,7 +282,7 @@ hook.Add("Think", "DynamicFlashlight.Rendering", function()
 	end
 
 	for _, target in ipairs(cache) do
-		if target:GetNWBool("DynamicFlashlight") and (target:CanBeSeen() or target == LocalPlayer()) then
+		if target:GetNWBool("DynamicFlashlight") and (target:CanBeSeen() or target == ply) then
 			if target.DynamicFlashlight then
 				local position = target:GetPos()
 				local newposition = Vector(position[1], position[2], position[3] + 40) + target:GetForward() * 20
@@ -302,7 +307,8 @@ end)
 
 net.Receive("mantislashco_GiveSlasherData", function()
 	local SlasherTable = net.ReadTable()
-	if not LocalPlayer():IsValid() then
+	local ply = LocalPlayer()
+	if not ply:IsValid() then
 		return
 	end
 
@@ -311,7 +317,7 @@ net.Receive("mantislashco_GiveSlasherData", function()
 	SlasherTeam = SlasherTable.AllSlashers
 	GameReady = SlasherTable.GameReadyToBegin
 
-	if LocalPlayer():Team() == TEAM_SLASHER then
+	if ply:Team() == TEAM_SLASHER then
 		hook.Run("BaseSlasherHUD")
 	end
 end)
@@ -471,7 +477,6 @@ hook.Add("HUDPaint", "AwaitingPlayersHUD", function()
 		draw.SimpleText(SlashCo.Language("player_await"), "ItemFont", ScrW() / 2, ScrH() / 2, color_white,
 				TEXT_ALIGN_CENTER,
 				TEXT_ALIGN_CENTER)
-
 	end
 end)
 
@@ -527,8 +532,8 @@ hook.Add("PostDrawOpaqueRenderables", "LobbyScreens", function()
 		b_tick = b_tick + 0.5
 
 		local s_id = BriefingTable.ID
-		local s_cls = BriefingTable.CLS
-		local s_dng = BriefingTable.DNG
+		local s_cls = BriefingTable.CLASS
+		local s_dng = BriefingTable.DANGER
 		local s_n = BriefingTable.NAME
 		local pro_tip = BriefingTable.TIP
 
@@ -614,22 +619,22 @@ end)
 net.Receive("mantislashco_HelicopterVoice", function()
 	local t = net.ReadUInt(4)
 
-	if t == 1 then
+	if t == SlashCo.HelicopterVoices.INTRO then
 		LocalPlayer():EmitSound("slashco/helipilot/helipilot_intro" .. math.random(1, 8) .. ".mp3", 100)
 		return
 	end
 
-	if t == 2 then
+	if t == SlashCo.HelicopterVoices.APPROACH then
 		LocalPlayer():EmitSound("slashco/helipilot/helipilot_approach" .. math.random(1, 5) .. ".mp3", 100)
 		return
 	end
 
-	if t == 3 then
+	if t == SlashCo.HelicopterVoices.LAND then
 		LocalPlayer():EmitSound("slashco/helipilot/helipilot_land" .. math.random(1, 5) .. ".mp3", 100)
 		return
 	end
 
-	if t == 4 then
+	if t == SlashCo.HelicopterVoices.BEACON then
 		LocalPlayer():EmitSound("slashco/helipilot/helipilot_beacon" .. math.random(1, 5) .. ".mp3", 100)
 		return
 	end
@@ -705,10 +710,12 @@ function SlashCo.ReadSound(fileName)
 		_sound = g_SCLoadedSounds[fileName][1]
 		filter = g_SCLoadedSounds[fileName][2]
 	end
+
 	if _sound then
 		_sound:Stop()
 		_sound:Play()
 	end
+
 	return _sound
 end
 

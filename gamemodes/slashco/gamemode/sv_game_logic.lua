@@ -12,7 +12,7 @@ function SlashCo.SinglePlayerSetup()
 	end)
 end
 
-SlashCo.LoadCurRoundData = function()
+function SlashCo.LoadCurRoundData()
 	table.Empty(SlashCo.CurRound.ExpectedPlayers)
 	if sql.TableExists("slashco_table_basedata") and sql.TableExists("slashco_table_survivordata") and sql.TableExists("slashco_table_slasherdata") then
 		--Load relevant data from the database
@@ -132,7 +132,7 @@ SlashCo.LoadCurRoundData = function()
 	end
 end
 
-SlashCo.AwaitExpectedPlayers = function()
+function SlashCo.AwaitExpectedPlayers()
 	if game.GetMap() ~= "sc_lobby" then
 		if not game.SinglePlayer() and #SlashCo.CurRound.ExpectedPlayers < 2 then
 			return
@@ -173,7 +173,7 @@ SlashCo.AwaitExpectedPlayers = function()
 end
 
 --				***Begin the round start timer***
-SlashCo.RoundBeginTimer = function()
+function SlashCo.RoundBeginTimer()
 	local time = game.SinglePlayer() and 3 or 15
 	timer.Create("GameStart", time, 1, function()
 		RunConsoleCommand("slashco_run_curconfig")
@@ -181,8 +181,8 @@ SlashCo.RoundBeginTimer = function()
 end
 
 local roundEnding
-local delay = 20
-SlashCo.EndRound = function()
+local lobbyDelay = 20 -- Time in seconds before players are returned to the lobby.
+function SlashCo.EndRound()
 	if g_SlashCoDebug then
 		return
 	end
@@ -200,11 +200,11 @@ SlashCo.EndRound = function()
 		if not SlashCo.CurRound.EscapeHelicopterSummoned or SlashCo.CurRound.DistressBeaconUsed then
 			--Assignment failed
 
-			SlashCo.RoundOverScreen(3)
+			SlashCo.RoundOverScreen(SlashCo.RoundState.LOST)
 		else
 			--Assignment success
 
-			SlashCo.RoundOverScreen(2)
+			SlashCo.RoundOverScreen(SlashCo.RoundState.WON_ALL_DEAD)
 		end
 	else
 		--There are living survivors
@@ -215,11 +215,11 @@ SlashCo.EndRound = function()
 			if heliCount > 0 then
 				--The last survivor got to the helicopter
 
-				SlashCo.RoundOverScreen(4)
+				SlashCo.RoundOverScreen(SlashCo.RoundState.WON_DISTRESS)
 			else
 				--Emergency rescue came and went, normal loss
 
-				SlashCo.RoundOverScreen(3)
+				SlashCo.RoundOverScreen(SlashCo.RoundState.LOST)
 			end
 		else
 			--Normal win
@@ -227,11 +227,11 @@ SlashCo.EndRound = function()
 			if heliCount >= #SlashCo.CurRound.SlasherData.AllSurvivors then
 				--Everyone lived
 
-				SlashCo.RoundOverScreen(0)
+				SlashCo.RoundOverScreen(SlashCo.RoundState.WON_ALL_ALIVE)
 			else
 				--Not everyone lived
 
-				SlashCo.RoundOverScreen(1)
+				SlashCo.RoundOverScreen(SlashCo.RoundState.WON_SOME_DEAD)
 			end
 		end
 	end
@@ -260,9 +260,9 @@ SlashCo.EndRound = function()
 		end
 	end
 
-	print("[SlashCo] Round over, returning to lobby in " .. tostring(delay) .. " seconds.")
+	print("[SlashCo] Round over, returning to lobby in " .. tostring(lobbyDelay) .. " seconds.")
 
-	timer.Simple(delay, function()
+	timer.Simple(lobbyDelay, function()
 		SlashCo.RemoveHelicopter()
 		SlashCo.CommitPoints()
 
@@ -285,9 +285,9 @@ SlashCo.EndRound = function()
 	end)
 end
 
-local delay1 = 16
-SlashCo.SurvivorWinFinish = function()
-	timer.Simple(delay1, function()
+local winDelay = 16
+function SlashCo.SurvivorWinFinish()
+	timer.Simple(winDelay, function()
 		SlashCo.EndRound()
 	end)
 end

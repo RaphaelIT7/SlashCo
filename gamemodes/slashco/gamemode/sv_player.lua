@@ -83,6 +83,7 @@ hook.Add("PlayerCanHearPlayersVoice", "Maximum Range", function(listener, talker
 	if talker:Team() == TEAM_SPECTATOR or talker:Team() == TEAM_SLASHER then
 		return false
 	end
+
 	if listener:GetPos():DistToSqr(talker:GetPos()) > 1000000 then
 		return false
 	end
@@ -122,8 +123,6 @@ end)
 hook.Add("PlayerUse", "STOP", function(ply, _)
 	if ply:Team() == TEAM_SPECTATOR then
 		return false
-	else
-		return
 	end
 end)
 

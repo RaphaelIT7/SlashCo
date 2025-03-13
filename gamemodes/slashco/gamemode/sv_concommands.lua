@@ -51,10 +51,12 @@ concommand.Add("slashco_become_survivor", function(ply, _, args)
 					targetSelect = v
 				end
 			end
+
 			if tooMany then
 				doPrint(ply, "There's more than one player your arguments apply to.")
 				return
 			end
+
 			if targetSelect then
 				target = targetSelect
 			end
@@ -73,6 +75,7 @@ concommand.Add("slashco_become_survivor", function(ply, _, args)
 			break
 		end
 	end
+
 	local found
 	for _, v in ipairs(SlashCo.CurRound.SlasherData.AllSurvivors) do
 		if v.id == id then
@@ -164,6 +167,7 @@ concommand.Add("slashco_become_slasher", function(ply, _, args)
 			break
 		end
 	end
+
 	local found
 	for _, v in ipairs(SlashCo.CurRound.SlasherData.AllSlashers) do
 		if v.s_id == id then
@@ -171,6 +175,7 @@ concommand.Add("slashco_become_slasher", function(ply, _, args)
 			break
 		end
 	end
+
 	if not found then
 		table.insert(SlashCo.CurRound.SlasherData.AllSlashers, { s_id = id, slasherkey = args[1] })
 	end
@@ -182,9 +187,11 @@ concommand.Add("slashco_become_slasher", function(ply, _, args)
 		if not IsValid(target) then
 			return
 		end
+
 		if IsValid(ply) then
 			doPrint(ply, "New Slasher successfully assigned.")
 		end
+
 		SlashCo.DropAllItems(target)
 		target:StripWeapons()
 		target:SetTeam(TEAM_SLASHER)

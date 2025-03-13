@@ -18,7 +18,7 @@ function SlashCo.Abort(reason)
 	end
 
 	if not SlashCo.Aborts then
-		SlashCo.RoundOverScreen(5)
+		SlashCo.RoundOverScreen(SlashCo.RoundState.TEST)
 		timer.Create("SlashCoAbort", 5, 1, function()
 			SlashCo.GoToLobby()
 		end)
@@ -727,7 +727,7 @@ local function startRound(noSetup)
 	end)
 
 	timer.Simple(math.random(2, 4), function()
-		SlashCo.HelicopterRadioVoice(1)
+		SlashCo.HelicopterRadioVoice(SlashCo.HelicopterVoices.INTRO)
 		SlashCo.CurRound.roundOverToggle = true
 	end)
 

@@ -154,19 +154,21 @@ local particleSettings = {
 
 local delta = 0
 hook.Add("Think", "SlashCoZoneParticles", function()
-	if not LocalPlayer().ZoneEffect or not particleSettings[LocalPlayer().ZoneEffect] then
+	local ply = LocalPlayer()
+	if not ply.ZoneEffect or not particleSettings[ply.ZoneEffect] then
 		delta = 0
 		return
 	end
 
 	delta = math.Clamp(Lerp(0.005, delta, 1), 0, 1)
-	local settings = particleSettings[LocalPlayer().ZoneEffect]
-	local pos = LocalPlayer():WorldSpaceCenter()
+	local settings = particleSettings[ply.ZoneEffect]
+	local pos = ply:WorldSpaceCenter()
 	local emitter = ParticleEmitter(pos)
 	local part = emitter:Add(settings.texture, pos + VectorRand(-settings.distance, settings.distance))
 	if part then
 		settings.particle(part, delta)
 	end
+
 	emitter:Finish()
 end)
 
@@ -331,12 +333,14 @@ local colorSettings = {
 }
 
 hook.Add("RenderScreenspaceEffects", "SlashCoZoneScreenSpace", function()
-	if not LocalPlayer().ZoneEffect then
+	local ply = LocalPlayer()
+	if not ply.ZoneEffect then
 		return
 	end
 
-	for k, v in pairs(LocalPlayer().ColorTable) do
-		LocalPlayer().ColorTable[k] = math.Clamp(Lerp(0.01, v, colorSettings[LocalPlayer().ZoneEffect][k]), -10, 10)
+	for k, v in pairs(ply.ColorTable) do
+		ply.ColorTable[k] = math.Clamp(Lerp(0.01, v, colorSettings[ply.ZoneEffect][k]), -10, 10)
 	end
-	DrawColorModify(LocalPlayer().ColorTable)
+
+	DrawColorModify(ply.ColorTable)
 end)

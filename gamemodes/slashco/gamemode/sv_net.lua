@@ -44,13 +44,13 @@ function SlashCo.PlayGlobalSound(soundPath, soundLevel, ent, vol, permanent)
 	-- sound must be precached
 	ent:EmitSound(soundPath, 1, 1, 0)
 
-	net.WriteBool(false)
-	net.WriteString(soundPath)
-	net.WriteUInt(ent:EntIndex(), 13)
-	net.WriteUInt(soundLevel, 14)
-	net.WriteFloat(vol)
-	net.WriteBool(permanent)
 	net.Start("mantislashco_GlobalSound")
+		net.WriteBool(false)
+		net.WriteString(soundPath)
+		net.WriteUInt(ent:EntIndex(), 13)
+		net.WriteUInt(soundLevel, 14)
+		net.WriteFloat(vol)
+		net.WriteBool(permanent)
 	net.Broadcast()
 end
 
@@ -60,10 +60,10 @@ function ENTITY:PlayGlobalSound(soundPath, soundLevel, vol, permanent)
 end
 
 function ENTITY:StopAllGlobalSounds()
-	net.WriteBool(true)
-	net.WriteString("")
-	net.WriteUInt(self:EntIndex(), 13)
 	net.Start("mantislashco_GlobalSound")
+		net.WriteBool(true)
+		net.WriteString("")
+		net.WriteUInt(self:EntIndex(), 13)
 	net.Broadcast()
 end
 
@@ -71,19 +71,19 @@ ENTITY.OldStopSound = ENTITY.OldStopSound or ENTITY.StopSound
 function ENTITY:StopSound(soundPath)
 	self:OldStopSound(soundPath)
 
-	net.WriteBool(true)
-	net.WriteString(soundPath)
-	net.WriteUInt(self:EntIndex(), 13)
 	net.Start("mantislashco_GlobalSound")
+		net.WriteBool(true)
+		net.WriteString(soundPath)
+		net.WriteUInt(self:EntIndex(), 13)
 	net.Broadcast()
 end
 
 -- DEPRECATED avoid using this
 PlayGlobalSound = SlashCo.PlayGlobalSound
 
-SlashCo.BroadcastLobbySlasherInformation = function()
-	net.WriteTable({ player = SlashCo.LobbyData.AssignedSlasher, slasher = SlashCo.LobbyData.PickedSlasher })
+function SlashCo.BroadcastLobbySlasherInformation()
 	net.Start("mantislashco_LobbySlasherInformation")
+		net.WriteTable({ player = SlashCo.LobbyData.AssignedSlasher, slasher = SlashCo.LobbyData.PickedSlasher })
 	net.Broadcast()
 end
 
@@ -93,37 +93,37 @@ function SlashCo.LobbyRoundData()
 		offering = SCInfo.Offering[SlashCo.LobbyData.Offering].Name
 	end
 
-	net.WriteTable({ survivors = SlashCo.LobbyData.AssignedSurvivors, slashers = SlashCo.LobbyData.AssignedSlashers, offering = offering })
 	net.Start("mantislashco_SendRoundData")
+		net.WriteTable({ survivors = SlashCo.LobbyData.AssignedSurvivors, slashers = SlashCo.LobbyData.AssignedSlashers, offering = offering })
 	net.Broadcast()
 end
 
-SlashCo.BroadcastCurrentRoundData = function(readygame)
-	net.WriteTable({ survivors = SlashCo.CurRound.SlasherData.AllSurvivors, slashers = SlashCo.CurRound.SlasherData.AllSlashers, offering = SlashCo.CurRound.OfferingData.OfferingName })
+function SlashCo.BroadcastCurrentRoundData(readygame)
 	net.Start("mantislashco_SendRoundData")
+		net.WriteTable({ survivors = SlashCo.CurRound.SlasherData.AllSurvivors, slashers = SlashCo.CurRound.SlasherData.AllSlashers, offering = SlashCo.CurRound.OfferingData.OfferingName })
 	net.Broadcast()
 
-	local send_t = {}
 	net.Start("mantislashco_GiveSlasherData")
+		local send_t = {}
 
-	send_t.GameProgress = SlashCo.CurRound.GameProgress
-	send_t.AllSurvivors = SlashCo.CurRound.SlasherData.AllSurvivors
-	send_t.AllSlashers = SlashCo.CurRound.SlasherData.AllSlashers
-	send_t.GameReadyToBegin = readygame
+		send_t.GameProgress = SlashCo.CurRound.GameProgress
+		send_t.AllSurvivors = SlashCo.CurRound.SlasherData.AllSurvivors
+		send_t.AllSlashers = SlashCo.CurRound.SlasherData.AllSlashers
+		send_t.GameReadyToBegin = readygame
 
-	net.WriteTable(send_t)
+		net.WriteTable(send_t)
 	net.Broadcast()
 end
 
-SlashCo.EndOfferingVote = function(play)
-	net.WriteTable({ ply = play:SteamID64() })
+function SlashCo.EndOfferingVote(play)
 	net.Start("mantislashco_OfferingEndVote")
+		net.WriteTable({ ply = play:SteamID64() })
 	net.Broadcast()
 end
 
-SlashCo.OfferingVoteFinished = function(result)
-	net.WriteTable({ r = result })
+function SlashCo.OfferingVoteFinished(result)
 	net.Start("mantislashco_OfferingVoteFinished")
+		net.WriteTable({ r = result })
 	net.Broadcast()
 end
 
@@ -137,7 +137,7 @@ hook.Add("scValue_sendOffer", "slashCo_StartOfferingVote", function(ply, offer)
 	end)
 end)
 
-SlashCo.OfferingVote = function(ply, agreement)
+function SlashCo.OfferingVote(ply, agreement)
 	if agreement ~= true then
 		return
 	end
@@ -145,15 +145,15 @@ SlashCo.OfferingVote = function(ply, agreement)
 	table.insert(SlashCo.LobbyData.Offerors, { steamid = ply:SteamID64() })
 end
 
-SlashCo.BroadcastOfferingVote = function(offeror, o_id)
-	net.WriteTable({ ply = offeror, name = SCInfo.Offering[o_id].Name })
+function SlashCo.BroadcastOfferingVote(offeror, o_id)
 	net.Start("mantislashco_OfferingVoteOut")
+		net.WriteTable({ ply = offeror, name = SCInfo.Offering[o_id].Name })
 	net.Broadcast()
 end
 
-SlashCo.LobbyPlayerBriefing = function()
-	net.WriteTable(SlashCo.LobbyData.SelectedSlasherInfo)
+function SlashCo.LobbyPlayerBriefing()
 	net.Start("mantislashco_Briefing")
+		net.WriteTable(SlashCo.LobbyData.SelectedSlasherInfo)
 	net.Broadcast()
 end
 
@@ -166,7 +166,7 @@ local function quietHeli()
 	end
 end
 
-SlashCo.StartGameIntro = function()
+function SlashCo.StartGameIntro()
 	quietHeli()
 
 	local offering = "Regular"
@@ -177,48 +177,12 @@ SlashCo.StartGameIntro = function()
 	SlashCo.SendValue(nil, "RoundEnd", 6, {
 		SCInfo.Maps[SlashCo.LobbyData.SelectedMap].NAME,
 		SlashCo.LobbyData.SelectedSlasherInfo.NAME,
-		SlashCo.LobbyData.SelectedSlasherInfo.CLS,
-		SlashCo.LobbyData.SelectedSlasherInfo.DNG,
+		SlashCo.LobbyData.SelectedSlasherInfo.CLASS,
+		SlashCo.LobbyData.SelectedSlasherInfo.DANGER,
 		SlashCo.LobbyData.SelectedDifficulty,
 		offering
 	})
 end
-
-local pointState = {
-	[0] = function(ply)
-		if #SlashCo.CurRound.SlasherData.AllSurvivors > 1 then
-			ply:SetPoints("all_survive")
-		end
-
-		ply:SetPoints("objective")
-	end,
-	[1] = function(ply)
-		ply:SetPoints("objective")
-	end,
-	[2] = function(ply)
-		ply:SetPoints("objective")
-	end,
-	[3] = function() end,
-	[4] = function(ply)
-		ply:SetPoints("escape")
-	end,
-	[5] = function() end,
-}
-
-local pointStateSlasher = {
-	[0] = function(ply) end,
-	[1] = function(ply) end,
-	[2] = function(ply)
-		ply:SetPoints("slasher_win")
-	end,
-	[3] = function(ply)
-		ply:SetPoints("slasher_win")
-	end,
-	[4] = function(ply)
-		ply:SetPoints("slasher_escape")
-	end,
-	[5] = function() end,
-}
 
 --[[ state value:
 	0 - (If won with all players alive)
@@ -228,7 +192,44 @@ local pointStateSlasher = {
 	4 - (If won using Distress Beacon)
 	5 - (fun test end)
 ]]
-SlashCo.RoundOverScreen = function(state)
+
+local pointState = {
+	[SlashCo.RoundState.WON_ALL_ALIVE] = function(ply)
+		if #SlashCo.CurRound.SlasherData.AllSurvivors > 1 then
+			ply:SetPoints("all_survive")
+		end
+
+		ply:SetPoints("objective")
+	end,
+	[SlashCo.RoundState.WON_SOME_DEAD] = function(ply)
+		ply:SetPoints("objective")
+	end,
+	[SlashCo.RoundState.WON_ALL_DEAD] = function(ply)
+		ply:SetPoints("objective")
+	end,
+	[SlashCo.RoundState.LOST] = function() end,
+	[SlashCo.RoundState.WON_DISTRESS] = function(ply)
+		ply:SetPoints("escape")
+	end,
+	[SlashCo.RoundState.TEST] = function() end,
+}
+
+local pointStateSlasher = {
+	[SlashCo.RoundState.WON_ALL_ALIVE] = function(ply) end,
+	[SlashCo.RoundState.WON_SOME_DEAD] = function(ply) end,
+	[SlashCo.RoundState.WON_ALL_DEAD] = function(ply)
+		ply:SetPoints("slasher_win")
+	end,
+	[SlashCo.RoundState.LOST] = function(ply)
+		ply:SetPoints("slasher_win")
+	end,
+	[SlashCo.RoundState.WON_DISTRESS] = function(ply)
+		ply:SetPoints("slasher_escape")
+	end,
+	[SlashCo.RoundState.TEST] = function() end,
+}
+
+function SlashCo.RoundOverScreen(state)
 	quietHeli()
 
 	--yucky yucky
@@ -240,6 +241,7 @@ SlashCo.RoundOverScreen = function(state)
 				pointState[state](ply)
 			end
 		end
+
 		if SlashCo.CurRound.Slashers[ply:SteamID64()] then
 			pointStateSlasher[state](ply)
 		end
@@ -254,21 +256,13 @@ SlashCo.RoundOverScreen = function(state)
 	SlashCo.SendValue(nil, "RoundEnd", state, goodSurvivorTable, rescued)
 end
 
-SlashCo.BroadcastGlobalData = function()
-	if CLIENT then
-		return
-	end
-
-	net.WriteTable(SCInfo)
+function SlashCo.BroadcastGlobalData()
 	net.Start("mantislashco_SendGlobalInfoTable")
+		net.WriteTable(SCInfo)
 	net.Broadcast()
 end
 
-SlashCo.BroadcastMasterDatabaseForClient = function(ply)
-	if CLIENT then
-		return
-	end
-
+function SlashCo.BroadcastMasterDatabaseForClient(ply)
 	if not IsValid(ply) then
 		return
 	end
@@ -278,14 +272,14 @@ SlashCo.BroadcastMasterDatabaseForClient = function(ply)
 		return
 	end
 
-	net.WriteTable(sql.Query("SELECT * FROM slashco_master_database WHERE PlayerID ='" .. ply:SteamID64() .. "'; "))
 	net.Start("mantislashco_GiveMasterDatabase")
+		net.WriteTable(sql.Query("SELECT * FROM slashco_master_database WHERE PlayerID ='" .. ply:SteamID64() .. "'; "))
 	net.Send(ply)
 end
 
-SlashCo.HelicopterRadioVoice = function(_type)
-	net.WriteUInt(_type, 4)
+-- All types are defined in sh_shared.lua -> SlashCo.HelicopterVoices
+function SlashCo.HelicopterRadioVoice(type)
 	net.Start("mantislashco_HelicopterVoice")
+		net.WriteUInt(type, 4)
 	net.Broadcast()
 end
-

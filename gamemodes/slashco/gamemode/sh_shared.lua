@@ -22,6 +22,61 @@ SlashCo.GeneratorModel = "models/slashco/other/generator/generator.mdl" --Model 
 SlashCo.HelicopterModel = "models/slashco/other/helicopter/helicopter.mdl" --Model path for the helicopter
 SlashCo.GhostPingDelay = 480
 
+SlashCo.HelicopterVoices = {
+	INTRO = 1,
+	APPROACH = 2,
+	LAND = 3,
+	BEACON = 4,
+}
+
+SlashCo.DangerLevel = {
+	Unknown = 0,
+	[0] = "Unknown",
+
+	Moderate = 1,
+	[1] = "Moderate",
+
+	Considerable = 2,
+	[2] = "Considerable",
+
+	Devastating = 3,
+	[3] = "Devastating",
+}
+
+SlashCo.SlasherClass = {
+	Unknown = 0,
+	[0] = "Unknown",
+
+	Cryptid = 1,
+	[1] = "Cryptid",
+
+	Demon = 2,
+	[2] = "Demon",
+
+	Umbra = 3,
+	[3] = "Umbra",
+}
+
+SlashCo.RoundState = {
+	[0] = WON_ALL_ALIVE,
+	WON_ALL_ALIVE = 0,
+
+	[1] = WON_SOME_DEAD,
+	WON_SOME_DEAD = 1,
+
+	[2] = WON_ALL_DEAD,
+	WON_ALL_DEAD = 2,
+
+	[3] = LOST,
+	LOST = 3,
+
+	[4] = WON_DISTRESS,
+	WON_DISTRESS = 4,
+
+	[5] = TEST,
+	TEST = 5,
+}
+
 local lang_files, _ = file.Find("slashco/lang/*.lua", "LUA")
 for _, v in ipairs(lang_files) do
 	AddCSLuaFile("slashco/lang/" .. v)
