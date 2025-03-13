@@ -52,33 +52,11 @@ function PLAYER:SlasherFunction(value, ...)
 end
 
 function TranslateSlasherClass(id)
-	if id == 0 then
-		return "Unknown"
-	end
-	if id == 1 then
-		return "Cryptid"
-	end
-	if id == 2 then
-		return "Demon"
-	end
-	if id == 3 then
-		return "Umbra"
-	end
+	return SlashCo.SlasherClass[id]
 end
 
 function TranslateDangerLevel(id)
-	if id == 0 then
-		return "Unknown"
-	end
-	if id == 1 then
-		return "Moderate"
-	end
-	if id == 2 then
-		return "Considerable"
-	end
-	if id == 3 then
-		return "Devastating"
-	end
+	return SlashCo.DangerLevel[id]
 end
 
 function GetRandomSlasher()

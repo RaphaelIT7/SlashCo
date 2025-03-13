@@ -44,8 +44,8 @@ SlashCo.LobbyData = {
 	SelectedSlasherInfo = {
 
 		ID = 0,
-		CLS = 0,
-		DNG = 0,
+		CLASS = 0,
+		DANGER = 0,
 		NAME = 0,
 		TIP = "--//--"
 
@@ -267,11 +267,11 @@ SlashCo.SummonEscapeHelicopter = function(distress)
 
 	timer.Simple(math.random(2, 5), function()
 		if distress then
-			SlashCo.HelicopterRadioVoice(4)
+			SlashCo.HelicopterRadioVoice(SlashCo.HelicopterVoices.BEACON)
 
 			SlashCo.UpdateObjective("generator", SlashCo.ObjStatus.FAILED)
 		else
-			SlashCo.HelicopterRadioVoice(2)
+			SlashCo.HelicopterRadioVoice(SlashCo.HelicopterVoices.APPROACH)
 
 			SlashCo.UpdateObjective("generator", SlashCo.ObjStatus.COMPLETE)
 		end
@@ -326,7 +326,7 @@ SlashCo.HelicopterLand = function(pos)
 	SlashCo.CurRound.HelicopterTargetPosition = pos
 
 	timer.Simple(math.random(4, 6), function()
-		SlashCo.HelicopterRadioVoice(3)
+		SlashCo.HelicopterRadioVoice(SlashCo.HelicopterVoices.LAND)
 
 		SlashCo.UpdateObjective("heliwait", SlashCo.ObjStatus.COMPLETE)
 		SlashCo.UpdateObjective("helicopter", SlashCo.ObjStatus.INCOMPLETE, nil, true)

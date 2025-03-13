@@ -27,10 +27,11 @@ function PLAYER:AddPoints(key, amount)
         amount = pointAmounts[key] or 5
     end
 
-    plyPoints[self:SteamID64()] = plyPoints[self:SteamID64()] or {}
-    plyPoints[self:SteamID64()][key] = plyPoints[self:SteamID64()][key] or {}
+    local steamID64 = self:SteamID64()
+    plyPoints[steamID64] = plyPoints[steamID64] or {}
+    plyPoints[steamID64][key] = plyPoints[steamID64][key] or {}
 
-    table.insert(plyPoints[self:SteamID64()][key], amount)
+    table.insert(plyPoints[steamID64][key], amount)
 
     if SERVER then
         SlashCo.SendValue(self, "addPoints", key, amount)
@@ -39,7 +40,8 @@ end
 
 ---set a point type the player will earn at game end
 function PLAYER:SetPoints(key, amount, num)
-    if not plyPoints[self:SteamID64()] then
+	local steamID64 = self:SteamID64()
+    if not plyPoints[steamID64] then
         return
     end
 
@@ -47,13 +49,13 @@ function PLAYER:SetPoints(key, amount, num)
         amount = pointAmounts[key] or 5
     end
 
-    plyPoints[self:SteamID64()] = plyPoints[self:SteamID64()] or {}
-    plyPoints[self:SteamID64()][key] = {}
+    plyPoints[steamID64] = plyPoints[steamID64] or {}
+    plyPoints[steamID64][key] = {}
 
     num = num or 1
 
     for i = 1, num do
-        table.insert(plyPoints[self:SteamID64()][key], amount)
+        table.insert(plyPoints[steamID64][key], amount)
     end
 
     if SERVER then
@@ -63,11 +65,12 @@ end
 
 ---remove an entire set of points to earn from a player
 function PLAYER:RemovePointsKey(key)
-    if not plyPoints[self:SteamID64()] then
+	local steamID64 = self:SteamID64()
+    if not plyPoints[steamID64] then
         return
     end
 
-    plyPoints[self:SteamID64()][key] = nil
+    plyPoints[steamID64][key] = nil
 
     if SERVER then
         SlashCo.SendValue(self, "removePointsKey", key)
@@ -76,25 +79,27 @@ end
 
 ---get the keys of a player's points table
 function PLAYER:GetPointsKeys()
-    if not plyPoints[self:SteamID64()] then
+	local steamID64 = self:SteamID64()
+    if not plyPoints[steamID64] then
         return {}
     end
 
-    return table.GetKeys(plyPoints[self:SteamID64()])
+    return table.GetKeys(plyPoints[steamID64])
 end
 
 ---get the amount of points for a particular key
 function PLAYER:GetPoints(key)
-    if not plyPoints[self:SteamID64()] or not plyPoints[self:SteamID64()][key] then
+	local steamID64 = self:SteamID64()
+    if not plyPoints[steamID64] or not plyPoints[steamID64][key] then
         return 0
     end
 
     local tot = 0
-    for _, v in ipairs(plyPoints[self:SteamID64()][key]) do
+    for _, v in ipairs(plyPoints[steamID64][key]) do
         tot = tot + v
     end
 
-    return tot, #plyPoints[self:SteamID64()][key]
+    return tot, #plyPoints[steamID64][key]
 end
 
 local function getTotal(id)

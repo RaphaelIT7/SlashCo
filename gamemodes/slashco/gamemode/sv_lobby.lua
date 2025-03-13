@@ -21,22 +21,22 @@ local function lobbySaveCurData()
 
             local rand_name = GetRandomSlasher()
 
-            if SlashCo.LobbyData.SelectedSlasherInfo.CLS == 0 then
+            if SlashCo.LobbyData.SelectedSlasherInfo.CLASS == SlashCo.SlasherClass.Unknown then
                 --Check if the random id of slasher has the appropriate class for the difficulty
 
                 --The difficulty allows for any class.
             else
-                if SlashCo.LobbyData.SelectedSlasherInfo.CLS ~= SlashCoSlashers[rand_name].Class then
+                if SlashCo.LobbyData.SelectedSlasherInfo.CLASS ~= SlashCoSlashers[rand_name].Class then
                     goto retry
                 end --the random slasher's class does not match.
             end
 
-            if SlashCo.LobbyData.SelectedSlasherInfo.DNG == 0 then
+            if SlashCo.LobbyData.SelectedSlasherInfo.DANGER == SlashCo.DangerLevel.Unknown then
                 --Check if the random id of slasher has the appropriate danger level for the difficulty
 
                 --The difficulty allows for any danger level.
             else
-                if SlashCo.LobbyData.SelectedSlasherInfo.DNG ~= SlashCoSlashers[rand_name].DangerLevel then
+                if SlashCo.LobbyData.SelectedSlasherInfo.DANGER ~= SlashCoSlashers[rand_name].DangerLevel then
                     goto retry
                 end --the random slasher's danger level does not match.
             end
@@ -258,8 +258,13 @@ end
 local function BeginSlasherSelection()
     print("Slasher Selecting!")
 
-    net.WriteTable({ slashersteamid = SlashCo.LobbyData.AssignedSlashers[1].steamid, slashID = SlashCo.LobbyData.SelectedSlasherInfo.ID, slashClass = SlashCo.LobbyData.SelectedSlasherInfo.CLS, slashDanger = SlashCo.LobbyData.SelectedSlasherInfo.DNG })
     net.Start("mantislashco_PickingSlasher")
+		net.WriteTable({
+			slashersteamid = SlashCo.LobbyData.AssignedSlashers[1].steamid,
+			slashID = SlashCo.LobbyData.SelectedSlasherInfo.ID,
+			slashClass = SlashCo.LobbyData.SelectedSlasherInfo.CLASS,
+			slashDanger = SlashCo.LobbyData.SelectedSlasherInfo.DANGER
+		})
     net.Broadcast()
 end
 
@@ -286,16 +291,16 @@ local function lobbyRoundSetup()
             local rand_name = GetRandomSlasher()
 
             SlashCo.LobbyData.SelectedSlasherInfo.ID = rand
-            SlashCo.LobbyData.SelectedSlasherInfo.CLS = SlashCoSlashers[rand_name].Class
-            SlashCo.LobbyData.SelectedSlasherInfo.DNG = SlashCoSlashers[rand_name].DangerLevel
+            SlashCo.LobbyData.SelectedSlasherInfo.CLASS = SlashCoSlashers[rand_name].Class
+            SlashCo.LobbyData.SelectedSlasherInfo.DANGER = SlashCoSlashers[rand_name].DangerLevel
             SlashCo.LobbyData.SelectedSlasherInfo.NAME = rand_name
             SlashCo.LobbyData.SelectedSlasherInfo.TIP = SlashCoSlashers[rand_name].ProTip
 
             SlashCo.LobbyData.PickedSlasher = rand_name
         elseif SlashCo.LobbyData.SelectedDifficulty == 1 then
-            SlashCo.LobbyData.SelectedSlasherInfo.CLS = math.random(1, 3)
+            SlashCo.LobbyData.SelectedSlasherInfo.CLASS = math.random(1, #SlashCo.SlasherClass)
         elseif SlashCo.LobbyData.SelectedDifficulty == 2 then
-            SlashCo.LobbyData.SelectedSlasherInfo.DNG = math.random(1, 3)
+            SlashCo.LobbyData.SelectedSlasherInfo.DANGER = math.random(1, #SlashCo.DangerLevel)
         end
 
         --SlashCo.LobbyData.DeathwardsLeft = 2 - SlashCo.LobbyData.SelectedDifficulty
@@ -724,7 +729,7 @@ SlashCo.OfferingVoteSuccess = function(id)
     if id == 2 then
         --Satiation
 
-        SlashCo.LobbyData.SelectedSlasherInfo.CLS = 2
+        SlashCo.LobbyData.SelectedSlasherInfo.CLASS = SlashCo.SlasherClass.Deamon
     end
 
     SlashCo.LobbyData.VotedOffering = 0
@@ -777,8 +782,8 @@ concommand.Add("lobby_debug_proceed", function(ply)
 
         SlashCo.LobbyData.SelectedSlasherInfo.NAME = "Unknown"
         SlashCo.LobbyData.SelectedSlasherInfo.ID = 0
-        SlashCo.LobbyData.SelectedSlasherInfo.CLS = 0
-        SlashCo.LobbyData.SelectedSlasherInfo.DNG = 0
+        SlashCo.LobbyData.SelectedSlasherInfo.CLASS = SlashCo.SlasherClass.Unknown
+        SlashCo.LobbyData.SelectedSlasherInfo.DANGER = SlashCo.DangerLevel.Unknown
         SlashCo.LobbyData.SelectedSlasherInfo.TIP = "--//--"
 
         lobbyRoundSetup()

@@ -3,7 +3,6 @@ local SlashCo = SlashCo or {}
 local ConvoCount = 30
 
 SlashCo.LobbyConvos = {
-
 	{
 		Length1 = 4,
 		Length2 = 4,
