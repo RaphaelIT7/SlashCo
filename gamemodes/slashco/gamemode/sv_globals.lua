@@ -301,7 +301,7 @@ SlashCo.SummonEscapeHelicopter = function(distress)
 			SlashCo.HelicopterGoAboveLand(ent)
 		end)
 
-		net.Start("mantislashcoHelicopterMusic")
+		net.Start("mantislashco_HelicopterMusic")
 		net.Broadcast()
 	end)
 end
@@ -402,7 +402,7 @@ SlashCo.HelicopterLeaveForIntro = function()
 			end
 			SlashCo.RemoveHelicopter()
 
-			net.Start("mantislashcoMapAmbientPlay")
+			net.Start("mantislashco_MapAmbientPlay")
 			net.Broadcast()
 		end)
 	end)

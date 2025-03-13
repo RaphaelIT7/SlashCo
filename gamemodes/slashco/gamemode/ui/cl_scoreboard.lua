@@ -11,7 +11,7 @@ surface.CreateFont("ScoreboardDefaultTitle", {
 	weight	= 800
 })
 
-net.Receive("mantislashcoSendRoundData", function()
+net.Receive("mantislashco_SendRoundData", function()
 	SlashCo.PlayerData = net.ReadTable()
 end)
 

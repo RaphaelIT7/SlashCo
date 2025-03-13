@@ -585,7 +585,7 @@ hook.Add("PlayerChangedTeam", "octoSlashCoPlayerChangedTeam", function(ply, old,
 	end
 
 	if game.GetMap() == "sc_lobby" then
-		net.Start("mantislashcoGiveLobbyStatus")
+		net.Start("mantislashco_GiveLobbyStatus")
 		net.WriteUInt(SlashCo.LobbyData.LOBBYSTATE, 3)
 		net.Broadcast()
 	end

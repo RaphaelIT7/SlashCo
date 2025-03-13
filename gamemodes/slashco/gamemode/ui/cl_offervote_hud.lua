@@ -1,4 +1,4 @@
-net.Receive("mantislashcoOfferingVoteOut", function()
+net.Receive("mantislashco_OfferingVoteOut", function()
 	local t = net.ReadTable()
 
 	offeror_name = player.GetBySteamID64(t.ply):GetName()
@@ -18,7 +18,7 @@ net.Receive("mantislashcoOfferingVoteOut", function()
 	show_vote_screen = true
 end)
 
-net.Receive("mantislashcoOfferingEndVote", function()
+net.Receive("mantislashco_OfferingEndVote", function()
 	local t = net.ReadTable()
 
 	if t.ply ~= LocalPlayer():SteamID64() then
@@ -28,7 +28,7 @@ net.Receive("mantislashcoOfferingEndVote", function()
 	show_vote_screen = false
 end)
 
-net.Receive("mantislashcoOfferingVoteFinished", function()
+net.Receive("mantislashco_OfferingVoteFinished", function()
 	local t = net.ReadTable()
 
 	offering_vote_result = t.r

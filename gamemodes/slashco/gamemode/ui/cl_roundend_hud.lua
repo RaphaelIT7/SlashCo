@@ -342,7 +342,7 @@ end)
 
 local helimusic_antispam
 local heli_music
-net.Receive("mantislashcoHelicopterMusic", function()
+net.Receive("mantislashco_HelicopterMusic", function()
 	if not helimusic_antispam then
 		heli_music = CreateSound(LocalPlayer(), "slashco/music/slashco_helicopter.wav")
 		heli_music:Play()

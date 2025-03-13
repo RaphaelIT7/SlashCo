@@ -192,12 +192,12 @@ function lobbyReady()
 end
 
 function broadcastLobbyInfo()
-    net.Start("mantislashcoGiveLobbyInfo")
+    net.Start("mantislashco_GiveLobbyInfo")
     net.WriteTable(SlashCo.LobbyData.Players)
     net.Broadcast()
 
     if timer.TimeLeft("AllReadyLobby") ~= nil then
-        net.Start("mantislashcoLobbyTimerTime")
+        net.Start("mantislashco_LobbyTimerTime")
         net.WriteUInt(math.floor(timer.TimeLeft("AllReadyLobby")), 6)
         net.Broadcast()
     end
@@ -258,8 +258,8 @@ end
 local function BeginSlasherSelection()
     print("Slasher Selecting!")
 
-    net.Start("mantiSlashCoPickingSlasher")
     net.WriteTable({ slashersteamid = SlashCo.LobbyData.AssignedSlashers[1].steamid, slashID = SlashCo.LobbyData.SelectedSlasherInfo.ID, slashClass = SlashCo.LobbyData.SelectedSlasherInfo.CLS, slashDanger = SlashCo.LobbyData.SelectedSlasherInfo.DNG })
+    net.Start("mantislashco_PickingSlasher")
     net.Broadcast()
 end
 
@@ -425,7 +425,7 @@ local function lobbyRoundSetup()
     end
 end
 
-net.Receive("mantiSlashCoSelectSlasher", function()
+net.Receive("mantislashco_SelectSlasher", function()
     if SERVER then
         rec_id = net.ReadTable()
         print("[SlashCo] Received. (" .. rec_id.pick .. ")")
@@ -597,7 +597,7 @@ hook.Add("Tick", "LobbyTickEvent", function()
             timer.Remove("AllReadyLobby")
             SlashCo.LobbyData.ReadyTimerStarted = false
 
-            net.Start("mantislashcoLobbyTimerTime")
+            net.Start("mantislashco_LobbyTimerTime")
             net.WriteUInt(62, 6)
             net.Broadcast()
         end
@@ -766,7 +766,7 @@ concommand.Add("lobby_debug_proceed", function(ply)
             end
         end
 
-        net.Start("mantislashcoGiveLobbyStatus")
+        net.Start("mantislashco_GiveLobbyStatus")
         net.WriteUInt(SlashCo.LobbyData.LOBBYSTATE, 3)
         net.Broadcast()
 
@@ -805,7 +805,7 @@ concommand.Add("lobby_debug_transition", function(ply)
         end)
 
         if SERVER then
-            net.Start("mantislashcoGiveLobbyStatus")
+            net.Start("mantislashco_GiveLobbyStatus")
             net.WriteUInt(SlashCo.LobbyData.LOBBYSTATE, 3)
             net.Broadcast()
         end
@@ -825,7 +825,7 @@ concommand.Add("lobby_debug_brief", function(ply)
         doors[2]:Fire("Open")
 
         if SERVER then
-            net.Start("mantislashcoGiveLobbyStatus")
+            net.Start("mantislashco_GiveLobbyStatus")
             net.WriteUInt(SlashCo.LobbyData.LOBBYSTATE, 3)
             net.Broadcast()
         end
@@ -866,7 +866,7 @@ concommand.Add("lobby_reset", function(ply)
         timer.Remove("AllReadyLobby")
 
         if SERVER then
-            net.Start("mantislashcoGiveLobbyStatus")
+            net.Start("mantislashco_GiveLobbyStatus")
             net.WriteUInt(SlashCo.LobbyData.LOBBYSTATE, 3)
             net.Broadcast()
         end
