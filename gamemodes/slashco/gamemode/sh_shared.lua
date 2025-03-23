@@ -77,15 +77,19 @@ SlashCo.RoundState = {
 	TEST = 5,
 }
 
-GameData = GameData or {} -- A table containing data that is frequently used.
+GameData = GameData or {} -- A table containing data that is frequently used, also stores data across lua refreshs to not break when editing.
 GameData.Map = game.GetMap()
 GameData.Lobby = "sc_lobby" -- Map name of the lobby
 GameData.IsLobby = GameData.Map == GameData.Lobby
+GameData.MaxPlayers = game.MaxPlayers()
 
 if CLIENT then
 	--GameData.LocalPlayer = nil
 	--GameData.LocalSteamID = nil
 	--GameData.LocalSteamID64 = nil
+	GameData.StateOfLobby = GameData.StateOfLobby or 0
+	GameData.LobbyInfoTable = GameData.LobbyInfoTable or {}
+	GameData.TimeLeft = GameData.TimeLeft or nil
 
 	function GM:InitPostEntity()
 		GameData.LocalPlayer = LocalPlayer()
