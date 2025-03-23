@@ -58,9 +58,8 @@ hook.Add("HUDPaint", "Spectator_Vision", function()
 			spin = 1
 		end
 
-		local slots = game.MaxPlayers()
 		local blip = "☞ [,] ☜"
-		if #team.GetPlayers(TEAM_LOBBY) > (slots - 1) then
+		if #team.GetPlayers(TEAM_LOBBY) > (GameData.MaxPlayers - 1) then
 			blip = "☓ [,] ☓"
 		else
 			flash = flash + RealFrameTime()
@@ -84,7 +83,7 @@ hook.Add("HUDPaint", "Spectator_Vision", function()
 
 		local players = CL_LobbyPlayers or #team.GetPlayers(TEAM_LOBBY)
 
-		draw.SimpleText("[" .. players .. " / " .. slots .. "]", "TVCD", ScrW() / 2, ScrH() / 2.5,
+		draw.SimpleText("[" .. players .. " / " .. GameData.MaxPlayers .. "]", "TVCD", ScrW() / 2, ScrH() / 2.5,
 				Color(255, 255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 
 		draw.SimpleText("[" .. srvwin_count .. " " .. SlashCo.Language("SurvivorWins") .. "]  [" .. slswin_count .. " " .. SlashCo.Language("SlasherWins") .. "]",

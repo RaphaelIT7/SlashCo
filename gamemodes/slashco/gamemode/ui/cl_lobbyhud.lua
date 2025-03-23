@@ -12,22 +12,20 @@ local grey = Color(128, 128, 128)
 local red = Color(255, 64, 64)
 local green = Color(64, 255, 64)
 
-local TimeLeft, StateOfLobby, LobbyInfoTable
-
 net.Receive("mantislashco_LobbyTimerTime", function()
-	TimeLeft = net.ReadUInt(6)
+	GameData.TimeLeft = net.ReadUInt(6)
 end)
 
 net.Receive("mantislashco_GiveLobbyStatus", function()
-	StateOfLobby = net.ReadUInt(3)
+	GameData.StateOfLobby = net.ReadUInt(3)
 end)
 
 net.Receive("mantislashco_GiveLobbyInfo", function()
-	LobbyInfoTable = net.ReadTable()
+	GameData.LobbyInfoTable = net.ReadTable()
 end)
 
 hook.Add("HUDDrawTargetID", "SlashCoLobbyNames", function()
-	return StateOfLobby and StateOfLobby < 1
+	return GameData.StateOfLobby and GameData.StateOfLobby < 1
 end)
 
 local ReadyCheck = Material("slashco/ui/lobby_ready")
@@ -57,7 +55,7 @@ hook.Add("HUDPaint", "LobbyInfoText", function()
 
 	--LobbyFont1
 	if localTeam == TEAM_LOBBY then
-		if StateOfLobby == nil or StateOfLobby < 1 then
+		if GameData.StateOfLobby == nil or GameData.StateOfLobby < 1 then
 			draw.SimpleText("[,] " .. SlashCo.Language("ToggleSpectate"), "TVCD", scrW * 0.975, (scrH * 0.95) - 50,
 					color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
 		end
@@ -66,12 +64,12 @@ hook.Add("HUDPaint", "LobbyInfoText", function()
 				color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
 	end
 
-	if StateOfLobby and StateOfLobby < 1 then
+	if GameData.StateOfLobby and GameData.StateOfLobby < 1 then
 		local Lobby_Players = {}
 		local isClientinLobby = false
 
 		local clientReadiness
-		for _, v in ipairs(LobbyInfoTable) do
+		for _, v in ipairs(GameData.LobbyInfoTable) do
 			local ply = player.GetBySteamID64(v.steamid)
 
 			if not IsValid(ply) then
@@ -82,7 +80,7 @@ hook.Add("HUDPaint", "LobbyInfoText", function()
 				table.insert(Lobby_Players, { ID = v.steamid, Name = ply:GetName(), Ready = v.readyState })
 			end
 
-			if v.steamid == localPly:SteamID64() then
+			if v.steamid == GameData.LocalSteamID64 then
 				clientReadiness = v.readyState
 				isClientinLobby = true
 			end
@@ -104,14 +102,13 @@ hook.Add("HUDPaint", "LobbyInfoText", function()
 			draw.SimpleText("[F2] " .. SlashCo.Language("ReadyAs", string.upper(SlashCo.Language("Slasher"))), "TVCD",
 					scrW * 0.975, (scrH * 0.95) - 160, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
 
-			if TimeLeft ~= nil and TimeLeft > 0 and TimeLeft < 61 then
-				draw.SimpleText(tostring(TimeLeft), "LobbyFont2", scrW * 0.5, scrH * 0.65, color_white,
+			if GameData.TimeLeft and GameData.TimeLeft > 0 and GameData.TimeLeft < 61 then
+				draw.SimpleText(tostring(GameData.TimeLeft), "LobbyFont2", scrW * 0.5, scrH * 0.65, color_white,
 						TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 			end
 
 			local mul_y = 1
-
-			draw.SimpleText("[" .. plynum .. "/7] ", "TVCD", scrW * 0.025, scrH * 0.22, color_white, TEXT_ALIGN_LEFT,
+			draw.SimpleText("[" .. plynum .. "/" .. GameData.MaxPlayers .. "] ", "TVCD", scrW * 0.025, scrH * 0.22, color_white, TEXT_ALIGN_LEFT,
 					TEXT_ALIGN_TOP)
 
 			for i = 1, #Lobby_Players do
