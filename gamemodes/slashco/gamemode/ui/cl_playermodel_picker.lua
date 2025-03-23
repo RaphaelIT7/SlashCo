@@ -8,7 +8,7 @@ local function HidePlayermodelSelection()
 end
 
 local function PlayerModelChosen(mod)
-	RunConsoleCommand("slashco_cl_playermodel", mod)
+	GetConVar("slashco_cl_playermodel"):SetString(mod)
 end
 
 function DrawThePlayermodelSelectorBox()
@@ -25,6 +25,7 @@ function DrawThePlayermodelSelectorBox()
 				PlayerModelChosen("models/slashco/survivor/male_0" .. val .. ".mdl")
 				HidePlayermodelSelection()
 			end
+
 			item:SetSize(80, 80)
 			item:SetPos(5 + i * 80, 29 + c * 80)
 			item:SetModel("models/slashco/survivor/male_0" .. val .. ".mdl")
@@ -47,6 +48,7 @@ function DrawThePlayermodelSelectorBox()
 		else
 			surface.SetTextColor(255, 255, 255)
 		end
+
 		surface.SetFont("TVCD")
 		surface.SetTextPos(0, 0)
 		surface.DrawText("[X]")

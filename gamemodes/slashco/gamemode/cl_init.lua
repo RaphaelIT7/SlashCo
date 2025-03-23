@@ -209,6 +209,7 @@ net.Receive("octoSlashCoTestConfigHalos", function()
 		halo.Add(ents.FindByClass("prop_physics"), Color(255, 0, 0), 2, 2, 8, true, true)
 		halo.Add(ents.FindByClass("sc_*"), Color(0, 255, 255), 2, 2, 4, true, true)
 	end)
+
 	SlashCoTestConfig = true
 end)
 

@@ -169,7 +169,7 @@ end
 
 ---Auto-fills some gas cans at the start of the round if there are too few players
 local function roundHeadstart()
-	if #SlashCo.CurRound.SlasherData.AllSurvivors > (SlashCo.MAXPLAYERS - 2) then
+	if #SlashCo.CurRound.SlasherData.AllSurvivors > (math.max(GameData.MaxPlayers, 7) - 2) then
 		return
 	end
 
@@ -303,7 +303,7 @@ function SlashCo.SpawnItems()
 	end
 
 	--item count for everything else
-	local randomItemCount = SlashCo.MAXPLAYERS + 1 - math.floor((SlashCo.CurRound.Difficulty + 1) / 2) - #SlashCo.CurRound.SlasherData.AllSurvivors
+	local randomItemCount = GameData.MaxPlayers - math.floor((SlashCo.CurRound.Difficulty + 1) / 2) - #SlashCo.CurRound.SlasherData.AllSurvivors
 	local items = SlashCo.SelectSpawns(ents.FindByClass("info_sc_item"), randomItemCount,
 			nil, nil, true)
 
@@ -675,7 +675,7 @@ hook.Add("InitPostEntity", "LegacySetupSpawns", SlashCo.LegacySetup)
 ---main body of round starting function
 local function startRound(noSetup)
 	SlashCo.RoundStarted = true
-	GAMEMODE.State = GAMEMODE.States.IN_GAME
+	SlashCo.State = SlashCo.States.IN_GAME
 	SlashCo.CurRound.GameProgress = 0
 
 	SetGlobalFloat("SCStartTime", CurTime())

@@ -73,7 +73,7 @@ hook.Add("HUDPaint", "LobbyInfoText", function()
 			local ply = player.GetBySteamID64(v.steamid)
 
 			if not IsValid(ply) then
-				return
+				continue
 			end
 
 			if not table.HasValue(Lobby_Players, { ID = v.steamid }) then

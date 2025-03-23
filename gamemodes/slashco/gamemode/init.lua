@@ -90,11 +90,11 @@ function GM:Initialize()
 		file.CreateDir("slashco/playerdata")
 
 		--Return to the lobby if no game is in progress and we just loaded in.
-		if GAMEMODE.State ~= GAMEMODE.States.IN_GAME and not GameData.IsLobby then
+		if SlashCo.State ~= SlashCo.States.IN_GAME and not GameData.IsLobby then
 			SlashCo.GoToLobby()
-			GAMEMODE.State = GAMEMODE.States.LOBBY
+			SlashCo.State = SlashCo.States.LOBBY
 		else
-			GAMEMODE.State = GAMEMODE.States.IN_GAME
+			SlashCo.State = SlashCo.States.IN_GAME
 		end
 	end
 
@@ -381,7 +381,7 @@ hook.Add("InitPostEntity", "octoSlashCoInitPostEntity", function()
 	RunConsoleCommand("sv_alltalk", "2")
 
 	if not GameData.IsLobby then
-		GAMEMODE.State = GAMEMODE.States.IN_GAME
+		SlashCo.State = SlashCo.States.IN_GAME
 
 		SlashCo.LoadCurRoundData()
 		SlashCo.CurRound.GameProgress = -1
@@ -419,7 +419,7 @@ local Think = function()
 	end
 
 	local gens = ents.FindByClass("sc_generator")
-	if SlashCo.CurRound and GAMEMODE.State == GAMEMODE.States.IN_GAME and #gens > 0 then
+	if SlashCo.CurRound and SlashCo.State == SlashCo.States.IN_GAME and #gens > 0 then
 		local runningCount = 0
 		for _, v in ipairs(gens) do
 			if v.IsRunning then
@@ -599,7 +599,7 @@ function GM:PlayerDeath(victim)
 		return
 	end
 
-	if GAMEMODE.State ~= GAMEMODE.States.IN_GAME or victim:Team() ~= TEAM_SURVIVOR then
+	if SlashCo.State ~= SlashCo.States.IN_GAME or victim:Team() ~= TEAM_SURVIVOR then
 		return
 	end
 
