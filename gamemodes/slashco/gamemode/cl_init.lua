@@ -109,6 +109,53 @@ hook.Add("HUDShouldDraw", "DisableDefaultHUD", function(name)
 	return not disable[name]
 end)
 
+local skyBoxVec = Vector(0, 0, 100000)
+function GM:SetupWorldFog() -- A basic world fog that dynamicly changes depending on the environment
+	render.FogMode(MATERIAL_FOG_LINEAR)
+	render.FogColor(0, 0, 0)
+
+	local fogStart = 200
+	render.FogStart(fogStart)
+
+	local pos = GameData.LocalPlayer:GetPos()
+	local isVisible = util.IsSkyboxVisibleFromPoint(pos)
+	local targetFogEnd = 3000
+
+	if not isVisible then
+		targetFogEnd = 1000 -- Were somewere hidden, like in a basement.
+	else
+		targetFogEnd = 2000 -- Were somewere like in a building but outside light still reaches the player
+	end
+
+	local tr = util.TraceLine({
+		start = pos,
+		endpos = pos + skyBoxVec,
+		collisiongroup = COLLISION_GROUP_WORLD,
+		mask = MASK_VISIBLE,
+	})
+
+	if tr.HitSky then
+		targetFogEnd = 3000
+	end
+
+	local col = render.GetLightColor(pos)
+	local brighness = (0.299 * col[1] + 0.587 * col[2] + 0.114 * col[3]) * 50
+	brighness = math.min(brighness, 1) - 0.5
+
+	targetFogEnd = targetFogEnd + (targetFogEnd * brighness)
+
+	if (fogStart * 1.5) >= targetFogEnd then
+		targetFogEnd = fogStart * 1.5
+	end
+
+	GameData.LastFogEnd = Lerp(0.005, GameData.LastFogEnd or 3000, targetFogEnd)
+	--print(targetFogEnd, brighness, GameData.LastFogEnd)
+
+	render.FogEnd(GameData.LastFogEnd)
+
+	return true
+end
+
 function GM:DrawDeathNotice()
 	return false
 end
