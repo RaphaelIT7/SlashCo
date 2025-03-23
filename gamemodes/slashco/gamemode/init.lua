@@ -138,8 +138,9 @@ local function lagTrace(ply)
 end
 
 local function lobbyButtons(ply, button)
+	local plyTeam = ply:Team()
 	if SlashCo.LobbyData.LOBBYSTATE == 0 then
-		if ply:Team() == TEAM_LOBBY and button == 92 then
+		if plyTeam == TEAM_LOBBY and button == KEY_F1 then
 			if getReadyState(ply) ~= 1 then
 				lobbyPlayerReadying(ply, 1)
 				broadcastLobbyInfo()
@@ -153,7 +154,7 @@ local function lobbyButtons(ply, button)
 			Sndd:ChangePitch(100, 0)
 		end
 
-		if ply:Team() == TEAM_LOBBY and button == 93 then
+		if plyTeam == TEAM_LOBBY and button == KEY_F2 then
 			if getReadyState(ply) ~= 2 then
 				--Check if the player has made an offering or agreed to one
 				if isPlyOfferer(ply) then
@@ -181,16 +182,16 @@ local function lobbyButtons(ply, button)
 			end
 		end
 
-		if ply:Team() == TEAM_LOBBY and button == 95 and SlashCo.LobbyData.VotedOffering > 0 and not isPlyOfferer(ply) then
+		if plyTeam == TEAM_LOBBY and button == 95 and SlashCo.LobbyData.VotedOffering > 0 and not isPlyOfferer(ply) then
 			SlashCo.OfferingVote(ply, true)
 			SlashCo.EndOfferingVote(ply)
 		end
 	end
 
 	--Switching Teams
-	if button == 58 and SlashCo.LobbyData.LOBBYSTATE == 0 then
-		if ply:Team() == TEAM_SPECTATOR then
-			if (#team.GetPlayers(TEAM_LOBBY) < SlashCo.MAXPLAYERS) then
+	if button == KEY_COMMA and SlashCo.LobbyData.LOBBYSTATE == 0 then
+		if plyTeam == TEAM_SPECTATOR then
+			if (#team.GetPlayers(TEAM_LOBBY) < GameData.MaxPlayers) then
 				ply:SetTeam(TEAM_LOBBY)
 				ply:Spawn()
 				local Sndd = CreateSound(ply, Sound("slashco/blip.wav"))
@@ -204,7 +205,7 @@ local function lobbyButtons(ply, button)
 				Sndd:ChangeVolume(0.5, 0)
 				Sndd:ChangePitch(65, 0)
 			end
-		elseif ply:Team() == TEAM_LOBBY then
+		elseif plyTeam == TEAM_LOBBY then
 			ply:SetTeam(TEAM_SPECTATOR)
 			ply:Spawn()
 			local Sndd = CreateSound(ply, Sound("slashco/blip.wav"))
@@ -216,7 +217,7 @@ local function lobbyButtons(ply, button)
 end
 
 local function spectatorButtons(ply, button)
-	if button == 107 then
+	if button == MOUSE_LEFT then
 		--Spectator Left Clicks
 		if IsValid(ply:GetObserverTarget()) and ply:GetObserverMode() ~= OBS_MODE_ROAMING then
 			--Stop spectating if already spectating a player.
@@ -250,7 +251,7 @@ local function spectatorButtons(ply, button)
 		return
 	end
 
-	if button == 108 then
+	if button == MOUSE_RIGHT then
 		--Spectator Right Clicks
 		if IsValid(ply:GetObserverTarget()) and ply:GetObserverMode() ~= OBS_MODE_ROAMING then
 			local ent = ply:GetObserverTarget()
@@ -281,7 +282,7 @@ local function spectatorButtons(ply, button)
 		return
 	end
 
-	if button == 65 then
+	if button == KEY_SPACE then
 		--Spectator presses Space, cycles camera modes.
 		if ply:GetObserverMode() == OBS_MODE_CHASE then
 			ply:SetObserverMode(OBS_MODE_IN_EYE)
@@ -294,19 +295,19 @@ local function spectatorButtons(ply, button)
 end
 
 local function slasherButtons(ply, button)
-	if button == 107 then
+	if button == MOUSE_LEFT then
 		ply:SlasherFunction("OnPrimaryFire", lagTrace(ply))
 		return
 	end --Killing / Damaging
-	if button == 108 then
+	if button == MOUSE_RIGHT then
 		ply:SlasherFunction("OnSecondaryFire", lagTrace(ply))
 		return
 	end --Activate Chase Mode
-	if button == 28 then
+	if button == KEY_R then
 		ply:SlasherFunction("OnMainAbilityFire", lagTrace(ply))
 		return
 	end --Main Ability
-	if button == 16 then
+	if button == KEY_F then
 		ply:SlasherFunction("OnSpecialAbilityFire", lagTrace(ply))
 		return
 	end --Special

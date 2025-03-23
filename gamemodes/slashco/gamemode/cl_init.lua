@@ -152,7 +152,7 @@ hook.Add("KeyPress", "PlayerSelect", function(ply, key)
 		return
 	end
 
-	if key == 8192 then
+	if key == IN_RELOAD then
 		DrawThePlayermodelSelectorBox()
 	end
 end)
