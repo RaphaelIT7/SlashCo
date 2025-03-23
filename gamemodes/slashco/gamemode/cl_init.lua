@@ -241,7 +241,7 @@ function SlashCo.DrawHalo(_ents, color, passes, noZ)
 	end
 
 	for k, v in pairs(_ents) do
-		if IsValid(v) and v:IsPlayer() and not v:CanBeSeen() then
+		if IsValid(v) and (v:IsPlayer() and not v:CanBeSeen() or v:IsDormant()) then
 			table.remove(_ents, k)
 		end
 	end
