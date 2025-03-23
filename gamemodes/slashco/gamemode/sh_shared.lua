@@ -3,11 +3,6 @@ GM.Author = "Octo, Manti, Text"
 GM.Email = "N/A"
 GM.Website = "N/A"
 GM.TeamBased = true
-GM.States = {
-	LOBBY = 1,
-	IN_GAME = 2
-}
-GM.State = GM.State or GM.States.LOBBY
 
 include("player_class/player_survivor.lua")
 include("player_class/player_slasher_base.lua")
@@ -76,6 +71,12 @@ SlashCo.RoundState = {
 	[5] = TEST,
 	TEST = 5,
 }
+
+SlashCo.States = {
+	LOBBY = 1,
+	IN_GAME = 2
+}
+SlashCo.State = SlashCo.State or SlashCo.States.LOBBY
 
 GameData = GameData or {} -- A table containing data that is frequently used, also stores data across lua refreshs to not break when editing.
 GameData.Map = game.GetMap()

@@ -63,7 +63,7 @@ if SERVER then
 	end
 
 	function ENT:Use(activator)
-		local availabilityHeli = false
+		--local availabilityHeli = false
 		local userEnteredAlready
 		local SatPlayers = SlashCo.CurRound.HelicopterRescuedPlayers
 
@@ -71,11 +71,11 @@ if SERVER then
 			return
 		end
 
-		if SatPlayers[SlashCo.MAXPLAYERS - 1] == nil then
+		--[[if SatPlayers[SlashCo.MAXPLAYERS - 1] == nil then
 			availabilityHeli = true
-		end
+		end]]
 
-		if activator:Team() ~= TEAM_SURVIVOR or not availabilityHeli then
+		if activator:Team() ~= TEAM_SURVIVOR --[[or not availabilityHeli]] then
 			return
 		end
 		--The Player is sat down in the helicopter
@@ -171,7 +171,7 @@ if SERVER then
 		activator:EnterVehicle(vehicle)
 
 		if #SatPlayers == team.NumPlayers(TEAM_SURVIVOR) and SlashCo.LobbyData.LOBBYSTATE >= 3
-				and SlashCo.LobbyData.LOBBYSTATE < 5 and GAMEMODE.State == GAMEMODE.States.LOBBY then
+				and SlashCo.LobbyData.LOBBYSTATE < 5 and SlashCo.State == SlashCo.States.LOBBY then
 			lobbyFinish()
 		end
 	end
@@ -247,7 +247,7 @@ if SERVER then
 		end
 
 		if team.NumPlayers(TEAM_SURVIVOR) > 0 and plyCount == team.NumPlayers(TEAM_SURVIVOR)
-				and GAMEMODE.State == GAMEMODE.States.IN_GAME and self.switch_full == nil then
+				and SlashCo.State == SlashCo.States.IN_GAME and self.switch_full == nil then
 
 			SlashCo.UpdateObjective("helicopter", SlashCo.ObjStatus.COMPLETE)
 			SlashCo.SendObjectives()
@@ -258,7 +258,7 @@ if SERVER then
 		end
 
 		if team.NumPlayers(TEAM_SURVIVOR) > 0 and plyCount >= (team.NumPlayers(TEAM_SURVIVOR) / 2)
-				and GAMEMODE.State == GAMEMODE.States.IN_GAME and self.switch == nil then
+				and SlashCo.State == SlashCo.States.IN_GAME and self.switch == nil then
 
 			if SlashCo.CurRound.Difficulty ~= 1 then
 				return true
@@ -281,7 +281,7 @@ if SERVER then
 			end)
 		end
 
-		if team.NumPlayers(TEAM_SURVIVOR) > 0 and plyCount > 0 and GAMEMODE.State == GAMEMODE.States.IN_GAME
+		if team.NumPlayers(TEAM_SURVIVOR) > 0 and plyCount > 0 and SlashCo.State == SlashCo.States.IN_GAME
 				and self.switch == nil then
 
 			if SlashCo.CurRound.Difficulty ~= 2 then

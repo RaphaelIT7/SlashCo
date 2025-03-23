@@ -1,13 +1,13 @@
 local SlashCo = SlashCo
 
-SlashCo.SelectSlasher = function(slasher_name, plyid)
+function SlashCo.SelectSlasher(slasher_name, plyid)
 	print(slasher_name)
 	SlashCo.CurRound.Slashers[plyid] = {}
 	SlashCo.CurRound.Slashers[plyid].SlasherID = slasher_name
 	SlashCo.CurRound.Slashers[plyid].GasCanMod = SlashCoSlashers[slasher_name].GasCanMod
 end
 
-SlashCo.ApplySlasherToPlayer = function(ply)
+function SlashCo.ApplySlasherToPlayer(ply)
 	if SlashCo.CurRound.Slashers[ply:SteamID64()] ~= nil then
 		--Set the correct Slasher
 		print("Assigning the correct Slasher to the player.")
@@ -15,7 +15,7 @@ SlashCo.ApplySlasherToPlayer = function(ply)
 	end
 end
 
-SlashCo.PrepareSlasherForSpawning = function()
+function SlashCo.PrepareSlasherForSpawning()
 	--[[
 
 	If the Difficulty is Hard, the Slasher immediately spawns with them. On other difficulties the Slasher has a spawn delay.
@@ -171,7 +171,7 @@ hook.Add("Tick", "HandleSlasherAbilities", function()
 	SlashCo.CurRound.GameProgress = math.ceil(progress)
 end)
 
-SlashCo.Jumpscare = function(slasher, target)
+function SlashCo.Jumpscare(slasher, target)
 	if not slasher:GetNWBool("CanKill") then
 		return
 	end
@@ -226,8 +226,9 @@ SlashCo.Jumpscare = function(slasher, target)
 	return true
 end
 
-SlashCo.StopChase = function(slasher)
+function SlashCo.StopChase(slasher)
 	slasher:SetNWBool("InSlasherChaseMode", false)
+	slasher:SetNWFloat("SlasherChaseBegin", 0)
 	slasher:SetRunSpeed(slasher:SlasherValue("ProwlSpeed", 150))
 	slasher:SetWalkSpeed(slasher:SlasherValue("ProwlSpeed", 150))
 	slasher:StopSound(slasher:SlasherValue("ChaseMusic"))
@@ -249,7 +250,7 @@ SlashCo.StopChase = function(slasher)
 	end
 end
 
-SlashCo.StartChaseMode = function(slasher)
+function SlashCo.StartChaseMode(slasher)
 	if slasher.ChaseActivationCooldown > 0 then
 		return
 	end
@@ -317,6 +318,7 @@ SlashCo.StartChaseMode = function(slasher)
 	end)
 
 	slasher:SetNWBool("InSlasherChaseMode", true)
+	slasher:SetNWFloat("SlasherChaseBegin", CurTime())
 	slasher.CurrentChaseTick = 0
 	slasher.ChaseActivationCooldown = slasher:SlasherValue("ChaseCooldown", 3)
 	slasher:SetRunSpeed(slasher:SlasherValue("ChaseSpeed"))
@@ -324,7 +326,7 @@ SlashCo.StartChaseMode = function(slasher)
 	slasher:PlayGlobalSound(slasher:SlasherValue("ChaseMusic"), 95, nil, true)
 end
 
-SlashCo.BustDoor = function(slasher, target, force)
+function SlashCo.BustDoor(slasher, target, force)
 	if not IsValid(target) then
 		return
 	end

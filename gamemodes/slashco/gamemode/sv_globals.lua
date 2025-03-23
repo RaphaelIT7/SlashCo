@@ -21,9 +21,7 @@ function GetRandomMap(ply_count)
 	return rand_name
 end
 
-SlashCo.MAXPLAYERS = 7
-
-SlashCo.LobbyData = {
+SlashCo.LobbyData = SlashCo.LobbyData or {
 	LOBBYSTATE = 0,
 	Offering = 0,
 	ButtonDoorPrimary = NULL,
@@ -57,7 +55,7 @@ SlashCo.LobbyData = {
 }
 
 --Holds all the information about the ongoing round
-SlashCo.ResetCurRoundData = function()
+function SlashCo.ResetCurRoundData()
 	SlashCo.CurRound = {
 		Difficulty = SlashCo.Difficulty.EASY,
 		ExpectedPlayers = {},
@@ -104,12 +102,15 @@ SlashCo.ResetCurRoundData = function()
 		DistressBeaconUsed = false,
 	}
 end
-SlashCo.ResetCurRoundData()
+
+if not SlashCo.CurRound then
+	SlashCo.ResetCurRoundData()
+end
 
 SlashCo.PlayerData = SlashCo.PlayerData or {} --Holds all loaded playerdata
 
 --Spawn a gas can
-SlashCo.CreateGasCan = function(pos, ang)
+function SlashCo.CreateGasCan(pos, ang)
 	local Ent = ents.Create("sc_gascan")
 
 	if not IsValid(Ent) then
@@ -126,7 +127,7 @@ SlashCo.CreateGasCan = function(pos, ang)
 end
 
 --Spawn an Item( or any entity, including slasher entities )
-SlashCo.CreateItem = function(class, pos, ang)
+function SlashCo.CreateItem(class, pos, ang)
 	local Ent = ents.Create(class)
 
 	if not IsValid(Ent) then
@@ -144,7 +145,7 @@ SlashCo.CreateItem = function(class, pos, ang)
 end
 
 --Spawn the helicopter
-SlashCo.CreateHelicopter = function(pos, ang)
+function SlashCo.CreateHelicopter(pos, ang)
 	local Ent = ents.Create("sc_helicopter")
 
 	if not IsValid(Ent) then
@@ -162,7 +163,7 @@ SlashCo.CreateHelicopter = function(pos, ang)
 end
 
 --Spawn the item stash 
-SlashCo.CreateItemStash = function(pos, ang)
+function SlashCo.CreateItemStash(pos, ang)
 	local Ent = ents.Create("sc_itemstash")
 
 	if not IsValid(Ent) then
@@ -181,7 +182,7 @@ SlashCo.CreateItemStash = function(pos, ang)
 end
 
 --Spawn the offering table
-SlashCo.CreateOfferTable = function(pos, ang)
+function SlashCo.CreateOfferTable(pos, ang)
 	local Ent = ents.Create("sc_offertable")
 
 	if not IsValid(Ent) then
@@ -200,7 +201,7 @@ SlashCo.CreateOfferTable = function(pos, ang)
 end
 
 --Spawn the radio
-SlashCo.CreateRadio = function(pos, ang)
+function SlashCo.CreateRadio(pos, ang)
 	local Ent = ents.Create("radio")
 
 	if not IsValid(Ent) then
@@ -218,7 +219,7 @@ SlashCo.CreateRadio = function(pos, ang)
 	return id
 end
 
-SlashCo.RemoveAllCurRoundEnts = function()
+function SlashCo.RemoveAllCurRoundEnts()
 	local gens = ents.FindByClass("sc_generator")
 	for _, v in ipairs(gens) do
 		local can = v.FuelingCan --make sure any attached cans and bats go too
@@ -252,15 +253,15 @@ SlashCo.RemoveAllCurRoundEnts = function()
 	end
 end
 
-SlashCo.ChangeMap = function(mapname)
+function SlashCo.ChangeMap(mapname)
 	RunConsoleCommand("changelevel", mapname)
 end
 
-SlashCo.GoToLobby = function()
+function SlashCo.GoToLobby()
 	SlashCo.ChangeMap(GameData.Lobby)
 end
 
-SlashCo.SummonEscapeHelicopter = function(distress)
+function SlashCo.SummonEscapeHelicopter(distress)
 	if SlashCo.CurRound.EscapeHelicopterSummoned then
 		return true
 	end
@@ -306,7 +307,7 @@ SlashCo.SummonEscapeHelicopter = function(distress)
 	end)
 end
 
-SlashCo.HelicopterGoAboveLand = function(ent)
+function SlashCo.HelicopterGoAboveLand(ent)
 	local target = SlashCo.SelectSpawnsNoForce(ents.FindByClass("info_sc_helicopter"))
 	if not IsValid(target) then
 		SlashCo.Abort("Missing helicopter landing entities")
@@ -322,7 +323,7 @@ SlashCo.HelicopterGoAboveLand = function(ent)
 	end)
 end
 
-SlashCo.HelicopterLand = function(pos)
+function SlashCo.HelicopterLand(pos)
 	SlashCo.CurRound.HelicopterTargetPosition = pos
 
 	timer.Simple(math.random(4, 6), function()
@@ -351,7 +352,7 @@ SlashCo.HelicopterLand = function(pos)
 	end)
 end
 
-SlashCo.HelicopterTakeOff = function()
+function SlashCo.HelicopterTakeOff()
 	SlashCo.CurRound.HelicopterTargetPosition = Vector(SlashCo.CurRound.HelicopterTargetPosition[1],
 			SlashCo.CurRound.HelicopterTargetPosition[2], SlashCo.CurRound.HelicopterTargetPosition[3] + 1000)
 
@@ -360,7 +361,7 @@ SlashCo.HelicopterTakeOff = function()
 	end)
 end
 
-SlashCo.HelicopterTakeOffIntro = function()
+function SlashCo.HelicopterTakeOffIntro()
 	SlashCo.CurRound.HelicopterTargetPosition = Vector(SlashCo.CurRound.HelicopterTargetPosition[1],
 			SlashCo.CurRound.HelicopterTargetPosition[2], SlashCo.CurRound.HelicopterTargetPosition[3] + 1000)
 
@@ -369,12 +370,12 @@ SlashCo.HelicopterTakeOffIntro = function()
 	end)
 end
 
-SlashCo.HelicopterFinalLeave = function()
+function SlashCo.HelicopterFinalLeave()
 	SlashCo.CurRound.HelicopterTargetPosition = Vector(SlashCo.CurRound.HelicopterSpawnPosition[1],
 			SlashCo.CurRound.HelicopterSpawnPosition[2], SlashCo.CurRound.HelicopterSpawnPosition[3])
 end
 
-SlashCo.HelicopterLeaveForIntro = function()
+function SlashCo.HelicopterLeaveForIntro()
 	SlashCo.CurRound.HelicopterTargetPosition = Vector(SlashCo.CurRound.HelicopterSpawnPosition[1],
 			SlashCo.CurRound.HelicopterSpawnPosition[2], SlashCo.CurRound.HelicopterSpawnPosition[3])
 
@@ -400,6 +401,7 @@ SlashCo.HelicopterLeaveForIntro = function()
 				heli:StopSound("slashco/helicopter_engine_close.wav")
 				heli:StopSound("slashco/helicopter_rotors_close.wav")
 			end
+
 			SlashCo.RemoveHelicopter()
 
 			net.Start("mantislashco_MapAmbientPlay")
@@ -408,18 +410,18 @@ SlashCo.HelicopterLeaveForIntro = function()
 	end)
 end
 
-SlashCo.UpdateHelicopterSeek = function(pos)
+function SlashCo.UpdateHelicopterSeek(pos)
 	SlashCo.CurRound.HelicopterTargetPosition = pos
 end
 
-SlashCo.RemoveHelicopter = function()
+function SlashCo.RemoveHelicopter()
 	local ent = ents.GetByIndex(SlashCo.CurRound.Helicopter)
 	if IsValid(ent) then
 		ent:Remove()
 	end
 end
 
-SlashCo.RadialTester = function(ent, dist, secondary)
+function SlashCo.RadialTester(ent, dist, secondary)
 	local last_best_angle = 0
 	local last_greatest_distance = 0
 
@@ -446,7 +448,7 @@ SlashCo.RadialTester = function(ent, dist, secondary)
 	return last_best_angle
 end
 
-SlashCo.ClearDatabase = function()
+function SlashCo.ClearDatabase()
 	if SERVER then
 		print("[SlashCo] Clearing Database. . .")
 
