@@ -26,7 +26,7 @@ SLASHER.SpeedRating = "★★★★★"
 SLASHER.EyeRating = "★★★☆☆"
 SLASHER.DiffRating = "★★★★★"
 
-SLASHER.OnSpawn = function(slasher)
+function SLASHER.OnSpawn(slasher)
 	slasher:PlayGlobalSound("slashco/slasher/speedrunner_1.wav", 100, nil, true)
 	slasher:SetNWBool("CanKill", true)
 	slasher.SlasherValue1 = 100
@@ -34,7 +34,7 @@ SLASHER.OnSpawn = function(slasher)
 	slasher.SlasherValue3 = 285
 end
 
-SLASHER.OnTickBehaviour = function(slasher)
+function SLASHER.OnTickBehaviour(slasher)
 	local SO = SlashCo.CurRound.OfferingData.SO
 
 	local v1 = slasher.SlasherValue1 --Speed
@@ -44,12 +44,12 @@ SLASHER.OnTickBehaviour = function(slasher)
 	if v1 < v3 then
 		local gasMod = SlashCo.IsPositionLegalForSlashers(slasher:GetPos(), true) and 1 or 0.5
 		local mapSizeMod = (0.5 / SlashCo.MapSize) + 0.5
-		slasher.SlasherValue1 = v1 + FrameTime() * mapSizeMod * v2 * (1 + SO) * 0.66 * gasMod
+		slasher.SlasherValue1 = v1 + engine.TickInterval() * mapSizeMod * v2 * (1 + SO) * 0.66 * gasMod
 	end
 
-	slasher:SetRunSpeed(slasher.SlasherValue1)
-	slasher:SetWalkSpeed(slasher.SlasherValue1)
-	slasher:SetSlowWalkSpeed(slasher.SlasherValue1)
+	slasher:SetRunSpeed(math.floor(slasher.SlasherValue1))
+	slasher:SetWalkSpeed(math.floor(slasher.SlasherValue1))
+	slasher:SetSlowWalkSpeed(math.floor(slasher.SlasherValue1))
 
 	if slasher:GetNWInt("SpeedrunnerSpeed") ~= math.floor(v1) then
 		slasher:SetNWInt("SpeedrunnerSpeed", math.floor(v1))
@@ -59,14 +59,14 @@ SLASHER.OnTickBehaviour = function(slasher)
 	slasher:SetNWInt("Slasher_Perception", SLASHER.Perception)
 end
 
-SLASHER.OnPrimaryFire = function(slasher, target)
+function SLASHER.OnPrimaryFire(slasher, target)
 	if SlashCo.Jumpscare(slasher, target) then
 		slasher.SlasherValue1 = math.min(slasher.SlasherValue1 + 30, slasher.SlasherValue3)
 	end
 end
 
 -- the great ability
-SLASHER.RandomTPCans = function()
+function SLASHER.RandomTPCans()
 	for _, ent in ipairs(ents.FindByClass("sc_gascan")) do
 		ent:RandomTeleport(Vector(0, 0, 50))
 		ent:GetPhysicsObject():ApplyForceCenter(Vector((math.random() - 0.5) * 100,
@@ -74,7 +74,7 @@ SLASHER.RandomTPCans = function()
 	end
 end
 
-SLASHER.OnMainAbilityFire = function(slasher)
+function SLASHER.OnMainAbilityFire(slasher)
 	if slasher.SlasherValue1 < slasher.SlasherValue3 or slasher:GetNWBool("SpeedrunnerSacrificeTwo") then
 		return
 	end
@@ -135,7 +135,7 @@ SLASHER.OnMainAbilityFire = function(slasher)
 	end)
 end
 
-SLASHER.Animator = function(ply, veloc)
+function SLASHER.Animator(ply, veloc)
 	local move_vel = ply:WorldToLocal(veloc + ply:GetPos())
 	local anim_vel = veloc:Length()
 
@@ -165,11 +165,11 @@ SLASHER.Animator = function(ply, veloc)
 	return ply.CalcIdeal, ply.CalcSeqOverride
 end
 
-SLASHER.Footstep = function(ply)
+function SLASHER.Footstep(ply)
 	return ply:GetNWBool("SpeedrunnerSacrificeTwo")
 end
 
-SLASHER.InitHud = function(_, hud)
+function SLASHER.InitHud(_, hud)
 	hud:SetAvatar(Material("slashco/ui/icons/slasher/s_15"))
 	hud:SetTitle("Speedrunner")
 
