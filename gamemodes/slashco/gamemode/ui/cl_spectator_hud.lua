@@ -291,6 +291,21 @@ hook.Add("CalcView", "LobbySpecCam", function(pl, pos, ang, fov)
 		return
 	end
 
+	if GetGlobal2Bool("IsLobbyStarting") then
+		local helicopter = GetGlobal2Entity("LobbyHelicopter")
+		if not helicopter:IsValid() then return end
+
+		local helicopterPos = helicopter:GetPos()
+		local helicopterAng = helicopter:GetAngles()
+
+		local posOffset = Vector(-150, -80, 100)
+		local rotatedOffset = helicopterAng:Forward() * posOffset.x + helicopterAng:Right() * posOffset.y + helicopterAng:Up() * posOffset.z
+
+		cur_pos = helicopterPos + rotatedOffset
+		cur_ang = helicopterAng + Angle(20, -10, 0)
+		return GAMEMODE:CalcView(pl, cur_pos, cur_ang, fov)
+	end
+
 	if not cur_scene then
 		cur_scene = math.random(1, #cutscene_views)
 		cur_pos = cutscene_views[cur_scene].Start[1]

@@ -683,6 +683,8 @@ function lobbyFinish()
     end
 
     SlashCo.LobbyData.LOBBYSTATE = 4
+    SetGlobal2Bool("IsLobbyStarting", true)
+    SetGlobal2Entity("LobbyHelicopter", ents.FindByClass("sc_helicopter")[1])
 
     SlashCo.CurRound.HelicopterTargetPosition = Vector(SlashCo.CurRound.HelicopterTargetPosition[1], SlashCo.CurRound.HelicopterTargetPosition[2], SlashCo.CurRound.HelicopterTargetPosition[3] + 500)
 
