@@ -271,7 +271,7 @@ SlashCo.LobbyBanter = function()
 end
 
 net.Receive("mantislashco_SurvivorVoicePrompt", function(_, ply)
-	if game.GetMap() == "sc_lobby" and SlashCo.LobbyData.LOBBYSTATE == 2 then
+	if GameData.IsLobby and SlashCo.LobbyData.LOBBYSTATE == 2 then
 		return
 	end
 

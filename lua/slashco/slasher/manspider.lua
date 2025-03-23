@@ -349,7 +349,7 @@ SLASHER.InitHud = function(_, hud)
 	hud.prevLeave = -1
 	hud.prevHide = -1
 	function hud.AlsoThink()
-		local target = LocalPlayer():GetNWString("ManspiderTarget")
+		local target = GameData.LocalPlayer:GetNWString("ManspiderTarget")
 		if target ~= hud.prevTarget then
 			if target == "" then
 				hook.Remove("HUDPaint", "SlashCoPreyReal")
@@ -363,13 +363,13 @@ SLASHER.InitHud = function(_, hud)
 				end
 
 				hook.Add("HUDPaint", "SlashCoPreyReal", function()
-					if LocalPlayer():Team() ~= TEAM_SLASHER or not IsValid(targetEnt) then
+					if GameData.LocalPlayer:Team() ~= TEAM_SLASHER or not IsValid(targetEnt) then
 						hook.Remove("HUDPaint", "SlashCoPreyReal")
 					end
 
 					targetPaint(targetEnt)
 
-					local distColor = math.Clamp(LocalPlayer():GetPos():Distance(targetEnt:GetPos()), 0, 2048) / 16
+					local distColor = math.Clamp(GameData.LocalPlayer:GetPos():Distance(targetEnt:GetPos()), 0, 2048) / 16
 					draw.SimpleText("Your prey: " .. targetEnt:Name(), "ItemFontTip",
 							ScrW() / 2, ScrH() / 2, Color(255 - distColor, 0, 0, 255),
 							TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
@@ -378,7 +378,7 @@ SLASHER.InitHud = function(_, hud)
 			hud.prevTarget = target
 		end
 
-		local nested = LocalPlayer():GetNWBool("ManspiderNested")
+		local nested = GameData.LocalPlayer:GetNWBool("ManspiderNested")
 		if nested ~= hud.prevNested then
 			hud:ShakeControl("R")
 			if nested then
@@ -391,7 +391,7 @@ SLASHER.InitHud = function(_, hud)
 			hud.prevNested = nested
 		end
 
-		local hide = SlashCo.IsPositionLegalForSlashers(LocalPlayer():GetPos())
+		local hide = SlashCo.IsPositionLegalForSlashers(GameData.LocalPlayer:GetPos())
 		if hud.prevHide ~= hide then
 			if not nested then
 				hud:SetControlEnabled("R", hide)
@@ -400,7 +400,7 @@ SLASHER.InitHud = function(_, hud)
 			hud.prevHide = hide
 		end
 
-		local canLeave = LocalPlayer():GetNWBool("ManspiderCanLeaveNest")
+		local canLeave = GameData.LocalPlayer:GetNWBool("ManspiderCanLeaveNest")
 		if canLeave ~= hud.prevLeave then
 			if nested and canLeave then
 				hud:SetControlText("R", "abandon nest")
@@ -415,23 +415,23 @@ end
 
 if CLIENT then
 	hook.Add("HUDPaint", SLASHER.Name .. "_Jumpscare", function()
-		if LocalPlayer():GetNWBool("SurvivorJumpscare_Manspider") == true then
-			if LocalPlayer().mans_f == nil then
-				LocalPlayer().mans_f = 0
+		if GameData.LocalPlayer:GetNWBool("SurvivorJumpscare_Manspider") == true then
+			if GameData.LocalPlayer.mans_f == nil then
+				GameData.LocalPlayer.mans_f = 0
 			end
-			LocalPlayer().mans_f = LocalPlayer().mans_f + (FrameTime() * 20)
-			if LocalPlayer().mans_f > 59 then
-				LocalPlayer().mans_f = 58
+			GameData.LocalPlayer.mans_f = GameData.LocalPlayer.mans_f + (FrameTime() * 20)
+			if GameData.LocalPlayer.mans_f > 59 then
+				GameData.LocalPlayer.mans_f = 58
 			end
 
 			local Overlay = Material("slashco/ui/overlays/jumpscare_9")
-			Overlay:SetInt("$frame", math.floor(LocalPlayer().mans_f))
+			Overlay:SetInt("$frame", math.floor(GameData.LocalPlayer.mans_f))
 
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.SetMaterial(Overlay)
 			surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
 		else
-			LocalPlayer().mans_f = nil
+			GameData.LocalPlayer.mans_f = nil
 		end
 	end)
 end

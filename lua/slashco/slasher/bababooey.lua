@@ -219,24 +219,24 @@ SLASHER.Footstep = function(ply)
 end
 
 hook.Add("HUDPaint", SLASHER.Name .. "_Jumpscare", function()
-	if LocalPlayer():GetNWBool("SurvivorJumpscare_Bababooey") == true then
-		if LocalPlayer().baba_f == nil then
-			LocalPlayer().baba_f = 0
+	if GameData.LocalPlayer:GetNWBool("SurvivorJumpscare_Bababooey") == true then
+		if GameData.LocalPlayer.baba_f == nil then
+			GameData.LocalPlayer.baba_f = 0
 		end
-		LocalPlayer().baba_f = LocalPlayer().baba_f + (FrameTime() * 20)
-		if LocalPlayer().baba_f > 45 then
+		GameData.LocalPlayer.baba_f = GameData.LocalPlayer.baba_f + (FrameTime() * 20)
+		if GameData.LocalPlayer.baba_f > 45 then
 			return
 		end
 
 		local Overlay = Material("slashco/ui/overlays/jumpscare_1")
-		Overlay:SetInt("$frame", math.floor(LocalPlayer().baba_f))
+		Overlay:SetInt("$frame", math.floor(GameData.LocalPlayer.baba_f))
 
 		surface.SetDrawColor(255, 255, 255, 255)
 		surface.SetMaterial(Overlay)
 		surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
 
 	else
-		LocalPlayer().baba_f = nil
+		GameData.LocalPlayer.baba_f = nil
 	end
 end)
 

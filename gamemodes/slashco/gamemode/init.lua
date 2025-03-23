@@ -90,7 +90,7 @@ function GM:Initialize()
 		file.CreateDir("slashco/playerdata")
 
 		--Return to the lobby if no game is in progress and we just loaded in.
-		if GAMEMODE.State ~= GAMEMODE.States.IN_GAME and game.GetMap() ~= "sc_lobby" then
+		if GAMEMODE.State ~= GAMEMODE.States.IN_GAME and not GameData.IsLobby then
 			SlashCo.GoToLobby()
 			GAMEMODE.State = GAMEMODE.States.LOBBY
 		else
@@ -98,7 +98,7 @@ function GM:Initialize()
 		end
 	end
 
-	if game.GetMap() == "sc_lobby" then
+	if GameData.IsLobby then
 		SlashCo.CreateHelicopter(Vector(644.594, -423.175, 40.004), Angle(0, 45, 0))
 		SlashCo.CreateItemStash(Vector(-483.500, -260.000, 88.000), Angle(90, 180, 180))
 		SlashCo.CreateOfferTable(Vector(940.838, 890.909, -191.853), Angle(0, -90, 0))
@@ -326,7 +326,7 @@ function SlashCo.GetSpectatableSet()
 end
 
 function GM:PlayerButtonDown(ply, button)
-	if game.GetMap() == "sc_lobby" then
+	if GameData.IsLobby then
 		lobbyButtons(ply, button)
 	end
 
@@ -379,7 +379,7 @@ hook.Add("InitPostEntity", "octoSlashCoInitPostEntity", function()
 	print("[SlashCo] InitPostEntity Started.")
 	RunConsoleCommand("sv_alltalk", "2")
 
-	if game.GetMap() ~= "sc_lobby" then
+	if not GameData.IsLobby then
 		GAMEMODE.State = GAMEMODE.States.IN_GAME
 
 		SlashCo.LoadCurRoundData()
@@ -584,7 +584,7 @@ hook.Add("PlayerChangedTeam", "octoSlashCoPlayerChangedTeam", function(ply, old,
 		ply:SetNWBool("DynamicFlashlight", false)
 	end
 
-	if game.GetMap() == "sc_lobby" then
+	if GameData.IsLobby then
 		net.Start("mantislashco_GiveLobbyStatus")
 		net.WriteUInt(SlashCo.LobbyData.LOBBYSTATE, 3)
 		net.Broadcast()

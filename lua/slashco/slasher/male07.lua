@@ -348,13 +348,13 @@ SLASHER.InitHud = function(_, hud)
 	hud:AddControl("R", "possess vessel", possessTable)
 	hud:ChaseAndKill()
 
-	hud.prevState = not LocalPlayer():GetNWInt("Male07State")
+	hud.prevState = not GameData.LocalPlayer:GetNWInt("Male07State")
 	hud.prevPossess = true
 	function hud.AlsoThink()
-		local target = LocalPlayer():GetEyeTrace().Entity
-		local curState = LocalPlayer():GetNWInt("Male07State")
+		local target = GameData.LocalPlayer:GetEyeTrace().Entity
+		local curState = GameData.LocalPlayer:GetNWInt("Male07State")
 
-		if target:GetClass() == "sc_maleclone" and LocalPlayer():GetPos():Distance(target:GetPos()) < 150
+		if target:GetClass() == "sc_maleclone" and GameData.LocalPlayer:GetPos():Distance(target:GetPos()) < 150
 				or curState ~= 0 then
 			if not hud.prevPossess then
 				hud:SetControlEnabled("R", true)
@@ -408,23 +408,23 @@ end
 
 if CLIENT then
 	hook.Add("HUDPaint", SLASHER.Name .. "_Jumpscare", function()
-		if LocalPlayer():GetNWBool("SurvivorJumpscare_Male07") == true then
-			if LocalPlayer().male_f == nil then
-				LocalPlayer().male_f = 0
+		if GameData.LocalPlayer:GetNWBool("SurvivorJumpscare_Male07") == true then
+			if GameData.LocalPlayer.male_f == nil then
+				GameData.LocalPlayer.male_f = 0
 			end
-			LocalPlayer().male_f = LocalPlayer().male_f + (FrameTime() * 20)
-			if LocalPlayer().male_f > 49 then
+			GameData.LocalPlayer.male_f = GameData.LocalPlayer.male_f + (FrameTime() * 20)
+			if GameData.LocalPlayer.male_f > 49 then
 				return
 			end
 
 			local Overlay = Material("slashco/ui/overlays/jumpscare_6")
-			Overlay:SetInt("$frame", math.floor(LocalPlayer().male_f))
+			Overlay:SetInt("$frame", math.floor(GameData.LocalPlayer.male_f))
 
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.SetMaterial(Overlay)
 			surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
 		else
-			LocalPlayer().male_f = nil
+			GameData.LocalPlayer.male_f = nil
 		end
 	end)
 end

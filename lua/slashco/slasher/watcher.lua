@@ -267,8 +267,8 @@ local surveyTable = {
 }
 
 local function canSurveil()
-	return LocalPlayer():GetNWInt("GameProgressDisplay") > (10 - (LocalPlayer():GetNWInt("WatcherStalkTime") / 25))
-			and not LocalPlayer():GetNWBool("WatcherRage") and team.NumPlayers(TEAM_SURVIVOR) > 1
+	return GameData.LocalPlayer:GetNWInt("GameProgressDisplay") > (10 - (GameData.LocalPlayer:GetNWInt("WatcherStalkTime") / 25))
+			and not GameData.LocalPlayer:GetNWBool("WatcherRage") and team.NumPlayers(TEAM_SURVIVOR) > 1
 end
 
 local surveyNoticeIcon = Material("slashco/ui/particle/icon_survey")
@@ -293,22 +293,22 @@ SLASHER.InitHud = function(_, hud)
 	end
 
 	function hud.TitleCard.Label:PaintOver()
-		draw.SimpleText("STALK TIME: " .. math.Round(LocalPlayer():GetNWInt("WatcherStalkTime"), 1), "TVCD", 4, 18, red)
+		draw.SimpleText("STALK TIME: " .. math.Round(GameData.LocalPlayer:GetNWInt("WatcherStalkTime"), 1), "TVCD", 4, 18, red)
 	end
 
 	hook.Add("HUDPaint", "SlashCoWatcher", function()
-		if LocalPlayer():Team() ~= TEAM_SLASHER then
+		if GameData.LocalPlayer:Team() ~= TEAM_SLASHER then
 			hook.Remove("HUDPaint", "SlashCoWatcher")
 			return
 		end
 
-		if LocalPlayer():GetNWBool("WatcherWatched") then
+		if GameData.LocalPlayer:GetNWBool("WatcherWatched") then
 			draw.SimpleText("YOU ARE BEING WATCHED. . .", "ItemFontTip", ScrW() / 2, ScrH() / 4,
 					Color(255, 0, 0, 255),
 					TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 		end
 
-		if LocalPlayer():GetNWBool("WatcherStalking") then
+		if GameData.LocalPlayer:GetNWBool("WatcherStalking") then
 			draw.SimpleText("OBSERVING A SURVIVOR. . .", "ItemFontTip", ScrW() / 2, ScrH() / 4,
 					Color(255, 0, 0, 255),
 					TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
@@ -334,7 +334,7 @@ end
 
 if CLIENT then
 	hook.Add("HUDPaint", SLASHER.Name .. "_Jumpscare", function()
-		if LocalPlayer():GetNWBool("SurvivorJumpscare_Watcher") == true then
+		if GameData.LocalPlayer:GetNWBool("SurvivorJumpscare_Watcher") == true then
 			local Overlay = Material("slashco/ui/overlays/watcher_see")
 
 			Overlay:SetFloat("$alpha", 1)
@@ -344,23 +344,23 @@ if CLIENT then
 			surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
 		end
 
-		if LocalPlayer():GetNWBool("WatcherSurveyed") == true then
-			if LocalPlayer().al_watch == nil then
-				LocalPlayer().al_watch = 0
+		if GameData.LocalPlayer:GetNWBool("WatcherSurveyed") == true then
+			if GameData.LocalPlayer.al_watch == nil then
+				GameData.LocalPlayer.al_watch = 0
 			end
-			if LocalPlayer().al_watch < 100 then
-				LocalPlayer().al_watch = LocalPlayer().al_watch + (FrameTime() * 100)
+			if GameData.LocalPlayer.al_watch < 100 then
+				GameData.LocalPlayer.al_watch = GameData.LocalPlayer.al_watch + (FrameTime() * 100)
 			end
 
 			local Overlay = Material("slashco/ui/overlays/watcher_see")
 
-			Overlay:SetFloat("$alpha", 1 - (LocalPlayer().al_watch / 100))
+			Overlay:SetFloat("$alpha", 1 - (GameData.LocalPlayer.al_watch / 100))
 
 			surface.SetDrawColor(255, 255, 255, 60)
 			surface.SetMaterial(Overlay)
 			surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
 		else
-			LocalPlayer().al_watch = nil
+			GameData.LocalPlayer.al_watch = nil
 		end
 	end)
 end

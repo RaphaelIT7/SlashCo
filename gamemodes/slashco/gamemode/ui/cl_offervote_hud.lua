@@ -10,7 +10,7 @@ net.Receive("mantislashco_OfferingVoteOut", function()
 		return
 	end
 
-	if t.ply == LocalPlayer():SteamID64() then
+	if t.ply == GameData.LocalSteamID64 then
 		show_vote_screen = false
 		return
 	end
@@ -21,7 +21,7 @@ end)
 net.Receive("mantislashco_OfferingEndVote", function()
 	local t = net.ReadTable()
 
-	if t.ply ~= LocalPlayer():SteamID64() then
+	if t.ply ~= GameData.LocalSteamID64 then
 		return
 	end
 
@@ -37,7 +37,7 @@ net.Receive("mantislashco_OfferingVoteFinished", function()
 end)
 
 hook.Add("HUDPaint", "OfferingVoteHUD", function()
-	local ply = LocalPlayer()
+	local ply = GameData.LocalPlayer
 
 	if show_offering_result_screen == true then
 		if offerjingle_antispam == nil then

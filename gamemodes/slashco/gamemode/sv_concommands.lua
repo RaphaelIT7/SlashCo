@@ -19,7 +19,7 @@ concommand.Add("slashco_become_survivor", function(ply, _, args)
 		return
 	end
 
-	if game.GetMap() == "sc_lobby" then
+	if GameData.IsLobby then
 		doPrint(ply, "Cannot assign a player as a survivor while in the lobby.")
 		return
 	end
@@ -108,7 +108,7 @@ concommand.Add("slashco_become_slasher", function(ply, _, args)
 		return
 	end
 
-	if game.GetMap() == "sc_lobby" then
+	if GameData.IsLobby then
 		doPrint(ply, "Cannot assign a player as a slasher while in the lobby.")
 		return
 	end

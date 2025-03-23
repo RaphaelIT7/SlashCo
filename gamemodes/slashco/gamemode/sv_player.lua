@@ -5,7 +5,7 @@ function GM:PlayerSwitchWeapon()
 end
 
 function GM:PlayerInitialSpawn(ply)
-	if game.GetMap() == "sc_lobby" then
+	if GameData.IsLobby then
 		ply:SetTeam(TEAM_SPECTATOR)
 		ply:Spawn()
 	end

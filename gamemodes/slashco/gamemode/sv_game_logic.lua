@@ -133,7 +133,7 @@ function SlashCo.LoadCurRoundData()
 end
 
 function SlashCo.AwaitExpectedPlayers()
-	if game.GetMap() ~= "sc_lobby" then
+	if not GameData.IsLobby then
 		if not game.SinglePlayer() and #SlashCo.CurRound.ExpectedPlayers < 2 then
 			return
 		end --don't start with no data

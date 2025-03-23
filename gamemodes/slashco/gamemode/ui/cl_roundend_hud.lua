@@ -1,7 +1,7 @@
 local function showPointSummary(cur)
 	local stuff = {}
 
-	local pKeys = LocalPlayer():GetPointsKeys()
+	local pKeys = GameData.LocalPlayer:GetPointsKeys()
 	if table.IsEmpty(pKeys) then
 		table.insert(stuff, "point_nil")
 	else
@@ -23,9 +23,9 @@ local function showPointSummary(cur)
 		if v == "point_summary" or v == "point_nil" then
 			langText = SlashCo.Language(v)
 		elseif v == "point_total" then
-			langText = SlashCo.Language(v, LocalPlayer():GetTotalPoints())
+			langText = SlashCo.Language(v, GameData.LocalPlayer:GetTotalPoints())
 		else
-			local amount, num = LocalPlayer():GetPoints(v)
+			local amount, num = GameData.LocalPlayer:GetPoints(v)
 			if amount > 0 then
 				amount = "+" .. amount
 			end
@@ -344,7 +344,7 @@ local helimusic_antispam
 local heli_music
 net.Receive("mantislashco_HelicopterMusic", function()
 	if not helimusic_antispam then
-		heli_music = CreateSound(LocalPlayer(), "slashco/music/slashco_helicopter.wav")
+		heli_music = CreateSound(GameData.LocalPlayer, "slashco/music/slashco_helicopter.wav")
 		heli_music:Play()
 		helimusic_antispam = true
 		g_AmbientStop = true

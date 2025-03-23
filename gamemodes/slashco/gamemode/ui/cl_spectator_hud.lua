@@ -41,15 +41,12 @@ local spin = 0
 local flash = 0
 
 hook.Add("HUDPaint", "Spectator_Vision", function()
-	local ply = LocalPlayer()
-
-	if ply:Team() ~= TEAM_SPECTATOR then
+	if GameData.LocalPlayer:Team() ~= TEAM_SPECTATOR then
 		return
 	end
 
 	--Cool Spectator Lobby Menu
-
-	if #team.GetPlayers(TEAM_SURVIVOR) < 1 and game.GetMap() == "sc_lobby" then
+	if #team.GetPlayers(TEAM_SURVIVOR) < 1 and GameData.IsLobby then
 		local srvwin_count = CL_srvwin_count or 0
 		local slswin_count = CL_slswin_count or 0
 
@@ -61,8 +58,9 @@ hook.Add("HUDPaint", "Spectator_Vision", function()
 			spin = 1
 		end
 
+		local slots = game.MaxPlayers()
 		local blip = "☞ [,] ☜"
-		if #team.GetPlayers(TEAM_LOBBY) > 6 then
+		if #team.GetPlayers(TEAM_LOBBY) > (slots - 1) then
 			blip = "☓ [,] ☓"
 		else
 			flash = flash + RealFrameTime()
@@ -75,7 +73,7 @@ hook.Add("HUDPaint", "Spectator_Vision", function()
 
 		spinSkull(spin)
 
-		draw.SimpleText(SlashCo.Language("Welcome", string.upper(LocalPlayer():Nick())), "TVCD", ScrW() / 2, ScrH() / 3.5,
+		draw.SimpleText(SlashCo.Language("Welcome", string.upper(GameData.LocalPlayer:Nick())), "TVCD", ScrW() / 2, ScrH() / 3.5,
 				Color(255, 255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 
 		draw.SimpleText("SLASHCO", "LobbyFont2", ScrW() / 2, ScrH() / 4,
@@ -86,7 +84,7 @@ hook.Add("HUDPaint", "Spectator_Vision", function()
 
 		local players = CL_LobbyPlayers or #team.GetPlayers(TEAM_LOBBY)
 
-		draw.SimpleText("[" .. players .. " / 7]", "TVCD", ScrW() / 2, ScrH() / 2.5,
+		draw.SimpleText("[" .. players .. " / " .. slots .. "]", "TVCD", ScrW() / 2, ScrH() / 2.5,
 				Color(255, 255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 
 		draw.SimpleText("[" .. srvwin_count .. " " .. SlashCo.Language("SurvivorWins") .. "]  [" .. slswin_count .. " " .. SlashCo.Language("SlasherWins") .. "]",
@@ -94,32 +92,35 @@ hook.Add("HUDPaint", "Spectator_Vision", function()
 	end
 
 	if LobbySlasherInfo ~= nil then
-		if LobbySlasherInfo.player ~= LocalPlayer():SteamID64() then
+		if LobbySlasherInfo.player ~= GameData.LocalSteamID64 then
 			return
 		end
 
 		if slashershow_tick == nil then
 			slashershow_tick = 0
 		end
+
 		slashershow_tick = slashershow_tick + 0.25
 
 		draw.SimpleText("You will play as: " .. LobbySlasherInfo.slasher, "LobbyFont2", ScrW() * 0.5, ScrH() * 0.6, Color(255, 0, 0, slashershow_tick), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 	end
 
-	if game.GetMap() == "sc_lobby" then
+	if GameData.IsLobby then
 		return
 	end
 
 	local show_slasher_anticipation = false
 
 	if SlasherTeam then
+		local localSlasher = GameData.LocalPlayer:GetNWString("Slasher")
 		for i = 1, #SlasherTeam do
-			if SlasherTeam[i] and SlasherTeam[i].s_id == LocalPlayer():SteamID64() then
-				if LocalPlayer():GetNWString("Slasher") and LocalPlayer():GetNWString("Slasher") ~= show_slasher_anticipation then
+			if SlasherTeam[i] and SlasherTeam[i].s_id == GameData.LocalSteamID64 then
+				if localSlasher and localSlasher ~= show_slasher_anticipation then
 					local shower = "UNASSIGNED!"
-					if SlashCoSlashers[LocalPlayer():GetNWString("Slasher")] then
-						shower = SlashCo.Language(LocalPlayer():GetNWString("Slasher"))
+					if SlashCoSlashers[localSlasher] then
+						shower = SlashCo.Language(localSlasher)
 					end
+
 					show_slasher_anticipation = shower
 				end
 			end
@@ -152,7 +153,7 @@ end)
 
 if CLIENT then
 	hook.Add("PlayerButtonDown", "TestConfig_ID", function(ply, button)
-		if ply ~= LocalPlayer() then
+		if ply ~= GameData.LocalPlayer then
 			return
 		end
 		if not IsFirstTimePredicted() then
@@ -173,10 +174,10 @@ hook.Add("KeyPress", "ToggleLight", function(ply, key)
 	if not IsFirstTimePredicted() then
 		return
 	end
-	if ply ~= LocalPlayer() or LocalPlayer():Team() ~= TEAM_SPECTATOR or SERVER then
+	if ply ~= GameData.LocalPlayer or GameData.LocalPlayer:Team() ~= TEAM_SPECTATOR or SERVER then
 		return
 	end
-	if SlasherSteamID ~= nil and SlasherSteamID == LocalPlayer():SteamID64() then
+	if SlasherSteamID ~= nil and SlasherSteamID == GameData.LocalSteamID64 then
 		return
 	end
 
@@ -210,22 +211,22 @@ hook.Add("Think", "Spectator_Vision_Light", function()
 		vision = false
 	end
 
-	if LocalPlayer():Team() ~= TEAM_SPECTATOR then
+	if GameData.LocalPlayer:Team() ~= TEAM_SPECTATOR then
 		return
 	end
 	if not vision then
 		return
 	end
 
-	if SlasherSteamID ~= nil and SlasherSteamID == LocalPlayer():SteamID64() then
+	if SlasherSteamID ~= nil and SlasherSteamID == GameData.LocalSteamID64 then
 		return
 	end
 
 	--Eyesight - an arbitrary range from 1 - 10 which decides how illuminated the Slasher 'vision is client-side. (1 - barely any illumination, 10 - basically fullbright )
 
-	local dlight = DynamicLight(LocalPlayer():EntIndex() + 984)
+	local dlight = DynamicLight(GameData.LocalPlayer:EntIndex() + 984)
 	if dlight then
-		dlight.pos = LocalPlayer():GetShootPos()
+		dlight.pos = GameData.LocalPlayer:GetShootPos()
 		dlight.r = 255
 		dlight.g = 255
 		dlight.b = 255
@@ -283,7 +284,7 @@ local cur_pos = Vector(0, 0, 0)
 local cur_ang = Angle(0, 0, 0)
 
 hook.Add("CalcView", "LobbySpecCam", function(pl, pos, ang, fov)
-	if game.GetMap() ~= "sc_lobby" then
+	if not GameData.IsLobby then
 		return
 	end
 
@@ -300,7 +301,7 @@ hook.Add("CalcView", "LobbySpecCam", function(pl, pos, ang, fov)
 	local cur_dist = cur_pos:Distance( cutscene_views[cur_scene].Stop[1] )
 
 	if cur_dist > 1 then
-		local add = (cutscene_views[cur_scene].Stop[1] - cur_pos):GetNormalized()*RealFrameTime() * 30
+		local add = (cutscene_views[cur_scene].Stop[1] - cur_pos):GetNormalized() * RealFrameTime() * 30
 		cur_pos = cur_pos + add * cutscene_views[cur_scene].Speed
 
 		local total_dist = cutscene_views[cur_scene].Start[1]:Distance( cutscene_views[cur_scene].Stop[1] )

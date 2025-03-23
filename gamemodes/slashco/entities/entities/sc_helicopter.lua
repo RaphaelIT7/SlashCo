@@ -67,7 +67,7 @@ if SERVER then
 		local userEnteredAlready
 		local SatPlayers = SlashCo.CurRound.HelicopterRescuedPlayers
 
-		if game.GetMap() ~= "sc_lobby" and not SlashCo.CurRound.EscapeHelicopterSummoned then
+		if not GameData.IsLobby and not SlashCo.CurRound.EscapeHelicopterSummoned then
 			return
 		end
 

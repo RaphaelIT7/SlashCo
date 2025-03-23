@@ -451,7 +451,7 @@ SLASHER.InitHud = function(_, hud)
 
 	hud.prevStage = -1
 	function hud.AlsoThink()
-		local stage = LocalPlayer():GetNWInt("TrollgeStage")
+		local stage = GameData.LocalPlayer:GetNWInt("TrollgeStage")
 		if stage ~= hud.prevStage then
 			if stage == 0 then
 				hud:SetControlVisible("R", true)
@@ -497,7 +497,7 @@ SLASHER.ClientSideEffect = function()
 			ply.MonitorPos = nil
 			continue
 		end
-		if ply:GetPos():Distance(LocalPlayer():GetPos()) >= 1000 then
+		if ply:GetPos():Distance(GameData.LocalPlayer:GetPos()) >= 1000 then
 			ply.MonitorLook = nil
 			ply.MonitorPos = nil
 			ply:SetColor(color_transparent)
@@ -516,7 +516,7 @@ if CLIENT then
 	local drawIcon
 
 	timer.Create("TrollgeDetect", 0.5, 0, function()
-		if not IsValid(LocalPlayer()) or not LocalPlayer().Team or LocalPlayer():Team() ~= TEAM_SURVIVOR then
+		if not IsValid(GameData.LocalPlayer) or not GameData.LocalPlayer.Team or GameData.LocalPlayer:Team() ~= TEAM_SURVIVOR then
 			return
 		end
 
@@ -526,17 +526,17 @@ if CLIENT then
 				continue
 			end
 
-			if s:GetPos():Distance(LocalPlayer():GetPos()) >= 1000 then
+			if s:GetPos():Distance(GameData.LocalPlayer:GetPos()) >= 1000 then
 				continue
 			end
 
 			local tr = util.TraceLine({
 				start = s:EyePos(),
-				endpos = LocalPlayer():WorldSpaceCenter(),
+				endpos = GameData.LocalPlayer:WorldSpaceCenter(),
 				filter = s
 			})
 
-			if tr.Entity ~= LocalPlayer() then
+			if tr.Entity ~= GameData.LocalPlayer then
 				continue
 			end
 
@@ -546,32 +546,32 @@ if CLIENT then
 	end)
 
 	hook.Add("HUDPaint", SLASHER.Name .. "_Jumpscare", function()
-		if drawIcon and LocalPlayer():CanBeSeen() then
+		if drawIcon and GameData.LocalPlayer:CanBeSeen() then
 			surface.SetMaterial(eyeball)
-			surface.SetDrawColor(255, 255, 255, SLASHER.Visibility(LocalPlayer()))
+			surface.SetDrawColor(255, 255, 255, SLASHER.Visibility(GameData.LocalPlayer))
 			surface.DrawTexturedRect(ScrW() / 2 - ScrW() / 32, ScrH() / 2 - ScrW() / 32, ScrW() / 16, ScrW() / 16)
 		end
 
-		if LocalPlayer():GetNWBool("SurvivorJumpscare_Trollge") == true then
-			if LocalPlayer().troll_f == nil then
-				LocalPlayer().troll_f = 0
+		if GameData.LocalPlayer:GetNWBool("SurvivorJumpscare_Trollge") == true then
+			if GameData.LocalPlayer.troll_f == nil then
+				GameData.LocalPlayer.troll_f = 0
 			end
-			LocalPlayer().troll_f = LocalPlayer().troll_f + (FrameTime() * 30)
-			if LocalPlayer().troll_f > 86 then
+			GameData.LocalPlayer.troll_f = GameData.LocalPlayer.troll_f + (FrameTime() * 30)
+			if GameData.LocalPlayer.troll_f > 86 then
 				return
 			end
 
 			local Overlay = Material("slashco/ui/overlays/jumpscare_3")
-			Overlay:SetInt("$frame", math.floor(LocalPlayer().troll_f))
+			Overlay:SetInt("$frame", math.floor(GameData.LocalPlayer.troll_f))
 
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.SetMaterial(Overlay)
 			surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
 		else
-			LocalPlayer().troll_f = nil
+			GameData.LocalPlayer.troll_f = nil
 		end
 
-		if LocalPlayer():GetNWBool("DisplayTrollgeTransition") == true then
+		if GameData.LocalPlayer:GetNWBool("DisplayTrollgeTransition") == true then
 			local Overlay = Material("slashco/ui/overlays/trollge_overlays")
 			Overlay:SetInt("$frame", 0)
 

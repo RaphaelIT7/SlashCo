@@ -179,12 +179,12 @@ SLASHER.InitHud = function(_, hud)
 	hud:AddMeter("speed", 235, "", nil, true)
 	hud:TieMeterInt("speed", "SpeedrunnerSpeed")
 
-	hud.prevSac1 = not LocalPlayer():GetNWBool("SpeedrunnerSacrificeOne")
-	hud.prevSac2 = not LocalPlayer():GetNWBool("SpeedrunnerSacrificeTwo")
+	hud.prevSac1 = not GameData.LocalPlayer:GetNWBool("SpeedrunnerSacrificeOne")
+	hud.prevSac2 = not GameData.LocalPlayer:GetNWBool("SpeedrunnerSacrificeTwo")
 	hud.SpeedGo = true
 	function hud.AlsoThink()
-		local sac1 = LocalPlayer():GetNWBool("SpeedrunnerSacrificeOne")
-		local sac2 = LocalPlayer():GetNWBool("SpeedrunnerSacrificeTwo")
+		local sac1 = GameData.LocalPlayer:GetNWBool("SpeedrunnerSacrificeOne")
+		local sac2 = GameData.LocalPlayer:GetNWBool("SpeedrunnerSacrificeTwo")
 		if sac2 ~= hud.prevSac2 or sac1 ~= hud.prevSac1 then
 			if sac2 then
 				hud:SetMeterMax("speed", 500)
@@ -216,23 +216,23 @@ end
 
 if CLIENT then
 	hook.Add("HUDPaint", SLASHER.Name .. "_Jumpscare", function()
-		if LocalPlayer():GetNWBool("SurvivorJumpscare_Speedrunner") == true then
-			if LocalPlayer().spd_f == nil then
-				LocalPlayer().spd_f = 0
+		if GameData.LocalPlayer:GetNWBool("SurvivorJumpscare_Speedrunner") == true then
+			if GameData.LocalPlayer.spd_f == nil then
+				GameData.LocalPlayer.spd_f = 0
 			end
-			LocalPlayer().spd_f = LocalPlayer().spd_f + (FrameTime() * 20)
-			if LocalPlayer().spd_f > 25 then
-				LocalPlayer().spd_f = 25
+			GameData.LocalPlayer.spd_f = GameData.LocalPlayer.spd_f + (FrameTime() * 20)
+			if GameData.LocalPlayer.spd_f > 25 then
+				GameData.LocalPlayer.spd_f = 25
 			end
 
 			local Overlay = Material("slashco/ui/overlays/jumpscare_15")
-			Overlay:SetInt("$frame", math.floor(LocalPlayer().spd_f))
+			Overlay:SetInt("$frame", math.floor(GameData.LocalPlayer.spd_f))
 
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.SetMaterial(Overlay)
 			surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
 		else
-			LocalPlayer().spd_f = nil
+			GameData.LocalPlayer.spd_f = nil
 		end
 	end)
 

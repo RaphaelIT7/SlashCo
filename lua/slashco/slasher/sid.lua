@@ -576,7 +576,7 @@ SLASHER.InitHud = function(_, hud)
 	hud:TieCrosshairEntity("sc_cookie", 150, "R", { "SidGun", "SidEating", IsOr = true })
 
 	timer.Simple(0, function()
-		if LocalPlayer():GetNWBool("SidCanUseGun") then
+		if GameData.LocalPlayer:GetNWBool("SidCanUseGun") then
 			return
 		end
 		hud:SetControlVisible("F", false)
@@ -585,12 +585,12 @@ SLASHER.InitHud = function(_, hud)
 	hud:AddMeter("satiation", 5, "", nil, true)
 	hud:TieMeterInt("satiation", "SidGunUses", true)
 
-	hud.prevGun = not LocalPlayer():GetNWBool("SidGun")
-	hud.prevGunEquipped = not LocalPlayer():GetNWBool("SidGunEquipped")
+	hud.prevGun = not GameData.LocalPlayer:GetNWBool("SidGun")
+	hud.prevGunEquipped = not GameData.LocalPlayer:GetNWBool("SidGunEquipped")
 	hud.prevGunUses = -1
 	function hud.AlsoThink()
-		local gun = LocalPlayer():GetNWBool("SidGun")
-		local gunUses = LocalPlayer():GetNWInt("SidGunUses")
+		local gun = GameData.LocalPlayer:GetNWBool("SidGun")
+		local gunUses = GameData.LocalPlayer:GetNWInt("SidGunUses")
 		if gun ~= hud.prevGun then
 			if gun then
 				hud:UntieControl("LMB")
@@ -623,7 +623,7 @@ SLASHER.InitHud = function(_, hud)
 			hud.prevGun = gun
 		end
 
-		local gunEquip = LocalPlayer():GetNWBool("SidGunEquipped")
+		local gunEquip = GameData.LocalPlayer:GetNWBool("SidGunEquipped")
 		if gunEquip ~= hud.prevGunEquipped then
 			if gunEquip then
 				timer.Simple(0, function()
@@ -645,7 +645,7 @@ SLASHER.InitHud = function(_, hud)
 			hud.prevGunUses = gunUses
 		end
 
-		if not hud.gunMode and LocalPlayer():GetNWBool("SidCanUseGun") then
+		if not hud.gunMode and GameData.LocalPlayer:GetNWBool("SidCanUseGun") then
 			hud:SetControlVisible("F", true)
 			hud:SetMeterName("satiation", "gun uses")
 			hud:FlashMeter("gun uses")
@@ -706,25 +706,25 @@ end
 
 if CLIENT then
 	hook.Add("HUDPaint", SLASHER.Name .. "_Jumpscare", function()
-		if LocalPlayer():GetNWBool("SurvivorJumpscare_Sid") == true then
-			if LocalPlayer().sid_f == nil then
-				LocalPlayer().sid_f = 0
+		if GameData.LocalPlayer:GetNWBool("SurvivorJumpscare_Sid") == true then
+			if GameData.LocalPlayer.sid_f == nil then
+				GameData.LocalPlayer.sid_f = 0
 			end
-			if LocalPlayer().sid_f < 39 then
-				LocalPlayer().sid_f = LocalPlayer().sid_f + (FrameTime() * 30)
+			if GameData.LocalPlayer.sid_f < 39 then
+				GameData.LocalPlayer.sid_f = GameData.LocalPlayer.sid_f + (FrameTime() * 30)
 			end
 
 			local Overlay = Material("slashco/ui/overlays/jumpscare_2")
-			Overlay:SetInt("$frame", math.floor(LocalPlayer().sid_f))
+			Overlay:SetInt("$frame", math.floor(GameData.LocalPlayer.sid_f))
 
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.SetMaterial(Overlay)
 			surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
 		else
-			LocalPlayer().sid_f = nil
+			GameData.LocalPlayer.sid_f = nil
 		end
 
-		if LocalPlayer():GetNWBool("SidFuck") == true then
+		if GameData.LocalPlayer:GetNWBool("SidFuck") == true then
 			local Overlay = Material("slashco/ui/overlays/sid_fuck")
 
 			surface.SetDrawColor(255, 255, 255, 60)

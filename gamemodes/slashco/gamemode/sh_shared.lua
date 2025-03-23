@@ -77,6 +77,23 @@ SlashCo.RoundState = {
 	TEST = 5,
 }
 
+GameData = GameData or {} -- A table containing data that is frequently used.
+GameData.Map = game.GetMap()
+GameData.Lobby = "sc_lobby" -- Map name of the lobby
+GameData.IsLobby = GameData.Map == GameData.Lobby
+
+if CLIENT then
+	--GameData.LocalPlayer = nil
+	--GameData.LocalSteamID = nil
+	--GameData.LocalSteamID64 = nil
+
+	function GM:InitPostEntity()
+		GameData.LocalPlayer = LocalPlayer()
+		GameData.LocalSteamID = GameData.LocalPlayer:SteamID()
+		GameData.LocalSteamID64 = GameData.LocalPlayer:SteamID64()
+	end
+end
+
 local lang_files, _ = file.Find("slashco/lang/*.lua", "LUA")
 for _, v in ipairs(lang_files) do
 	AddCSLuaFile("slashco/lang/" .. v)

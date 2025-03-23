@@ -657,7 +657,7 @@ end
 
 ---Add spawning entities from the legacy config if it exists
 function SlashCo.LegacySetup()
-	local configs, configDirs = file.Find(string.format("slashco/configs/maps/%s.lua", game.GetMap()), "LUA")
+	local configs, configDirs = file.Find(string.format("slashco/configs/maps/%s.lua", GameData.Map), "LUA")
 	local skip = IsValid(SlashCo.SettingsEntity())
 	for _, v in ipairs(configs) do
 		convertLegacyConfig(v, skip)
@@ -751,7 +751,7 @@ end
 
 ---start a round
 function SlashCo.StartRound(noSetup)
-	if game.GetMap() == "sc_lobby" then
+	if GameData.IsLobby then
 		return
 	end
 

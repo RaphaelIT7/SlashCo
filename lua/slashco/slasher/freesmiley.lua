@@ -196,7 +196,7 @@ SLASHER.InitHud = function(_, hud)
 	hud.prevDealAllow = -1
 	hud.prevNumZanies = -1
 	function hud.AlsoThink()
-		local deal = LocalPlayer():GetNWInt("SmileySummonSelect")
+		local deal = GameData.LocalPlayer:GetNWInt("SmileySummonSelect")
 		local numZanies
 		if deal == 0 then
 			numZanies = (#ents.FindByClass("sc_zanysmiley") >= 2)
@@ -219,13 +219,13 @@ SLASHER.InitHud = function(_, hud)
 			hud.prevDeal = deal
 		end
 
-		local canDeal = SlashCo.IsPositionLegalForSlashers(LocalPlayer():GetPos())
+		local canDeal = SlashCo.IsPositionLegalForSlashers(GameData.LocalPlayer:GetPos())
 		if canDeal ~= hud.prevCanDeal then
 			hud:SetControlEnabled("F", canDeal)
 			hud.prevCanDeal = canDeal
 		end
 
-		local cooldown = LocalPlayer():GetNWInt("SmileySummonCooldown")
+		local cooldown = GameData.LocalPlayer:GetNWInt("SmileySummonCooldown")
 		if not hud.prevDealAllow and cooldown < 0.1 then
 			hud:SetControlEnabled("R", true)
 			hud:SetControlVisible("F", true)
@@ -244,7 +244,7 @@ SLASHER.InitHud = function(_, hud)
 
 	local surveyNoticeIcon = Material("slashco/ui/particle/icon_survey")
 	hook.Add("HUDPaint", "SlashCoZanySurvey", function()
-		if LocalPlayer():Team() ~= TEAM_SLASHER then
+		if GameData.LocalPlayer:Team() ~= TEAM_SLASHER then
 			hook.Remove("HUDPaint", "SlashCoZanySurvey")
 		end
 
@@ -277,7 +277,7 @@ end
 
 if CLIENT then
 	hook.Add("HUDPaint", SLASHER.Name .. "_Jumpscare", function()
-		if LocalPlayer():GetNWBool("SurvivorJumpscare_FreeSmiley") == true then
+		if GameData.LocalPlayer:GetNWBool("SurvivorJumpscare_FreeSmiley") == true then
 			local Overlay = Material("slashco/ui/overlays/jumpscare_13")
 
 			Overlay:SetFloat("$alpha", 1)

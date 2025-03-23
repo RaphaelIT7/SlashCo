@@ -237,7 +237,7 @@ else
 	function PLAYER:GetItem(slot)
 		local item = self:GetNWString(slot, "none")
 
-		if self ~= LocalPlayer() or SlashCo.PreItem == "none" or slot == "itemEffect" then
+		if self ~= GameData.LocalPlayer or SlashCo.PreItem == "none" or slot == "itemEffect" then
 			return item
 		end
 

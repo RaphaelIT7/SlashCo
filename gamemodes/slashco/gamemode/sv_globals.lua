@@ -257,7 +257,7 @@ SlashCo.ChangeMap = function(mapname)
 end
 
 SlashCo.GoToLobby = function()
-	SlashCo.ChangeMap("sc_lobby")
+	SlashCo.ChangeMap(GameData.Lobby)
 end
 
 SlashCo.SummonEscapeHelicopter = function(distress)

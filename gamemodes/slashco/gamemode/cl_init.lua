@@ -116,7 +116,7 @@ end
 local fx_t = 0
 
 hook.Add("RenderScreenspaceEffects", "BloomEffect", function()
-	if LocalPlayer():Team() ~= TEAM_SURVIVOR then
+	if GameData.LocalPlayer:Team() ~= TEAM_SURVIVOR then
 		return
 	end
 
@@ -124,12 +124,12 @@ hook.Add("RenderScreenspaceEffects", "BloomEffect", function()
 		return
 	end
 
-	LocalPlayer():ItemFunction("Screenspace")
+	GameData.LocalPlayer:ItemFunction("Screenspace")
 	DrawBokehDOF(0.35, 1, 12)
 	DrawSharpen(5, 0.15)
 	DrawBloom(0.85, 2, 9, 9, 1, 1, 1, 1, 1)
 
-	local hp = LocalPlayer():Health()
+	local hp = GameData.LocalPlayer:Health()
 	if hp < 30 then
 		fx_t = fx_t + RealFrameTime() * 0.25
 		DrawBokehDOF(12, 0.4, 4 - math.sin(fx_t) * (3 - (hp / 10)))
@@ -148,7 +148,7 @@ hook.Add("RenderScreenspaceEffects", "BloomEffect", function()
 end)
 
 hook.Add("KeyPress", "PlayerSelect", function(ply, key)
-	if ply ~= LocalPlayer() or ply:Team() ~= TEAM_LOBBY then
+	if ply ~= GameData.LocalPlayer or ply:Team() ~= TEAM_LOBBY then
 		return
 	end
 
@@ -205,7 +205,7 @@ end
 hook.Add("PreDrawHalos", "octoSlashCoClientPreDrawHalos", function()
 	g_SlashCoDrawingHalos = true
 
-	local ply = LocalPlayer()
+	local ply = GameData.LocalPlayer
 	local _team = ply:Team()
 	if _team == TEAM_SLASHER then
 		SlashCo.DrawHalo(ents.FindByClass("sc_generator"), "yellow")
@@ -269,7 +269,7 @@ hook.Add("EntityRemoved", "DynamicFlashlight.PVS_Cache", function(entity)
 end)
 
 hook.Add("Think", "DynamicFlashlight.Rendering", function()
-	local ply = LocalPlayer()
+	local ply = GameData.LocalPlayer
 	if not ply:CanSeeFlashlights() then
 		for _, target in ipairs(cache) do
 			if target.DynamicFlashlight then
@@ -307,7 +307,7 @@ end)
 
 net.Receive("mantislashco_GiveSlasherData", function()
 	local SlasherTable = net.ReadTable()
-	local ply = LocalPlayer()
+	local ply = GameData.LocalPlayer
 	if not ply:IsValid() then
 		return
 	end
@@ -408,11 +408,11 @@ local SurvivorIcon = Material("slashco/ui/icons/slasher/s_survivor")
 local SurvivorDeadIcon = Material("slashco/ui/icons/slasher/s_survivor_dead")
 
 hook.Add("HUDPaint", "AwaitingPlayersHUD", function()
-	if game.GetMap() == "sc_lobby" then
+	if GameData.IsLobby then
 		return
 	end
 
-	if LocalPlayer():Team() ~= TEAM_SPECTATOR then
+	if GameData.LocalPlayer:Team() ~= TEAM_SPECTATOR then
 		return
 	end
 
@@ -437,7 +437,7 @@ hook.Add("HUDPaint", "AwaitingPlayersHUD", function()
 			end
 		end
 
-		if LocalPlayer():SteamID64() == SurvivorTeam[i].id then
+		if GameData.LocalSteamID64 == SurvivorTeam[i].id then
 			draw.SimpleText(SCInfo.Survivor, "LobbyFont2", ScrW() * 0.5, ScrH() * 0.7,
 					Color(255, 0, 0, slashershow_tick), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 		end
@@ -490,7 +490,7 @@ end)
 
 local b_tick = -500
 hook.Add("PostDrawOpaqueRenderables", "LobbyScreens", function()
-	if game.GetMap() ~= "sc_lobby" then
+	if not GameData.IsLobby then
 		return
 	end
 
@@ -620,22 +620,22 @@ net.Receive("mantislashco_HelicopterVoice", function()
 	local t = net.ReadUInt(4)
 
 	if t == SlashCo.HelicopterVoices.INTRO then
-		LocalPlayer():EmitSound("slashco/helipilot/helipilot_intro" .. math.random(1, 8) .. ".mp3", 100)
+		GameData.LocalPlayer:EmitSound("slashco/helipilot/helipilot_intro" .. math.random(1, 8) .. ".mp3", 100)
 		return
 	end
 
 	if t == SlashCo.HelicopterVoices.APPROACH then
-		LocalPlayer():EmitSound("slashco/helipilot/helipilot_approach" .. math.random(1, 5) .. ".mp3", 100)
+		GameData.LocalPlayer:EmitSound("slashco/helipilot/helipilot_approach" .. math.random(1, 5) .. ".mp3", 100)
 		return
 	end
 
 	if t == SlashCo.HelicopterVoices.LAND then
-		LocalPlayer():EmitSound("slashco/helipilot/helipilot_land" .. math.random(1, 5) .. ".mp3", 100)
+		GameData.LocalPlayer:EmitSound("slashco/helipilot/helipilot_land" .. math.random(1, 5) .. ".mp3", 100)
 		return
 	end
 
 	if t == SlashCo.HelicopterVoices.BEACON then
-		LocalPlayer():EmitSound("slashco/helipilot/helipilot_beacon" .. math.random(1, 5) .. ".mp3", 100)
+		GameData.LocalPlayer:EmitSound("slashco/helipilot/helipilot_beacon" .. math.random(1, 5) .. ".mp3", 100)
 		return
 	end
 end)
@@ -651,11 +651,11 @@ net.Receive("mantislashco_MapAmbientPlay", function()
 end)
 
 function SlashCoMapAmbience()
-	if LocalPlayer():Team() == TEAM_SLASHER then
+	if GameData.LocalPlayer:Team() == TEAM_SLASHER then
 		return
 	end
 
-	local snd = "sound/slashco/maps/" .. game.GetMap() .. ".mp3"
+	local snd = "sound/slashco/maps/" .. GameData.Map .. ".mp3"
 	if not file.Exists(snd, "GAME") then
 		return
 	end
@@ -685,7 +685,7 @@ hook.Add("Think", "amb_vol", function()
 		AmbientMusic:SetVolume(AmbientVol)
 	end
 
-	if LocalPlayer():GetNWBool("SurvivorChased") then
+	if GameData.LocalPlayer:GetNWBool("SurvivorChased") then
 		if AmbientVol > 0 then
 			AmbientVol = AmbientVol - RealFrameTime()
 		end
