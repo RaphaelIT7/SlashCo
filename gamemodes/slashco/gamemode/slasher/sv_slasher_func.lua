@@ -348,7 +348,7 @@ SlashCo.BustDoor = function(slasher, target, force)
 			return
 		end
 
-		local prop = ents.Create("prop_physics")
+		local prop = ents.Create("sc_broken_door")
 		local model = target:GetModel()
 		prop:SetModel(model)
 		prop:SetMoveType(MOVETYPE_NONE)
@@ -357,6 +357,7 @@ SlashCo.BustDoor = function(slasher, target, force)
 		prop:SetAngles(target:GetAngles())
 		prop:Spawn()
 		prop:Activate()
+		prop:PhysicsInit(SOLID_VPHYSICS)
 		prop:SetSkin(target:GetSkin())
 		local phys = prop:GetPhysicsObject()
 		if phys:IsValid() then
