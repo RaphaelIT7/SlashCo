@@ -19,7 +19,7 @@ local function SetConfirm()
         return
     end
 
-    if not MGSelection and LocalPlayer():GetItem("item") ~= "none" or LocalPlayer():GetItem("item2") ~= "none" then
+    if not MGSelection and GameData.LocalPlayer:GetItem("item") ~= "none" or GameData.LocalPlayer:GetItem("item2") ~= "none" then
         BlockConfirm()
         return
     end

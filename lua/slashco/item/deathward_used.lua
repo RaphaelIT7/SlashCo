@@ -16,7 +16,7 @@ ITEM.OnSwitchFrom = function(ply)
 	timer.Remove("deathWardDamage_" .. ply:UserID())
 end
 ITEM.OnPickUp = function(ply)
-	if game.GetMap() == "sc_lobby" then
+	if GameData.IsLobby then
 		return
 	end
 

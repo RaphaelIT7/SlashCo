@@ -233,7 +233,7 @@ function PLAYER:SlamDoor(door_ent)
 end
 
 function sayPrompt(ply, input)
-	if game.GetMap() == "sc_lobby" and SlashCo.LobbyData.LOBBYSTATE == 2 then
+	if GameData.IsLobby and SlashCo.LobbyData.LOBBYSTATE == 2 then
 		return
 	end
 

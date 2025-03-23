@@ -270,23 +270,23 @@ SLASHER.Footstep = function(ply)
 end
 
 hook.Add("HUDPaint", SLASHER.Name .. "_Jumpscare", function()
-	if LocalPlayer():GetNWBool("SurvivorJumpscare_Amogus") == true then
-		if LocalPlayer().amog_f == nil then
-			LocalPlayer().amog_f = 0
+	if GameData.LocalPlayer:GetNWBool("SurvivorJumpscare_Amogus") == true then
+		if GameData.LocalPlayer.amog_f == nil then
+			GameData.LocalPlayer.amog_f = 0
 		end
-		LocalPlayer().amog_f = LocalPlayer().amog_f + (FrameTime() * 20)
-		if LocalPlayer().amog_f > 59 then
-			LocalPlayer().amog_f = 50
+		GameData.LocalPlayer.amog_f = GameData.LocalPlayer.amog_f + (FrameTime() * 20)
+		if GameData.LocalPlayer.amog_f > 59 then
+			GameData.LocalPlayer.amog_f = 50
 		end
 
 		local Overlay = Material("slashco/ui/overlays/jumpscare_4")
-		Overlay:SetInt("$frame", math.floor(LocalPlayer().amog_f))
+		Overlay:SetInt("$frame", math.floor(GameData.LocalPlayer.amog_f))
 
 		surface.SetDrawColor(255, 255, 255, 255)
 		surface.SetMaterial(Overlay)
 		surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
 	else
-		LocalPlayer().amog_f = nil
+		GameData.LocalPlayer.amog_f = nil
 	end
 end)
 
@@ -324,7 +324,7 @@ SLASHER.InitHud = function(_, hud)
 	local control = hud:GetControl("LMB")
 	control.prevSurvivor = -1
 	function control.AlsoThink()
-		local survivor = LocalPlayer():GetNWBool("AmogusSurvivorDisguise")
+		local survivor = GameData.LocalPlayer:GetNWBool("AmogusSurvivorDisguise")
 		if survivor ~= control.prevSurvivor then
 			if survivor then
 				control:SetText("sneak kill")
@@ -335,7 +335,7 @@ SLASHER.InitHud = function(_, hud)
 			control.prevSurvivor = survivor
 		end
 
-		if survivor and LocalPlayer():GetVelocity():Length() < 1 then
+		if survivor and GameData.LocalPlayer:GetVelocity():Length() < 1 then
 			if not control.prevKill then
 				control:SetEnabled(true)
 				control:Shake()

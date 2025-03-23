@@ -322,26 +322,26 @@ end
 
 if CLIENT then
 	hook.Add("HUDPaint", SLASHER.Name .. "_Jumpscare", function()
-		if LocalPlayer():GetNWBool("SurvivorJumpscare_Thirsty") == true then
-			if LocalPlayer().thrs_f == nil then
-				LocalPlayer().thrs_f = 0
+		if GameData.LocalPlayer:GetNWBool("SurvivorJumpscare_Thirsty") == true then
+			if GameData.LocalPlayer.thrs_f == nil then
+				GameData.LocalPlayer.thrs_f = 0
 			end
-			LocalPlayer().thrs_f = LocalPlayer().thrs_f + (FrameTime() * 20)
-			if LocalPlayer().thrs_f > 29 then
-				LocalPlayer().thrs_f = 25
+			GameData.LocalPlayer.thrs_f = GameData.LocalPlayer.thrs_f + (FrameTime() * 20)
+			if GameData.LocalPlayer.thrs_f > 29 then
+				GameData.LocalPlayer.thrs_f = 25
 			end
 
 			local Overlay = Material("slashco/ui/overlays/jumpscare_5")
-			Overlay:SetInt("$frame", math.floor(LocalPlayer().thrs_f))
+			Overlay:SetInt("$frame", math.floor(GameData.LocalPlayer.thrs_f))
 
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.SetMaterial(Overlay)
 			surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
 		else
-			LocalPlayer().thrs_f = nil
+			GameData.LocalPlayer.thrs_f = nil
 		end
 
-		if LocalPlayer():GetNWBool("ThirstyFuck") == true then
+		if GameData.LocalPlayer:GetNWBool("ThirstyFuck") == true then
 			local Overlay = Material("slashco/ui/overlays/thirsty_fuck")
 
 			surface.SetDrawColor(255, 255, 255, 60)

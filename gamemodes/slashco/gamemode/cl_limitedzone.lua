@@ -9,7 +9,7 @@ local ambiences = {
 
 local zoneAmbience, snd
 hook.Add("scValue_limitedZone", "SlashCoLimitedZone", function(effect)
-	local ply = LocalPlayer()
+	local ply = GameData.LocalPlayer
 
 	-- [[ soundpatch method
 	if ambiences[effect] then
@@ -154,7 +154,7 @@ local particleSettings = {
 
 local delta = 0
 hook.Add("Think", "SlashCoZoneParticles", function()
-	local ply = LocalPlayer()
+	local ply = GameData.LocalPlayer
 	if not ply.ZoneEffect or not particleSettings[ply.ZoneEffect] then
 		delta = 0
 		return
@@ -206,7 +206,7 @@ local fogSettings = {
 }
 
 local function renderFog(scale)
-	local ply = LocalPlayer()
+	local ply = GameData.LocalPlayer
 
 	local targetColor, targetStart, targetEnd = ply.DefaultFogColor, ply.DefaultFogStart, ply.DefaultFogEnd
 	if fogSettings[ply.ZoneEffect] then
@@ -237,7 +237,7 @@ local function renderFog(scale)
 end
 
 hook.Add("SetupWorldFog", "SlashCoZoneFog", function()
-	if not LocalPlayer().ZoneEffect then
+	if not GameData.LocalPlayer.ZoneEffect then
 		return
 	end
 
@@ -245,7 +245,7 @@ hook.Add("SetupWorldFog", "SlashCoZoneFog", function()
 end)
 
 hook.Add("SetupSkyboxFog", "SlashCoZoneFog", function(scale)
-	if not LocalPlayer().ZoneEffect then
+	if not GameData.LocalPlayer.ZoneEffect then
 		return
 	end
 
@@ -333,7 +333,7 @@ local colorSettings = {
 }
 
 hook.Add("RenderScreenspaceEffects", "SlashCoZoneScreenSpace", function()
-	local ply = LocalPlayer()
+	local ply = GameData.LocalPlayer
 	if not ply.ZoneEffect then
 		return
 	end

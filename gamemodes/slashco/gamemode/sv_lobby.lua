@@ -544,7 +544,7 @@ end)
 
 local lobby_tick
 hook.Add("Tick", "LobbyTickEvent", function()
-    if game.GetMap() ~= "sc_lobby" then
+    if not GameData.IsLobby then
         return
     end
 
@@ -643,7 +643,7 @@ end)
 
 hook.Add("PlayerDisconnected", "Playerleave", function(ply)
     --If a player disconnects after the Lobby stage is underway, reset the lobby.
-    if game.GetMap() == "sc_lobby" then
+    if GameData.IsLobby then
         if SlashCo.LobbyData.LOBBYSTATE > 0 then
             if ply:Team() == TEAM_SURVIVOR then
                 ply:ChatPrint("[SlashCo] A Survivor has left during the Lobby Setup! Lobby will now reset.")

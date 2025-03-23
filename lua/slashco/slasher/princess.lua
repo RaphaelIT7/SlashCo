@@ -486,10 +486,10 @@ SLASHER.InitHud = function(_, hud)
 
 		self.SniffPos = table.Random(sniffables):WorldSpaceCenter()
 
-		local inaccuracy = math.max(self.SniffPos:Distance(LocalPlayer():GetPos()) / 12, 50)
+		local inaccuracy = math.max(self.SniffPos:Distance(GameData.LocalPlayer:GetPos()) / 12, 50)
 		self.SniffRandom = VectorRand(-inaccuracy, inaccuracy)
 		hook.Add("HUDPaint", "SlashCoSniff", function()
-			if LocalPlayer():Team() ~= TEAM_SLASHER or self.SniffPos:Distance(LocalPlayer():GetPos()) < 150 then
+			if GameData.LocalPlayer:Team() ~= TEAM_SLASHER or self.SniffPos:Distance(GameData.LocalPlayer:GetPos()) < 150 then
 				hook.Remove("HUDPaint", "SlashCoSniff")
 				return
 			end
@@ -505,7 +505,7 @@ SLASHER.InitHud = function(_, hud)
 
 	hud.prevThresh = -1
 	function hud.AlsoThink()
-		local thresh = LocalPlayer():GetNWInt("PrincessAggressionThres")
+		local thresh = GameData.LocalPlayer:GetNWInt("PrincessAggressionThres")
 		if thresh ~= hud.prevThresh then
 			hud:SetMeterMax("aggro", thresh)
 			hud.prevThresh = thresh

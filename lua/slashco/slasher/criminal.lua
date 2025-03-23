@@ -201,16 +201,16 @@ SLASHER.InitHud = function(_, hud)
 	hud:AddControl("F", "rage", Material("slashco/ui/icons/slasher/s_12_1"))
 	hud:SetControlVisible("F", false)
 
-	hud.prevRage = LocalPlayer():GetNWBool("CriminalRage")
+	hud.prevRage = GameData.LocalPlayer:GetNWBool("CriminalRage")
 	function hud.AlsoThink()
-		local rage = LocalPlayer():GetNWBool("CriminalRage")
+		local rage = GameData.LocalPlayer:GetNWBool("CriminalRage")
 		if rage ~= hud.prevRage then
 			hud:SetAvatar(rage and "rage" or "default")
 			hud:SetControlEnabled("F", not rage)
 			hud.prevRage = rage
 		end
 
-		local progress = LocalPlayer():GetNWInt("GameProgressDisplay")
+		local progress = GameData.LocalPlayer:GetNWInt("GameProgressDisplay")
 		if progress > 6 then
 			if not hud.RageEnabled then
 				hud:SetControlVisible("F", true)
@@ -228,23 +228,23 @@ end
 
 if CLIENT then
 	hook.Add("HUDPaint", SLASHER.Name .. "_Jumpscare", function()
-		if LocalPlayer():GetNWBool("SurvivorJumpscare_Criminal") == true then
-			if LocalPlayer().crim_f == nil then
-				LocalPlayer().crim_f = 0
+		if GameData.LocalPlayer:GetNWBool("SurvivorJumpscare_Criminal") == true then
+			if GameData.LocalPlayer.crim_f == nil then
+				GameData.LocalPlayer.crim_f = 0
 			end
-			LocalPlayer().crim_f = LocalPlayer().crim_f + (FrameTime() * 20)
-			if LocalPlayer().crim_f > 59 then
-				LocalPlayer().crim_f = 11
+			GameData.LocalPlayer.crim_f = GameData.LocalPlayer.crim_f + (FrameTime() * 20)
+			if GameData.LocalPlayer.crim_f > 59 then
+				GameData.LocalPlayer.crim_f = 11
 			end
 
 			local Overlay = Material("slashco/ui/overlays/jumpscare_12")
-			Overlay:SetInt("$frame", math.floor(LocalPlayer().crim_f))
+			Overlay:SetInt("$frame", math.floor(GameData.LocalPlayer.crim_f))
 
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.SetMaterial(Overlay)
 			surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
 		else
-			LocalPlayer().crim_f = nil
+			GameData.LocalPlayer.crim_f = nil
 		end
 	end)
 end

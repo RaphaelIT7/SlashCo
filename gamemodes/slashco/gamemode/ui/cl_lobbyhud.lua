@@ -1,4 +1,4 @@
-if game.GetMap() ~= "sc_lobby" then
+if not GameData.IsLobby then
 	hook.Add("HUDDrawTargetID", "SlashCoLobbyNames", function()
 		return false
 	end)
@@ -34,8 +34,9 @@ local ReadyCheck = Material("slashco/ui/lobby_ready")
 local UnReadyCheck = Material("slashco/ui/lobby_unready")
 
 hook.Add("HUDPaint", "LobbyInfoText", function()
+	local localPly = GameData.LocalPlayer
 	if stop_lobbymusic ~= true and (lobbymusic_antispam == nil or lobbymusic_antispam ~= true) then
-		lobby_music = CreateSound(LocalPlayer(), "slashco/music/slashco_lobby.wav")
+		lobby_music = CreateSound(localPly, "slashco/music/slashco_lobby.wav")
 		lobby_music:Play()
 		lobby_music:ChangeVolume(0.5)
 		lobbymusic_antispam = true
@@ -47,12 +48,15 @@ hook.Add("HUDPaint", "LobbyInfoText", function()
 
 	local scrW, scrH = ScrW(), ScrH()
 	local point_count = CL_points or 0
+	local localTeam = localPly:Team()
 
-	draw.SimpleText("[" .. point_count .. " " .. SlashCo.Language("PointCount") .. "]",
+	if localTeam != TEAM_SPECTATOR then
+		draw.SimpleText("[" .. point_count .. " " .. SlashCo.Language("PointCount") .. "]",
 				"TVCD", ScrW() * 0.025, ScrH() * 0.05, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	end
 
 	--LobbyFont1
-	if LocalPlayer():Team() == TEAM_LOBBY then
+	if localTeam == TEAM_LOBBY then
 		if StateOfLobby == nil or StateOfLobby < 1 then
 			draw.SimpleText("[,] " .. SlashCo.Language("ToggleSpectate"), "TVCD", scrW * 0.975, (scrH * 0.95) - 50,
 					color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
@@ -78,7 +82,7 @@ hook.Add("HUDPaint", "LobbyInfoText", function()
 				table.insert(Lobby_Players, { ID = v.steamid, Name = ply:GetName(), Ready = v.readyState })
 			end
 
-			if v.steamid == LocalPlayer():SteamID64() then
+			if v.steamid == localPly:SteamID64() then
 				clientReadiness = v.readyState
 				isClientinLobby = true
 			end

@@ -95,17 +95,17 @@ if CLIENT then
 	local StepNotice = Material("slashco/ui/particle/step_notice")
 	local timeSinceLast = 0
 	hook.Add("Think", "Slasher_Vision_Light", function()
-		if LocalPlayer():Team() ~= TEAM_SLASHER then
+		if GameData.LocalPlayer:Team() ~= TEAM_SLASHER then
 			return
 		end
 
-		local Eyesight = LocalPlayer():GetNWInt("Slasher_Eyesight")
+		local Eyesight = GameData.LocalPlayer:GetNWInt("Slasher_Eyesight")
 
 		--Eyesight - an arbitrary range from 1 - 10 which decides how illuminated the Slasher 'vision is client-side. (1 - barely any illumination, 10 - basically fullbright )
 
-		local dlight = DynamicLight(LocalPlayer():EntIndex())
+		local dlight = DynamicLight(GameData.LocalPlayer:EntIndex())
 		if dlight then
-			dlight.pos = LocalPlayer():GetShootPos()
+			dlight.pos = GameData.LocalPlayer:GetShootPos()
 			dlight.r = 50 + (Eyesight * 2)
 			dlight.g = 50 + (Eyesight * 2)
 			dlight.b = 50 + (Eyesight * 2)
@@ -115,10 +115,10 @@ if CLIENT then
 			dlight.DieTime = CurTime() + 1
 		end
 
-		local slasherpos = LocalPlayer():GetPos()
+		local slasherpos = GameData.LocalPlayer:GetPos()
 		local PerceptionReal = 0
-		if not LocalPlayer():GetNWBool("InSlasherChaseMode") then
-			PerceptionReal = LocalPlayer():GetNWInt("Slasher_Perception")
+		if not GameData.LocalPlayer:GetNWBool("InSlasherChaseMode") then
+			PerceptionReal = GameData.LocalPlayer:GetNWInt("Slasher_Perception")
 		end
 
 		timeSinceLast = timeSinceLast + FrameTime() / 3
@@ -174,15 +174,15 @@ if CLIENT then
 			em:Finish()
 		end
 
-		LocalPlayer():SlasherFunction("ClientSideEffect")
+		GameData.LocalPlayer:SlasherFunction("ClientSideEffect")
 	end)
 
 	hook.Add("RenderScreenspaceEffects", "SlasherVision", function()
-		if LocalPlayer():Team() ~= TEAM_SLASHER then
+		if GameData.LocalPlayer:Team() ~= TEAM_SLASHER then
 			return
 		end
 
-		local Eyesight = LocalPlayer():GetNWInt("Slasher_Eyesight")
+		local Eyesight = GameData.LocalPlayer:GetNWInt("Slasher_Eyesight")
 
 		local tab = {
 			["$pp_colour_addr"] = 0.01,

@@ -1,15 +1,15 @@
 hook.Add("HUDPaint", "GameInfo_Info", function()
 
-	if LocalPlayer():Team() ~= TEAM_LOBBY then return end
+	if GameData.LocalPlayer:Team() ~= TEAM_LOBBY then return end
 
 	draw.SimpleText(SlashCo.Language("GameInfo", "F6") , "TVCD", ScrW() * 0.975, (ScrH() * 0.95), color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM )
 end)
 
 hook.Add("PlayerButtonDown", "GameInfo", function(ply, key) 
 
-	if ply ~= LocalPlayer() then return end
+	if ply ~= GameData.LocalPlayer then return end
 
-	if LocalPlayer():Team() ~= TEAM_LOBBY and LocalPlayer():Team() ~= TEAM_SPECTATOR  then return end
+	if GameData.LocalPlayer:Team() ~= TEAM_LOBBY and GameData.LocalPlayer:Team() ~= TEAM_SPECTATOR  then return end
 
 	if key == 97  then 
 		DrawTheGameInfoBox()

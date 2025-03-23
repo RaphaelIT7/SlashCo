@@ -52,7 +52,7 @@ local PLAYER_LINE = {
 		self:DockMargin(2, 0, 2, 2)
 	end,
 	Setup = function(self, pl)
-		if pl == LocalPlayer() then
+		if pl == GameData.LocalPlayer then
 			self.Mute:Hide()
 			self.Shift:Show()
 		end
@@ -87,7 +87,7 @@ local PLAYER_LINE = {
 				self.teamcolor = Color(128, 128, 255, 255)
 				self.teamorder = 0
 
-				if LocalPlayer():Team() ~= TEAM_SURVIVOR and pl:Team() == TEAM_SPECTATOR then
+				if GameData.LocalPlayer:Team() ~= TEAM_SURVIVOR and pl:Team() == TEAM_SPECTATOR then
 					self.teamcolor = Color(64, 64, 192, 255)
 					self.teamorder = 500
 				end
@@ -230,7 +230,7 @@ local SCORE_BOARD = {
 	Reset = function(self)
 		if SlashCo.PlayerData then
 			local game_state
-			if game.GetMap() == "sc_lobby" then
+			if GameData.IsLobby then
 				game_state = SlashCo.Language("InLobby")
 			else
 				if SlashCo.PlayerData.offering and SlashCo.PlayerData.offering ~= "" then

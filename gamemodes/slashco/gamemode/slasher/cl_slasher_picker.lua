@@ -35,7 +35,7 @@ end
 
 
 function DrawTheSlasherSelectorBox()
-	if LocalPlayer():SteamID64() ~= readtable.slashersteamid then return end
+	if GameData.LocalSteamID64 ~= readtable.slashersteamid then return end
 
 	local SlasherPickingID = 0
 	local SlasherPickingCLASS = 0
@@ -71,7 +71,7 @@ function DrawTheSlasherSelectorBox()
 		local Slash = vgui.Create("DButton", SlasherSelectFrame)
 		function Slash.DoClick()
 			SelectThisSlasher(k)
-			LocalPlayer():EmitSound("slashco/slasher_preview.mp3")
+			GameData.LocalPlayer:EmitSound("slashco/slasher_preview.mp3")
 		end
 		Slash:SetPos(30 + x, 30 + y)
 		Slash:SetSize(icon_size, icon_size)
@@ -116,7 +116,7 @@ function DrawTheSlasherSelectorBox()
 	end
 
 	local confirmselect = vgui.Create("DButton", SlasherSelectFrame)
-	function confirmselect.DoClick() SlasherChosen(SelectedSlasher) HideSelection() LocalPlayer():EmitSound("slashco/slasher_select.mp3") end
+	function confirmselect.DoClick() SlasherChosen(SelectedSlasher) HideSelection() GameData.LocalPlayer:EmitSound("slashco/slasher_select.mp3") end
 	confirmselect:SetPos(ScrW() / 2, ScrH() / 1.1)
 	confirmselect:SetSize(ScrW() / 4, 40)
 	confirmselect:SetText(SlashCo.Language("ItemConfirm"))
@@ -227,7 +227,7 @@ local Fun = {
 
 
 hook.Add("PlayerButtonDown", "TheCoder", function(ply, key)
-	if ply ~= LocalPlayer() then return end
+	if ply ~= GameData.LocalPlayer then return end
 	if not IsFirstTimePredicted() then return end
 
 	if IsValid(SlasherSelectFrame) then

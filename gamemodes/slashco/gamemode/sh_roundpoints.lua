@@ -146,13 +146,13 @@ if SERVER then
 end
 
 hook.Add("scValue_addPoints", "AddPoints", function(key, amount)
-    LocalPlayer():AddPoints(key, amount)
+    GameData.LocalPlayer:AddPoints(key, amount)
 end)
 
 hook.Add("scValue_removePointsKey", "RemovePointsKey", function(key)
-    LocalPlayer():RemovePointsKey(key)
+    GameData.LocalPlayer:RemovePointsKey(key)
 end)
 
 hook.Add("scValue_setPoints", "SetPoints", function(key, amount, num)
-    LocalPlayer():SetPoints(key, amount, num)
+    GameData.LocalPlayer:SetPoints(key, amount, num)
 end)

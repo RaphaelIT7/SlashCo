@@ -40,7 +40,7 @@ DermaButton.DoClick = function()
     if code > 108.00 and code < 111.00 then
 	    RunConsoleCommand( "cl_playerpaint" )
     else
-        LocalPlayer():ChatPrint("All you get is static.")
+        GameData.LocalPlayer:ChatPrint("All you get is static.")
         ply:EmitSound( "npc/overwatch/radiovoice/die"..math.random( 1,3)..".wav", 75, 100, 1, CHAN_AUTO )
     end
 end

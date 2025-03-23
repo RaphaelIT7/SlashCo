@@ -28,7 +28,7 @@ if CLIENT then
 	function PLAYER:Init()
 		self.Player:RemoveEffects(EF_NOFLASHLIGHT)
 
-		if LocalPlayer() ~= self.Player then
+		if GameData.LocalPlayer ~= self.Player then
 			return
 		end
 
@@ -38,12 +38,12 @@ if CLIENT then
 	end
 
 	function PLAYER:ClassChanged()
-		if LocalPlayer() ~= self.Player then
+		if GameData.LocalPlayer ~= self.Player then
 			return
 		end
 
-		if IsValid(LocalPlayer().SlasherHud) then
-			LocalPlayer().SlasherHud:Remove()
+		if IsValid(GameData.LocalPlayer.SlasherHud) then
+			GameData.LocalPlayer.SlasherHud:Remove()
 		end
 	end
 else

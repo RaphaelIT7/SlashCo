@@ -6,7 +6,7 @@ SlashCo.UseItem = function(ply)
 		return
 	end
 
-	if game.GetMap() == "sc_lobby" then
+	if GameData.IsLobby then
 		return
 	end
 
@@ -45,7 +45,7 @@ SlashCo.DropItem = function(ply)
 		return
 	end
 
-	if game.GetMap() == "sc_lobby" then
+	if GameData.IsLobby then
 		return
 	end
 

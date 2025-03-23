@@ -444,9 +444,9 @@ SLASHER.InitHud = function(_, hud)
 	hud.destroyEnabled = true
 	hud.prevWater = -1
 	function hud.AlsoThink()
-		local state = LocalPlayer():GetNWInt("TylerState")
+		local state = GameData.LocalPlayer:GetNWInt("TylerState")
 		if state == 0 then
-			local isInWater = LocalPlayer():WaterLevel() > 1
+			local isInWater = GameData.LocalPlayer:WaterLevel() > 1
 			if hud.prevWater ~= isInWater then
 				if isInWater then
 					hud:SetControlEnabled("R", false)
@@ -490,11 +490,11 @@ SLASHER.InitHud = function(_, hud)
 			hud.prevState = state
 		end
 
-		local target = LocalPlayer():GetEyeTrace().Entity
+		local target = GameData.LocalPlayer:GetEyeTrace().Entity
 		local class = IsValid(target) and target:GetClass()
 		if IsValid(target) and target:IsPlayer() or (target.PingType == "ITEM" and class ~= "sc_beacon")
 				and class ~= "sc_battery" and not target:GetNWBool("SurvivorBeingJumpscared") and
-				LocalPlayer():GetPos():Distance(target:GetPos()) < SLASHER.KillDistance then
+				GameData.LocalPlayer:GetPos():Distance(target:GetPos()) < SLASHER.KillDistance then
 
 			if not hud.destroyEnabled then
 				hud:SetControlEnabled("LMB", true)
@@ -526,30 +526,30 @@ if CLIENT then
 	local iconTL = 0
 
 	hook.Add("HUDPaint", SLASHER.Name .. "_Jumpscare", function()
-		if LocalPlayer():GetNWBool("SurvivorJumpscare_Tyler") == true then
-			if LocalPlayer().tyl_f == nil then
-				LocalPlayer().tyl_f = 0
+		if GameData.LocalPlayer:GetNWBool("SurvivorJumpscare_Tyler") == true then
+			if GameData.LocalPlayer.tyl_f == nil then
+				GameData.LocalPlayer.tyl_f = 0
 			end
-			LocalPlayer().tyl_f = LocalPlayer().tyl_f + (FrameTime() * 20)
-			if LocalPlayer().tyl_f > 39 then
-				LocalPlayer().tyl_f = 25
+			GameData.LocalPlayer.tyl_f = GameData.LocalPlayer.tyl_f + (FrameTime() * 20)
+			if GameData.LocalPlayer.tyl_f > 39 then
+				GameData.LocalPlayer.tyl_f = 25
 			end
 
 			local Overlay = Material("slashco/ui/overlays/jumpscare_7")
-			Overlay:SetInt("$frame", math.floor(LocalPlayer().tyl_f))
+			Overlay:SetInt("$frame", math.floor(GameData.LocalPlayer.tyl_f))
 
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.SetMaterial(Overlay)
 			surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
 		else
-			LocalPlayer().tyl_f = nil
+			GameData.LocalPlayer.tyl_f = nil
 		end
 
-		if LocalPlayer():Team() == TEAM_SLASHER then
+		if GameData.LocalPlayer:Team() == TEAM_SLASHER then
 			return
 		end
 
-		if drawIcon and LocalPlayer():Team() == TEAM_SURVIVOR then
+		if drawIcon and GameData.LocalPlayer:Team() == TEAM_SURVIVOR then
 			iconTL = SlashCo.Dampen(7, iconTL, iconT)
 
 			surface.SetMaterial(eyeball)
@@ -557,7 +557,7 @@ if CLIENT then
 			surface.DrawTexturedRect(ScrW() / 32, ScrW() / 32, ScrW() / 16, ScrW() / 16)
 		end
 
-		if LocalPlayer():GetNWBool("DisplayTylerTheDestroyerEffects") == true then
+		if GameData.LocalPlayer:GetNWBool("DisplayTylerTheDestroyerEffects") == true then
 			local Overlay = Material("slashco/ui/overlays/tyler_static")
 			local DestroyerFace = Material("slashco/ui/overlays/tyler_destroyer_face")
 
@@ -596,7 +596,7 @@ if CLIENT then
 		if SlashCo.TylerSongs[song] then
 			snd = SlashCo.TylerSongs[song].snd
 		else
-			snd = CreateSound(LocalPlayer(), song)
+			snd = CreateSound(GameData.LocalPlayer, song)
 		end
 
 		if shouldDrawIcon then

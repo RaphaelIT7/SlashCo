@@ -163,29 +163,29 @@ if SERVER then
 end
 
 hook.Add("HUDPaint", "JugVisions", function()
-	if LocalPlayer():GetNWBool("JugCurseActivate") then
+	if GameData.LocalPlayer:GetNWBool("JugCurseActivate") then
 		local Overlay = Material("slashco/ui/overlays/jug_freeze")
 
-		if LocalPlayer().JugFrame < 61 then
-			Overlay:SetInt("$frame", math.floor(LocalPlayer().JugFrame))
+		if GameData.LocalPlayer.JugFrame < 61 then
+			Overlay:SetInt("$frame", math.floor(GameData.LocalPlayer.JugFrame))
 			Overlay:SetFloat("$alpha", 1)
 		else
 			Overlay:SetInt("$frame", 60)
-			Overlay:SetFloat("$alpha", 1 - ((LocalPlayer().JugFrame - 61) / 60))
+			Overlay:SetFloat("$alpha", 1 - ((GameData.LocalPlayer.JugFrame - 61) / 60))
 
-			if math.floor(LocalPlayer().JugFrame) == 61 then
-				LocalPlayer():EmitSound("slashco/jug_curse.mp3")
+			if math.floor(GameData.LocalPlayer.JugFrame) == 61 then
+				GameData.LocalPlayer:EmitSound("slashco/jug_curse.mp3")
 			end
 
 		end
 
-		LocalPlayer().JugFrame = LocalPlayer().JugFrame + RealFrameTime() * 30
-		if LocalPlayer().JugFrame < 120 then
+		GameData.LocalPlayer.JugFrame = GameData.LocalPlayer.JugFrame + RealFrameTime() * 30
+		if GameData.LocalPlayer.JugFrame < 120 then
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.SetMaterial(Overlay)
 			surface.DrawTexturedRect(0, 0 - (ScrW() / 6), ScrW(), ScrW())
 		end
 	else
-		LocalPlayer().JugFrame = 0
+		GameData.LocalPlayer.JugFrame = 0
 	end
 end)
