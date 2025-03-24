@@ -94,7 +94,7 @@ function GM:Initialize()
 		file.CreateDir("slashco/playerdata")
 
 		--Return to the lobby if no game is in progress and we just loaded in.
-		if SlashCo.State ~= SlashCo.States.IN_GAME and not GameData.IsLobby then
+		if SlashCo.State == SlashCo.States.LOBBY and not GameData.IsLobby then
 			SlashCo.GoToLobby()
 			SlashCo.State = SlashCo.States.LOBBY
 		else
@@ -387,7 +387,7 @@ hook.Add("InitPostEntity", "octoSlashCoInitPostEntity", function()
 end)
 
 --local setupPlayerData = false
-local Think = function()
+local function Think()
 	local plys = player.GetAll()
 	if engine.TickCount() % math.floor(5 / engine.TickInterval()) == 0 then
 		for _, p in ipairs(plys) do

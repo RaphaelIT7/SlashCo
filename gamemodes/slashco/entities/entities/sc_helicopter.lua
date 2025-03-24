@@ -247,7 +247,7 @@ if SERVER then
 		end
 
 		if team.NumPlayers(TEAM_SURVIVOR) > 0 and plyCount == team.NumPlayers(TEAM_SURVIVOR)
-				and SlashCo.State == SlashCo.States.IN_GAME and self.switch_full == nil then
+				and SlashCo.State ~= SlashCo.States.LOBBY and self.switch_full == nil then
 
 			SlashCo.UpdateObjective("helicopter", SlashCo.ObjStatus.COMPLETE)
 			SlashCo.SendObjectives()
@@ -258,7 +258,7 @@ if SERVER then
 		end
 
 		if team.NumPlayers(TEAM_SURVIVOR) > 0 and plyCount >= (team.NumPlayers(TEAM_SURVIVOR) / 2)
-				and SlashCo.State == SlashCo.States.IN_GAME and self.switch == nil then
+				and SlashCo.State ~= SlashCo.States.LOBBY and self.switch == nil then
 
 			if SlashCo.CurRound.Difficulty ~= SlashCo.DifficultyLevel.NOVICE then
 				return true
@@ -281,7 +281,7 @@ if SERVER then
 			end)
 		end
 
-		if team.NumPlayers(TEAM_SURVIVOR) > 0 and plyCount > 0 and SlashCo.State == SlashCo.States.IN_GAME
+		if team.NumPlayers(TEAM_SURVIVOR) > 0 and plyCount > 0 and SlashCo.State ~= SlashCo.States.LOBBY
 				and self.switch == nil then
 
 			if SlashCo.CurRound.Difficulty ~= SlashCo.DifficultyLevel.INTERMEDIATE then
