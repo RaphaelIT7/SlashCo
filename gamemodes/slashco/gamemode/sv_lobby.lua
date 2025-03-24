@@ -423,6 +423,7 @@ local function lobbyRoundSetup()
 
         --Assign the map randomly
         SlashCo.LobbyData.SelectedMap = GetRandomMap(#SlashCo.LobbyData.AssignedSurvivors)
+        SlashCo.PrecacheNextMap()
 
         if SlashCo.LobbyData.SelectedDifficulty > 0 then
             BeginSlasherSelection()
@@ -530,6 +531,7 @@ local function pickMap(ply, map)
     SlashCo.LobbyData.SelectedMap = map
     MapForceCost = MapForceCost + 50
     SlashCo.SendValue(nil, "mapGuar", SlashCo.LobbyData.SelectedMap, MapForceCost)
+    SlashCo.PrecacheNextMap()
 end
 
 hook.Add("scValue_pickItem", "slashCo_PickItem", function(ply, item)
