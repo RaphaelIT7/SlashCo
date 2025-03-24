@@ -26,7 +26,7 @@ SLASHER.SpeedRating = "★★★★☆"
 SLASHER.EyeRating = "★★☆☆☆"
 SLASHER.DiffRating = "★★★★★"
 
-SLASHER.OnSpawn = function(slasher)
+function SLASHER.OnSpawn(slasher)
 	local clone = ents.Create("sc_crimclone")
 
 	clone:SetPos(slasher:GetPos())
@@ -39,7 +39,7 @@ SLASHER.OnSpawn = function(slasher)
 	slasher:SetVisible(false)
 end
 
-SLASHER.OnTickBehaviour = function(slasher)
+function SLASHER.OnTickBehaviour(slasher)
 	local SO = SlashCo.CurRound.OfferingData.SO
 
 	v1 = slasher.SlasherValue1 --Cloning Duration
@@ -91,11 +91,11 @@ SLASHER.OnTickBehaviour = function(slasher)
 	slasher:SetNWInt("Slasher_Perception", final_perception)
 end
 
-SLASHER.OnPrimaryFire = function(slasher, target)
+function SLASHER.OnPrimaryFire(slasher, target)
 	SlashCo.Jumpscare(slasher, target)
 end
 
-SLASHER.OnSecondaryFire = function(slasher)
+function SLASHER.OnSecondaryFire(slasher)
 	local SO = SlashCo.CurRound.OfferingData.SO
 
 	if slasher.ChaseActivationCooldown > 0 then
@@ -132,10 +132,10 @@ SLASHER.OnSecondaryFire = function(slasher)
 	end
 end
 
-SLASHER.OnMainAbilityFire = function()
+function SLASHER.OnMainAbilityFire()
 end
 
-SLASHER.OnSpecialAbilityFire = function(slasher)
+function SLASHER.OnSpecialAbilityFire(slasher)
 	local SO = SlashCo.CurRound.OfferingData.SO
 
 	if not slasher:GetNWBool("CriminalCloning") then
@@ -163,13 +163,13 @@ SLASHER.OnSpecialAbilityFire = function(slasher)
 	slasher:SetNWBool("CriminalRage", true)
 end
 
-SLASHER.Animator = function(ply)
+function SLASHER.Animator(ply)
 	ply.CalcSeqOverride = 3
 
 	return ply.CalcIdeal, ply.CalcSeqOverride
 end
 
-SLASHER.Footstep = function(ply)
+function SLASHER.Footstep(ply)
 	if SERVER then
 		if ply.CrimStepTick == nil or ply.CrimStepTick > 2 then
 			ply.CrimStepTick = 0
@@ -191,7 +191,7 @@ local avatarTable = {
 	rage = Material("slashco/ui/icons/slasher/s_12_1")
 }
 
-SLASHER.InitHud = function(_, hud)
+function SLASHER.InitHud(_, hud)
 	hud:SetAvatarTable(avatarTable)
 	hud:SetTitle("Criminal")
 

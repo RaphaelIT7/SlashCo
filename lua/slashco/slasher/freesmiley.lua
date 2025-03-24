@@ -26,13 +26,13 @@ SLASHER.SpeedRating = "★☆☆☆☆"
 SLASHER.EyeRating = "★★★☆☆"
 SLASHER.DiffRating = "★★☆☆☆"
 
-SLASHER.OnSpawn = function(slasher)
+function SLASHER.OnSpawn(slasher)
 	SLASHER.SmileyIdle(slasher)
 	slasher:SetNWBool("CanKill", true)
 	slasher:SetNWBool("CanChase", true)
 end
 
-SLASHER.OnTickBehaviour = function(slasher)
+function SLASHER.OnTickBehaviour(slasher)
 	local v1 = slasher.SlasherValue1 --Summon Cooldown
 	local v2 = slasher.SlasherValue2 --Selected Summon
 
@@ -47,15 +47,15 @@ SLASHER.OnTickBehaviour = function(slasher)
 	slasher:SetNWInt("Slasher_Perception", SLASHER.Perception)
 end
 
-SLASHER.OnPrimaryFire = function(slasher, target)
+function SLASHER.OnPrimaryFire(slasher, target)
 	SlashCo.Jumpscare(slasher, target)
 end
 
-SLASHER.OnSecondaryFire = function(slasher)
+function SLASHER.OnSecondaryFire(slasher)
 	SlashCo.StartChaseMode(slasher)
 end
 
-SLASHER.OnMainAbilityFire = function(slasher)
+function SLASHER.OnMainAbilityFire(slasher)
 	if slasher:GetNWBool("FreeSmileySummoning") then
 		return
 	end
@@ -73,7 +73,7 @@ SLASHER.OnMainAbilityFire = function(slasher)
 	end
 end
 
-SLASHER.OnSpecialAbilityFire = function(slasher)
+function SLASHER.OnSpecialAbilityFire(slasher)
 	local SO = SlashCo.CurRound.OfferingData.SO
 
 	if not SlashCo.IsPositionLegalForSlashers(slasher:GetPos()) then
@@ -121,7 +121,7 @@ SLASHER.OnSpecialAbilityFire = function(slasher)
 	end)
 end
 
-SLASHER.Animator = function(ply)
+function SLASHER.Animator(ply)
 	local chase = ply:GetNWBool("InSlasherChaseMode")
 	local smiley_summon = ply:GetNWBool("FreeSmileySummoning")
 
@@ -150,7 +150,7 @@ SLASHER.Animator = function(ply)
 	return ply.CalcIdeal, ply.CalcSeqOverride
 end
 
-SLASHER.Footstep = function(ply)
+function SLASHER.Footstep(ply)
 	if SERVER then
 		if ply.SmileyStepTick == nil or ply.SmileyStepTick > 1 then
 			ply.SmileyStepTick = 0
@@ -184,7 +184,7 @@ local dealSwitchTable = {
 	["d/"] = Material("slashco/ui/icons/slasher/kill_disabled")
 }
 
-SLASHER.InitHud = function(_, hud)
+function SLASHER.InitHud(_, hud)
 	hud:SetAvatar(Material("slashco/ui/icons/slasher/s_13"))
 	hud:SetTitle("FreeSmiley")
 
@@ -265,7 +265,7 @@ SLASHER.InitHud = function(_, hud)
 	end)
 end
 
-SLASHER.SmileyIdle = function(slasher)
+function SLASHER.SmileyIdle(slasher)
 	if not slasher:GetNWBool("InSlasherChaseMode") then
 		slasher:EmitSound("slashco/slasher/freesmiley_idle" .. math.random(1, 7) .. ".mp3")
 	end

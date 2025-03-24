@@ -8,7 +8,7 @@ ITEM.Price = 15
 ITEM.Description = "Mayo_desc"
 ITEM.CamPos = Vector(50,0,20)
 ITEM.IsSpawnable = true
-ITEM.OnUse = function(ply)
+function ITEM.OnUse(ply)
     --While the item is stored, a survivor can press R to consume it. It will set their health to 200, regardless of current health.
 
     ply:SetHealth( 200 )

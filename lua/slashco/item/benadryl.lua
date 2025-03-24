@@ -6,10 +6,10 @@ ITEM.EntClass = "sc_benadryl"
 ITEM.Price = 30
 ITEM.Description = "Benadryl_desc"
 ITEM.CamPos = Vector(50, 0, 0)
-ITEM.DisplayColor = function()
+function ITEM.DisplayColor()
 	return 128, 48, 0, 255
 end
-ITEM.OnUse = function(ply)
+function ITEM.OnUse(ply)
 	ply:AddPoints("benadryl")
 	ply:EmitSound("slashco/survivor/benadryl_eat.mp3")
 

@@ -9,17 +9,17 @@ ITEM.CamPos = Vector(50, 0, 0)
 ITEM.ChangesSpeed = true
 ITEM.IsSpawnable = true
 
-ITEM.ItemDropped = function(ply, droppeditem)
+function ITEM.ItemDropped(ply, droppeditem)
 	if ply.JugTele then
 		timer.Remove("JugTele_" .. ply:UserID())
 		droppeditem:EmitSound("slashco/jug_curse.mp3", 75, 50)
 		ply.JugTele = false
 	end
 end
-ITEM.OnSwitchFrom = function(ply)
+function ITEM.OnSwitchFrom(ply)
 	ply:RemoveSpeedEffect("jug")
 end
-ITEM.PrePickUp = function(ply)
+function ITEM.PrePickUp(ply)
 	if not ply:GetNWBool("CurseOfTheJug") then
 		return
 	end
@@ -33,7 +33,7 @@ ITEM.PrePickUp = function(ply)
 
 	return true
 end
-ITEM.OnPickUp = function(ply)
+function ITEM.OnPickUp(ply)
 	if ply:GetNWBool("CurseOfTheJug") then
 		timer.Simple(0, function()
 			SlashCo.DropItem(ply)

@@ -7,11 +7,11 @@ ITEM.Icon = "slashco/ui/icons/items/item_9"
 ITEM.Price = 15
 ITEM.Description = "Beacon_desc"
 ITEM.CamPos = Vector(50,0,35)
-ITEM.MaxAllowed = function()
+function ITEM.MaxAllowed()
 	return 1
 end
 ITEM.IsSpawnable = false
-ITEM.OnUse = function(ply)
+function ITEM.OnUse(ply)
 	--If the holder of the item is the last one alive and at least one generator has been activated, the rescue helicopter will come prematurely.
 
 	if SlashCo.CurRound.EscapeHelicopterSummoned then

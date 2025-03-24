@@ -221,7 +221,7 @@ SlashCo.LobbyConvos = {
 
 }
 
-SlashCo.LobbyBanter = function()
+function SlashCo.LobbyBanter()
 	local survivors = team.GetPlayers(TEAM_SURVIVOR)
 
 	if #survivors < 2 then
@@ -284,7 +284,7 @@ net.Receive("mantislashco_SurvivorVoicePrompt", function(_, ply)
 	ply:EmitSound("slashco/survivor/voice/prompt_" .. prompt .. math.random(1, 5) .. ".mp3")
 end)
 
-SlashCo.EscapeVoicePrompt = function()
+function SlashCo.EscapeVoicePrompt()
 	if team.NumPlayers(TEAM_SURVIVOR) < 1 then
 		return
 	end

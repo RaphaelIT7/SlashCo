@@ -27,12 +27,12 @@ SLASHER.EyeRating = "★★☆☆☆"
 SLASHER.DiffRating = "★★★☆☆"
 SLASHER.ItemToSpawn = "MilkJug"
 
-SLASHER.OnSpawn = function(slasher)
+function SLASHER.OnSpawn(slasher)
 	slasher:SetViewOffset(Vector(0, 0, 20))
 	slasher:SetCurrentViewOffset(Vector(0, 0, 20))
 end
 
-SLASHER.OnTickBehaviour = function(slasher)
+function SLASHER.OnTickBehaviour(slasher)
 	local SO = SlashCo.CurRound.OfferingData.SO
 	--local SatO = SlashCo.CurRound.OfferingData.SatO
 
@@ -96,15 +96,15 @@ SLASHER.OnTickBehaviour = function(slasher)
 	slasher:SetNWInt("Slasher_Perception", perception_final)
 end
 
-SLASHER.OnPrimaryFire = function(slasher, target)
+function SLASHER.OnPrimaryFire(slasher, target)
 	SlashCo.Jumpscare(slasher, target)
 end
 
-SLASHER.OnSecondaryFire = function(slasher)
+function SLASHER.OnSecondaryFire(slasher)
 	SlashCo.StartChaseMode(slasher)
 end
 
-SLASHER.OnMainAbilityFire = function(slasher, target)
+function SLASHER.OnMainAbilityFire(slasher, target)
 	local SO = SlashCo.CurRound.OfferingData.SO
 	local SatO = SlashCo.CurRound.OfferingData.SatO
 
@@ -201,7 +201,7 @@ SLASHER.OnMainAbilityFire = function(slasher, target)
 	end)
 end
 
-SLASHER.Animator = function(ply)
+function SLASHER.Animator(ply)
 	local chase = ply:GetNWBool("InSlasherChaseMode")
 	local pac = ply:GetNWBool("DemonPacified")
 
@@ -243,7 +243,7 @@ SLASHER.Animator = function(ply)
 	return ply.CalcIdeal, ply.CalcSeqOverride
 end
 
-SLASHER.Footstep = function()
+function SLASHER.Footstep()
 	return true
 end
 
@@ -253,7 +253,7 @@ local milkTable = {
 }
 
 local gray = Color(128, 128, 128)
-SLASHER.InitHud = function(_, hud)
+function SLASHER.InitHud(_, hud)
 	hud:SetAvatar(Material("slashco/ui/icons/slasher/s_5"))
 	hud:SetTitle("Thirsty")
 
@@ -280,7 +280,7 @@ SLASHER.InitHud = function(_, hud)
 	})
 end
 
-SLASHER.PreDrawHalos = function()
+function SLASHER.PreDrawHalos()
 	SlashCo.DrawHalo(ents.FindByClass("sc_milkjug"), "gray", 2, false)
 
 	local plyWithItem = {}
@@ -293,7 +293,7 @@ SLASHER.PreDrawHalos = function()
 	SlashCo.DrawHalo(plyWithItem, "gray", 2, false)
 end
 
-SLASHER.ThirstyRage = function(ply)
+function SLASHER.ThirstyRage(ply)
 	local pos = ply:GetPos()
 
 	for _, slasher in ipairs(team.GetPlayers(TEAM_SLASHER)) do

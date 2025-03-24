@@ -26,11 +26,11 @@ SLASHER.SpeedRating = "★★★★★"
 SLASHER.EyeRating = "★★☆☆☆"
 SLASHER.DiffRating = "★★★☆☆"
 
-SLASHER.OnSpawn = function(slasher)
+function SLASHER.OnSpawn(slasher)
 	slasher.SlasherValue1 = 1
 end
 
-SLASHER.OnTickBehaviour = function(slasher)
+function SLASHER.OnTickBehaviour(slasher)
 	local SO = SlashCo.CurRound.OfferingData.SO
 
 	local v1 = slasher.SlasherValue1 --State
@@ -138,7 +138,7 @@ SLASHER.OnTickBehaviour = function(slasher)
 	slasher:SetNWInt("Slasher_Perception", perception_final)
 end
 
-SLASHER.OnPrimaryFire = function(slasher, target)
+function SLASHER.OnPrimaryFire(slasher, target)
 	if slasher.SlasherValue1 == 1 then
 		SlashCo.Jumpscare(slasher, target)
 		return
@@ -193,11 +193,11 @@ SLASHER.OnPrimaryFire = function(slasher, target)
 	end
 end
 
-SLASHER.OnSecondaryFire = function(slasher)
+function SLASHER.OnSecondaryFire(slasher)
 	SlashCo.StartChaseMode(slasher)
 end
 
-SLASHER.OnMainAbilityFire = function(slasher, target)
+function SLASHER.OnMainAbilityFire(slasher, target)
 	if slasher.SlasherValue3 > 0 or slasher:GetNWBool("InSlasherChaseMode") then
 		return
 	end
@@ -249,7 +249,7 @@ SLASHER.OnMainAbilityFire = function(slasher, target)
 	end
 end
 
-SLASHER.Animator = function(ply)
+function SLASHER.Animator(ply)
 	local male_slashing = ply:GetNWBool("Male07Slashing")
 	local male_transforming = ply:GetNWBool("Male07Transforming")
 	local chase = ply:GetNWBool("InSlasherChaseMode")
@@ -309,7 +309,7 @@ SLASHER.Animator = function(ply)
 	return ply.CalcIdeal, ply.CalcSeqOverride
 end
 
-SLASHER.OnItemSpawn = function()
+function SLASHER.OnItemSpawn()
 	local diff = SlashCo.CurRound.Difficulty
 
 	for _ = 1, (math.random(0, 6) + (10 * SlashCo.MapSize) + (diff * 4)) do
@@ -317,7 +317,7 @@ SLASHER.OnItemSpawn = function()
 	end
 end
 
-SLASHER.Footstep = function(ply)
+function SLASHER.Footstep(ply)
 	if SERVER then
 		if ply:GetModel() == "models/hunter/plates/plate.mdl" then
 			return true
@@ -341,7 +341,7 @@ local avatarTable = {
 	monster = Material("slashco/ui/icons/slasher/s_6_s2")
 }
 
-SLASHER.InitHud = function(_, hud)
+function SLASHER.InitHud(_, hud)
 	hud:SetAvatarTable(avatarTable)
 	hud:SetTitle("Male07")
 

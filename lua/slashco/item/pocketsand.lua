@@ -8,7 +8,7 @@ ITEM.Price = 30
 ITEM.Description = "PocketSand_desc"
 ITEM.CamPos = Vector(50, 0, 0)
 ITEM.IsSpawnable = true
-ITEM.OnUse = function(ply)
+function ITEM.OnUse(ply)
     local found = {}
 
     for _, s in ipairs(team.GetPlayers(TEAM_SLASHER)) do

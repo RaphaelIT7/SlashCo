@@ -8,7 +8,7 @@ ITEM.Price = 10
 ITEM.Description = "MilkJug_desc"
 ITEM.CamPos = Vector(60,0,10)
 ITEM.IsSpawnable = true
-ITEM.OnUse = function(ply)
+function ITEM.OnUse(ply)
     --While the item is stored, a survivor can press R to consume it. It will set their sprint speed to 400 for 15 seconds.
 
     ply:EmitSound("slashco/survivor/drink_milk.mp3")

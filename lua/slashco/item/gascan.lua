@@ -11,22 +11,22 @@ ITEM.CamPos = Vector(80, 0, 0)
 ITEM.ChangesSpeed = true
 ITEM.IsSpawnable = false
 ITEM.IsFuel = true
-ITEM.MaxAllowed = function()
+function ITEM.MaxAllowed()
 	return 2
 end
-ITEM.OnDrop = function(ply)
+function ITEM.OnDrop(ply)
 	return 45
 end
-ITEM.OnSwitchFrom = function(ply)
+function ITEM.OnSwitchFrom(ply)
 	ply:RemoveSpeedEffect("gas")
 end
-ITEM.OnBuy = function(_)
+function ITEM.OnBuy(_)
 	SlashCo.LobbyData.SurvivorGasMod = SlashCo.LobbyData.SurvivorGasMod + 1
 end
-ITEM.OnPickUp = function(ply)
+function ITEM.OnPickUp(ply)
 	ply:AddSpeedEffect("gas", 200, 10)
 end
-ITEM.EquipSound = function()
+function ITEM.EquipSound()
 	return "slashco/survivor/gascan_pickup" .. math.random(1, 3) .. ".wav"
 end
 ITEM.ViewModel = {

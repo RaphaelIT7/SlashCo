@@ -26,11 +26,11 @@ SLASHER.SpeedRating = "★★☆☆☆"
 SLASHER.EyeRating = "★★★☆☆"
 SLASHER.DiffRating = "★★★☆☆"
 
-SLASHER.PickUpAttempt = function(ply)
+function SLASHER.PickUpAttempt(ply)
 	return ply:GetNWBool("AmogusSurvivorDisguise")
 end
 
-SLASHER.OnTickBehaviour = function(slasher)
+function SLASHER.OnTickBehaviour(slasher)
 	if IsValid(ents.GetByIndex(slasher.SlasherValue3)) then
 		ents.GetByIndex(slasher.SlasherValue3):SetAngles(Angle(0, slasher:EyeAngles()[2], 0))
 	end
@@ -70,7 +70,7 @@ SLASHER.OnTickBehaviour = function(slasher)
 	slasher:SetNWInt("Slasher_Perception", SLASHER.Perception)
 end
 
-SLASHER.OnPrimaryFire = function(slasher, target)
+function SLASHER.OnPrimaryFire(slasher, target)
 	if not slasher:GetNWBool("AmogusSurvivorDisguise") then
 		SlashCo.Jumpscare(slasher, target)
 	end
@@ -119,11 +119,11 @@ SLASHER.OnPrimaryFire = function(slasher, target)
 	end)
 end
 
-SLASHER.OnSecondaryFire = function(slasher)
+function SLASHER.OnSecondaryFire(slasher)
 	SlashCo.StartChaseMode(slasher)
 end
 
-SLASHER.OnMainAbilityFire = function(slasher)
+function SLASHER.OnMainAbilityFire(slasher)
 	local SO = SlashCo.CurRound.OfferingData.SO
 
 	if not slasher:GetNWBool("AmogusDisguising") and slasher.SlasherValue2 < 0.01 and not slasher:GetNWBool("AmogusSurvivorDisguise") and not slasher:GetNWBool("AmogusDisguised") then
@@ -188,7 +188,7 @@ SLASHER.OnMainAbilityFire = function(slasher)
 	end
 end
 
-SLASHER.OnSpecialAbilityFire = function(slasher)
+function SLASHER.OnSpecialAbilityFire(slasher)
 	if not slasher:GetNWBool("AmogusDisguising") and slasher.SlasherValue2 < 0.01 and not slasher:GetNWBool("AmogusFuelDisguise") and not slasher:GetNWBool("AmogusDisguised") then
 		slasher:SetNWBool("AmogusDisguising", true)
 		slasher:Freeze(true)
@@ -228,7 +228,7 @@ SLASHER.OnSpecialAbilityFire = function(slasher)
 	end
 end
 
-SLASHER.Animator = function(ply)
+function SLASHER.Animator(ply)
 	if ply:GetNWBool("AmogusSurvivorDisguise") then
 		return
 	end
@@ -248,7 +248,7 @@ SLASHER.Animator = function(ply)
 	return ply.CalcIdeal, ply.CalcSeqOverride
 end
 
-SLASHER.Footstep = function(ply)
+function SLASHER.Footstep(ply)
 	if SERVER then
 		if ply:GetNWBool("AmogusFuelDisguise") then
 			return true
@@ -308,7 +308,7 @@ local killTable = {
 	["d/sneak kill"] = Material("slashco/ui/icons/slasher/kill_disabled")
 }
 
-SLASHER.InitHud = function(_, hud)
+function SLASHER.InitHud(_, hud)
 	hud:SetTitle("Amogus")
 	hud:SetAvatarTable(avatarTable)
 

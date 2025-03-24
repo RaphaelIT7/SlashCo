@@ -9,7 +9,7 @@ ITEM.Description = "Flare_desc"
 ITEM.ReplacesWorldProps = true
 ITEM.CamPos = Vector(50,0,20)
 ITEM.IsSpawnable = true
-ITEM.OnUse = function(ply)
+function ITEM.OnUse(ply)
     local flare = SlashCo.CreateItem("sc_flare", ply:LocalToWorld( Vector(0, 0, 30) ) , ply:LocalToWorldAngles( Angle(0,0,0) ))
     flare:GetPhysicsObject():SetVelocity(ply:GetAimVector() * 400)
     flare:SetNWBool("FlareActive", true)
