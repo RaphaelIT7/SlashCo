@@ -4,6 +4,7 @@ function SlashCo.SelectSlasher(slasher_name, plyid)
 	SlashCo.CurRound.Slashers[plyid] = {}
 	SlashCo.CurRound.Slashers[plyid].SlasherID = slasher_name
 	SlashCo.CurRound.Slashers[plyid].GasCanMod = SlashCoSlashers[slasher_name].GasCanMod
+	SlashCo.PrecacheSlasher(slasher_name)
 end
 
 function SlashCo.ApplySlasherToPlayer(ply)
