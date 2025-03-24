@@ -33,6 +33,10 @@ function SLASHER.OnSpawn(slasher)
 	slasher:SetNWBool("CanKill", true)
 end
 
+function SLASHER.Precache()
+	SlashCo.PrecacheSound("slashco/slasher/watcher_rage.wav")
+end
+
 function SLASHER.OnTickBehaviour(slasher)
 	--local SO = SlashCo.CurRound.OfferingData.SO
 

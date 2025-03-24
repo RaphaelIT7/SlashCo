@@ -104,6 +104,14 @@ function SlashCo.PrecacheSlasher(slasherName)
 		SlashCo.PrecacheModel(slasherTbl.Model)
 	end
 
+	if slasherTbl.ChaseMusic then
+		SlashCo.PrecacheSound(slasherTbl.ChaseMusic)
+	end
+
+	if slasherTbl.KillSound then
+		SlashCo.PrecacheSound(slasherTbl.KillSound)
+	end
+
 	if slasherTbl.Precache then
 		slasherTbl.Precache()
 	end
@@ -141,4 +149,8 @@ function SlashCo.PrecacheItem(itemName)
 		print("[Content] Precached Item \"" .. itemName .. "\"")
 		SlashCo.Content.PrecacheItems[itemName] = true
 	end
+end
+
+if SERVER then
+	hook.Run("SlashCo:Precache")
 end

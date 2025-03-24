@@ -12,6 +12,15 @@ ENT.Purpose = "Combustion engine powered generator unit."
 ENT.Instructions = ""
 ENT.PingType = "GENERATOR"
 
+hook.Add("SlashCo:Precache", "PrecacheGenerator", function()
+	SlashCo.PrecacheSound("slashco/generator_fill.wav")
+	SlashCo.PrecacheSound("slashco/generator_start.wav")
+	SlashCo.PrecacheSound("slashco/generator_loop.wav")
+	SlashCo.PrecacheSound("slashco/generator_failstart.wav")
+	SlashCo.PrecacheSound("ambient/machines/zap1.wav")
+	SlashCo.PrecacheSound("slashco/battery_insert.wav")
+end)
+
 local DefaultTimeToFuel = 13
 local TimeToFuel = DefaultTimeToFuel
 
