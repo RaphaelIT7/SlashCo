@@ -28,6 +28,13 @@ local function ArmBeacon(ent)
 end
 
 if SERVER then
+	hook.Add("SlashCo:Precache", "PrecacheBeacon", function()
+		SlashCo.PrecacheSound("slashco/survivor/distress_siren.wav")
+		SlashCo.PrecacheSound("slashco/beacon_connect.mp3")
+		SlashCo.PrecacheSound("slashco/beacon_break.mp3")
+		SlashCo.PrecacheModel("models/props_c17/light_cagelight02_off.mdl")
+	end)
+
 	function ENT:UpdateTransmitState()
 		return TRANSMIT_ALWAYS
 	end

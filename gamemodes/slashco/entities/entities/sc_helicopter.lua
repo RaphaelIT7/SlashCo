@@ -17,6 +17,13 @@ ENT.PingType = "HELICOPTER"
 --local plyCount = 0
 --local self.switch = false
 
+hook.Add("SlashCo:Precache", "PrecacheHelicopter", function()
+	SlashCo.PrecacheSound("slashco/helicopter_engine_distant.wav")
+	SlashCo.PrecacheSound("slashco/helicopter_rotors_distant.wav")
+	SlashCo.PrecacheSound("slashco/helicopter_engine_close.wav")
+	SlashCo.PrecacheSound("slashco/helicopter_rotors_close.wav")
+end)
+
 function ENT:Initialize()
 	if SERVER then
 		self:SetModel(SlashCo.HelicopterModel)

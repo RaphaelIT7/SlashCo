@@ -28,10 +28,12 @@ function PLAYER:Loadout()
 	self.Player:SetCanWalk(true)
 end
 
-local modelFiles = file.Find("models/slashco/survivor/male_0*.mdl", "GAME")
-for _, modelName in ipairs(modelFiles) do
-	SlashCo.PrecacheModel("models/slashco/survivor/" .. modelName)
-end
+hook.Add("SlashCo:Precache", "PrecacheSurvivorModels", function()
+	local modelFiles = file.Find("models/slashco/survivor/male_0*.mdl", "GAME")
+	for _, modelName in ipairs(modelFiles) do
+		SlashCo.PrecacheModel("models/slashco/survivor/" .. modelName)
+	end
+end)
 
 function PLAYER:SetModel()
 	local cl_modelname = self.Player:GetInfo("slashco_cl_playermodel")

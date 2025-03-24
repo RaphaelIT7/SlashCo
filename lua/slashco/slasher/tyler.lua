@@ -32,6 +32,16 @@ function SLASHER.OnSpawn(slasher)
 	slasher:SetVisible(false)
 end
 
+function SLASHER.Precache()
+	for k=1, 6 do
+		SlashCo.PrecacheSound("slashco/slasher/tyler_song_" .. k .. ".mp3")
+	end
+	
+	SlashCo.PrecacheSound("slashco/slasher/tyler_destroyer_theme.wav")
+	SlashCo.PrecacheSound("slashco/slasher/tyler_destroyer_whisper.wav")
+	SlashCo.PrecacheSound("slashco/slasher/tyler_alarm.wav")
+end
+
 function SLASHER.HideTime(slasher)
 	slasher.TylerTime = 25 + SlashCo.MapSize * 25 - slasher.SlasherValue4 * 3 - team.NumPlayers(TEAM_SURVIVOR)
 end
