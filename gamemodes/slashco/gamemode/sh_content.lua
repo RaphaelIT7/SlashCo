@@ -1,7 +1,11 @@
 SlashCo = SlashCo or {}
 
 function SlashCo.FindWorkshopID(mapName)
-	local mapPath = "maps/" .. game.GetMap() .. ".bsp"
+	if not string.EndsWith(mapName, ".bsp") then
+		mapName = mapName .. ".bsp"
+	end
+
+	local mapPath = "maps/" .. mapName
 	for _, addon in ipairs(engine.GetAddons()) do
 		if file.Exists(mapPath, addon.title) then
 			return addon.wsid, addon.title
@@ -14,7 +18,7 @@ end
 if SERVER then
 	local wsid, title = SlashCo.FindWorkshopID(game.GetMap())
 	if wsid then
-		print("Current map is from Addon " .. title)
+		print("[Content] Current map is from Addon " .. title)
 		resource.AddWorkshop(wsid) -- Adds the current map to the server download.
 	end
 end
@@ -24,25 +28,32 @@ if CLIENT then
 		local wsid = net.ReadString()
 		local title = net.ReadString()
 
+		print("Received precache signal")
 		steamworks.FileInfo(wsid, function(result)
-			if result.installed then return end -- The map is already installed :3
+			if result.installed and not result.disabled then  -- The map is already installed :3
+				print("[Content] The next map is already installed\n")
+				return
+			end
 
 			steamworks.DownloadUGC(wsid, function(path, file)
 				if path then
-					print("Successfully precached \"" .. title .. "\" (" .. wsid .. ") for the next round")
+					print("[Content] Successfully precached \"" .. title .. "\" (" .. wsid .. ") for the next round")
 				else
-					print("Failed to precache \"" .. title .. "\" (" .. wsid .. ")")
+					print("[Content] Failed to precache \"" .. title .. "\" (" .. wsid .. ")")
 				end
 			end)
 		end)
 	end)
 else
+	util.AddNetworkString("slashco_PrecacheMap")
 	function SlashCo.PrecacheNextMap()
 		local mapName = SlashCo.LobbyData.SelectedMap
 		local wsid, title = SlashCo.FindWorkshopID(mapName)
 		if not wsid then
-			print("Failed to precache next map as it wasn't found in any addon! (" .. mapName .. ")")
+			print("[Content] Failed to precache next map as it wasn't found in any addon! (" .. mapName .. ")")
 			return
+		else
+			print("[Content] Sent out precache signal for map \"" .. mapName .. "\" (\"" .. title .. "\" - " .. wsid .. ")")
 		end
 
 		net.Start("slashco_PrecacheMap")
