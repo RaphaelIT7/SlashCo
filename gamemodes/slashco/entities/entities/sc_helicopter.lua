@@ -260,7 +260,7 @@ if SERVER then
 		if team.NumPlayers(TEAM_SURVIVOR) > 0 and plyCount >= (team.NumPlayers(TEAM_SURVIVOR) / 2)
 				and SlashCo.State == SlashCo.States.IN_GAME and self.switch == nil then
 
-			if SlashCo.CurRound.Difficulty ~= 1 then
+			if SlashCo.CurRound.Difficulty ~= SlashCo.DifficultyLevel.NOVICE then
 				return true
 			end
 			self.switch = true
@@ -284,7 +284,7 @@ if SERVER then
 		if team.NumPlayers(TEAM_SURVIVOR) > 0 and plyCount > 0 and SlashCo.State == SlashCo.States.IN_GAME
 				and self.switch == nil then
 
-			if SlashCo.CurRound.Difficulty ~= 2 then
+			if SlashCo.CurRound.Difficulty ~= SlashCo.DifficultyLevel.INTERMEDIATE then
 				return true
 			end
 			self.switch = true

@@ -147,24 +147,6 @@ local function teamSummary(lines, survivors, rescued)
 	end
 end
 
-local dangerTable = {
-	[0] = "Unknown",
-	"Moderate",
-	"Considerable",
-	"Devastating"
-}
-local classTable = {
-	[0] = "Unknown",
-	"Cryptid",
-	"Demon",
-	"Umbra"
-}
-local difficultyTable = {
-	[0] = "Easy",
-	"Novice",
-	"Intermediate",
-	"Hard"
-}
 local stateTable = {
 	[0] = "wonAllSurvivors",
 	"wonSomeSurvivors",
@@ -235,9 +217,9 @@ local stringTable = {
 			SlashCo.Language("cur_assignment", info[1]),
 			SlashCo.Language("slasher_assess"),
 			SlashCo.Language("Name", info[2]),
-			SlashCo.Language("Class", classTable[info[3]]),
-			SlashCo.Language("DangerLevel", dangerTable[info[4]]),
-			SlashCo.Language("Difficulty", difficultyTable[info[5]]),
+			SlashCo.Language("Class", SlashCo.SlasherClass[info[3]]),
+			SlashCo.Language("DangerLevel", SlashCo.DangerLevel[info[4]]),
+			SlashCo.Language("Difficulty", SlashCo.DifficultyLevel[info[5]]),
 		}
 		if info[6] ~= "Regular" then
 			table.insert(lines, SlashCo.Language("Offering_name", info[6]))
