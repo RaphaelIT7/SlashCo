@@ -150,7 +150,6 @@ function SLASHER.OnMainAbilityFire(slasher)
 			if #s > 0 then
 				modelname = s[math.random(1, #s)]:GetModel()
 			end
-			util.PrecacheModel(modelname)
 			slasher:SetModel(modelname)
 
 			slasher:SetRunSpeed(300)
@@ -167,8 +166,7 @@ function SLASHER.OnMainAbilityFire(slasher)
 		slasher:SlasherHudFunc("SetAvatar", "default")
 		slasher:SlasherHudFunc("SetTitle", "Amogus")
 
-		util.PrecacheModel("models/slashco/slashers/amogus/amogus.mdl")
-		slasher:SetModel("models/slashco/slashers/amogus/amogus.mdl")
+		slasher:SetModel(SLASHER.Model)
 
 		slasher:SetVisible(true)
 

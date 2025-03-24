@@ -911,3 +911,22 @@ concommand.Add("lobby_leave", function(ply)
         end)
     end
 end)
+
+util.AddNetworkString("slashCo_SpectatorSceneToPVS")
+if GameData.IsLobby then
+	net.Receive("slashCo_SpectatorSceneToPVS", function(len, ply)
+		if ply:Team() ~= TEAM_SPECTATOR then
+			return
+		end
+
+		ply.spectatorScenePos = net.ReadVector()
+	end)
+
+	hook.Add("SetupPlayerVisibility", "SpectatorsPVS", function(ply)
+		if ply:Team() ~= TEAM_SPECTATOR or not ply.spectatorScenePos then
+			return
+		end
+
+		AddOriginToPVS(ply.spectatorScenePos)
+	end)
+end
