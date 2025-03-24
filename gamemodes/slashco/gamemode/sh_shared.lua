@@ -96,6 +96,16 @@ if CLIENT then
 		GameData.LocalPlayer = LocalPlayer()
 		GameData.LocalSteamID = GameData.LocalPlayer:SteamID()
 		GameData.LocalSteamID64 = GameData.LocalPlayer:SteamID64()
+
+
+	end
+else
+	function GM:InitPostEntity()
+		if GameData.IsLobby then
+			SlashCo.CreateHelicopter(Vector(644.594, -423.175, 40.004), Angle(0, 45, 0))
+			SlashCo.CreateItemStash(Vector(-483.500, -260.000, 88.000), Angle(90, 180, 180))
+			SlashCo.CreateOfferTable(Vector(940.838, 890.909, -191.853), Angle(0, -90, 0))
+		end
 	end
 end
 
