@@ -44,3 +44,16 @@ end
 hook.Add("PlayerDeath", "slashCoRemoveImpervious", function(victim)
 	victim:SetImpervious(false)
 end)
+
+function GM:PlayerSpawnAsSpectator(ply)
+	ply:StripWeapons()
+
+	if ply:Team() == TEAM_UNASSIGNED then
+		ply:Spectate(OBS_MODE_FIXED)
+		return
+	end
+
+	ply:SetTeam(TEAM_SPECTATOR)
+	ply:Spectate(OBS_MODE_ROAMING)
+	ply:SetMoveType(MOVETYPE_NOCLIP) -- Solves prediction issues as MOVETYPE_OBSERVER doesn't predict well
+end
