@@ -70,7 +70,7 @@ function GM:PlayerDeathThink(ply)
 end
 
 function GM:CanPlayerSuicide(player)
-	if player:Team() == TEAM_SPECTATOR or player:Team() == TEAM_SLASHER then
+	if player:Team() == TEAM_SPECTATOR or player:Team() == TEAM_SLASHER or GetGlobal2Bool("IsLobbyStarting") then
 		return false
 	end
 
