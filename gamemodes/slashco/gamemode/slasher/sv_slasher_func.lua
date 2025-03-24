@@ -1,7 +1,6 @@
 local SlashCo = SlashCo
 
 function SlashCo.SelectSlasher(slasher_name, plyid)
-	print(slasher_name)
 	SlashCo.CurRound.Slashers[plyid] = {}
 	SlashCo.CurRound.Slashers[plyid].SlasherID = slasher_name
 	SlashCo.CurRound.Slashers[plyid].GasCanMod = SlashCoSlashers[slasher_name].GasCanMod
