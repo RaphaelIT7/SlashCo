@@ -112,8 +112,6 @@ if CLIENT then
 		GameData.LocalPlayer = LocalPlayer()
 		GameData.LocalSteamID = GameData.LocalPlayer:SteamID()
 		GameData.LocalSteamID64 = GameData.LocalPlayer:SteamID64()
-
-
 	end
 else
 	function GM:InitPostEntity()
