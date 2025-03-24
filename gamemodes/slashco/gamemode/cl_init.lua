@@ -76,6 +76,7 @@ include("sh_bhop.lua")
 include("sh_roundpoints.lua")
 include("sh_canbeseen.lua")
 include("sh_content.lua")
+include("sh_player.lua")
 
 include("ui/cl_projector.lua")
 include("ui/cl_voiceselect.lua")

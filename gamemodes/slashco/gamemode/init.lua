@@ -28,6 +28,7 @@ AddCSLuaFile("sh_roundpoints.lua")
 AddCSLuaFile("sh_canbeseen.lua")
 AddCSLuaFile("cl_thirdperson.lua")
 AddCSLuaFile("sh_content.lua")
+AddCSLuaFile("sh_player.lua")
 
 include("sv_globals.lua")
 include("sh_shared.lua")
@@ -56,6 +57,7 @@ include("sv_objectives.lua")
 include("sh_roundpoints.lua")
 include("sh_canbeseen.lua")
 include("sh_content.lua")
+include("sh_player.lua")
 
 local SlashCo = SlashCo or {}
 
