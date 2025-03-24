@@ -27,6 +27,7 @@ AddCSLuaFile("ui/cl_pings.lua")
 AddCSLuaFile("sh_roundpoints.lua")
 AddCSLuaFile("sh_canbeseen.lua")
 AddCSLuaFile("cl_thirdperson.lua")
+AddCSLuaFile("sh_content.lua")
 
 include("sv_globals.lua")
 include("sh_shared.lua")
@@ -54,15 +55,7 @@ include("sv_ghostping.lua")
 include("sv_objectives.lua")
 include("sh_roundpoints.lua")
 include("sh_canbeseen.lua")
-
-local map = "maps/" .. game.GetMap() .. ".bsp"
-for _, addon in ipairs(engine.GetAddons()) do
-	if file.Exists(map, addon.title) then
-		print("Current map is from Addon " .. addon.title)
-		resource.AddWorkshop(addon.wsid) -- Adds the current map to the server download.
-		break
-	end
-end
+include("sh_content.lua")
 
 local SlashCo = SlashCo or {}
 
