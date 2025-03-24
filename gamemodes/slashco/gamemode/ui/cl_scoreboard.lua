@@ -13,6 +13,16 @@ surface.CreateFont("ScoreboardDefaultTitle", {
 
 net.Receive("mantislashco_SendRoundData", function()
 	SlashCo.PlayerData = net.ReadTable()
+
+	local isSlasher = false
+	for _, tbl in pairs(SlashCo.PlayerData.slashers or {}) do
+		if tbl.steamid == GameData.LocalSteamID64 then
+			isSlasher = true
+			break
+		end
+	end
+
+	GameData.LocalIsSlasher = isSlasher
 end)
 
 --

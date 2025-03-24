@@ -306,6 +306,10 @@ hook.Add("CalcView", "LobbySpecCam", function(pl, pos, ang, fov)
 		return GAMEMODE:CalcView(pl, cur_pos, cur_ang, fov)
 	end
 
+	if GameData.LocalIsSlasher then
+		return
+	end
+
 	if not cur_scene then
 		cur_scene = math.random(1, #cutscene_views)
 		cur_pos = cutscene_views[cur_scene].Start[1]

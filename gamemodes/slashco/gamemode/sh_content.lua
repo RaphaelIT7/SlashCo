@@ -1,4 +1,6 @@
 SlashCo = SlashCo or {}
+SlashCo.Content = SlashCo.Content or {}
+SlashCo.Content.AddedMapToWorkshop = SlashCo.Content.AddedMapToWorkshop or false
 
 function SlashCo.FindWorkshopID(mapName)
 	if not string.EndsWith(mapName, ".bsp") then
@@ -15,11 +17,12 @@ function SlashCo.FindWorkshopID(mapName)
 	return nil, nil
 end
 
-if SERVER then
+if SERVER and not SlashCo.Content.AddedMapToWorkshop then
 	local wsid, title = SlashCo.FindWorkshopID(game.GetMap())
 	if wsid then
 		print("[Content] Current map is from Addon " .. title)
 		resource.AddWorkshop(wsid) -- Adds the current map to the server download.
+		SlashCo.Content.AddedMapToWorkshop = true
 	end
 end
 

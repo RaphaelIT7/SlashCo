@@ -91,6 +91,7 @@ if CLIENT then
 	GameData.StateOfLobby = GameData.StateOfLobby or 0
 	GameData.LobbyInfoTable = GameData.LobbyInfoTable or {}
 	GameData.TimeLeft = GameData.TimeLeft or nil
+	GameData.LocalIsSlasher = GameData.LocalIsSlasher or false
 
 	function GM:InitPostEntity()
 		GameData.LocalPlayer = LocalPlayer()
