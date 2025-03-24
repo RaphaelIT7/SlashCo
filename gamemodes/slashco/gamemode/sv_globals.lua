@@ -2,14 +2,6 @@ SlashCo = SlashCo or {}
 
 SlashCo.CurConfig = {}
 
---Difficulty ENUM
-SlashCo.Difficulty = {
-	EASY = 0,
-	NOVICE = 1,
-	INTERMEDIATE = 2,
-	HARD = 3
-}
-
 function GetRandomMap(ply_count)
 	local keys = table.GetKeys(SCInfo.Maps)
 	local rand, rand_name
@@ -37,7 +29,7 @@ SlashCo.LobbyData = SlashCo.LobbyData or {
 	PotentialSlashers = {},
 	AssignedSurvivors = {},
 	AssignedSlashers = {},
-	SelectedDifficulty = 0,
+	SelectedDifficulty = SlashCo.DifficultyLevel.EASY,
 	SurvivorGasMod = 0,
 	SelectedSlasherInfo = {
 
@@ -57,7 +49,7 @@ SlashCo.LobbyData = SlashCo.LobbyData or {
 --Holds all the information about the ongoing round
 function SlashCo.ResetCurRoundData()
 	SlashCo.CurRound = {
-		Difficulty = SlashCo.Difficulty.EASY,
+		Difficulty = SlashCo.DifficultyLevel.EASY,
 		ExpectedPlayers = {},
 		--ExpectedPlayersLoaded = false, --not used
 		--ConnectedPlayers = {}, --not used
@@ -336,7 +328,7 @@ function SlashCo.HelicopterLand(pos)
 
 	--Will the Helicopter Abandon players?
 
-	if SlashCo.CurRound.Difficulty ~= 3 then
+	if SlashCo.CurRound.Difficulty ~= SlashCo.DifficultyLevel.HARD then
 		return
 	end
 

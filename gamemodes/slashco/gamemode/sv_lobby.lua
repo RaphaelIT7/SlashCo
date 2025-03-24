@@ -278,16 +278,16 @@ local function lobbyRoundSetup()
             SlashCo.BroadcastMasterDatabaseForClient(play)
         end
 
-        SlashCo.LobbyData.SelectedDifficulty = math.random(0, 3) --Randomizing the Difficulty
+        SlashCo.LobbyData.SelectedDifficulty = math.random(0, #SlashCo.DifficultyLevel.EASY) --Randomizing the Difficulty
 
-        local diff = math.min(GetConVar("slashco_force_difficulty"):GetInt(), 3)
+        local diff = math.min(GetConVar("slashco_force_difficulty"):GetInt(), #SlashCo.DifficultyLevel.EASY)
         if diff > -1 then
             SlashCo.LobbyData.SelectedDifficulty = diff
         end
 
         --Difficulty-based Slasher Selection:
 
-        if SlashCo.LobbyData.SelectedDifficulty == 0 then
+        if SlashCo.LobbyData.SelectedDifficulty == SlashCo.DifficultyLevel.EASY then
             local rand_name = GetRandomSlasher()
 
             SlashCo.LobbyData.SelectedSlasherInfo.ID = rand
@@ -297,9 +297,9 @@ local function lobbyRoundSetup()
             SlashCo.LobbyData.SelectedSlasherInfo.TIP = SlashCoSlashers[rand_name].ProTip
 
             SlashCo.LobbyData.PickedSlasher = rand_name
-        elseif SlashCo.LobbyData.SelectedDifficulty == 1 then
+        elseif SlashCo.LobbyData.SelectedDifficulty == SlashCo.DifficultyLevel.NOVICE then
             SlashCo.LobbyData.SelectedSlasherInfo.CLASS = math.random(1, #SlashCo.SlasherClass)
-        elseif SlashCo.LobbyData.SelectedDifficulty == 2 then
+        elseif SlashCo.LobbyData.SelectedDifficulty == SlashCo.DifficultyLevel.INTERMEDIATE then
             SlashCo.LobbyData.SelectedSlasherInfo.DANGER = math.random(1, #SlashCo.DangerLevel)
         end
 

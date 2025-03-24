@@ -52,6 +52,20 @@ SlashCo.SlasherClass = {
 	[3] = "Umbra",
 }
 
+SlashCo.DifficultyLevel = {
+	EASY = 0,
+	[0] = "EASY",
+
+	NOVICE = 1,
+	[1] = "NOVICE",
+
+	INTERMEDIATE = 2,
+	[2] = "INTERMEDIATE",
+
+	HARD = 3,
+	[3] = "HARD",
+}
+
 SlashCo.RoundState = {
 	[0] = WON_ALL_ALIVE,
 	WON_ALL_ALIVE = 0,
