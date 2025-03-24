@@ -88,7 +88,8 @@ SlashCo.RoundState = {
 
 SlashCo.States = {
 	LOBBY = 1,
-	IN_GAME = 2
+	IN_GAME = 2,
+	ENDING = 3,
 }
 SlashCo.State = SlashCo.State or SlashCo.States.LOBBY
 

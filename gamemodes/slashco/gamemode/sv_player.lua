@@ -125,3 +125,24 @@ hook.Add("PlayerUse", "STOP", function(ply, _)
 		return false
 	end
 end)
+
+hook.Add("Think", "LobbyFailSafe", function()
+	if SlashCo.State ~= SlashCo.States.IN_GAME then
+		return
+	end
+
+	local timePassed = CurTime() - GetGlobalFloat("SCStartTime")
+	if timePassed > 90 and not SlashCo.FailSafeActivate then
+		local slashers = team.GetPlayers(TEAM_SLASHER)
+		if #slashers == 0 then
+			SlashCo.EndRound()
+			return
+		end
+
+		local survivors = team.GetPlayers(TEAM_SURVIVOR)
+		if #survivors == 0 then
+			SlashCo.EndRound()
+			return
+		end
+	end
+end)

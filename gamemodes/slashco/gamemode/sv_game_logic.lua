@@ -260,6 +260,8 @@ function SlashCo.EndRound()
 		end
 	end
 
+	SlashCo.State = SlashCo.States.ENDING
+
 	print("[SlashCo] Round over, returning to lobby in " .. tostring(lobbyDelay) .. " seconds.")
 
 	timer.Simple(lobbyDelay, function()
