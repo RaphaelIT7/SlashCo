@@ -26,7 +26,7 @@ SLASHER.SpeedRating = "★★☆☆☆"
 SLASHER.EyeRating = "★★☆☆☆"
 SLASHER.DiffRating = "★★★★★"
 
-SLASHER.OnSpawn = function(slasher)
+function SLASHER.OnSpawn(slasher)
 	slasher:PlayGlobalSound("slashco/slasher/trollge_breathing.wav", 50, nil, true)
 end
 
@@ -60,7 +60,7 @@ local function stopDash(slasher)
 	end
 end
 
-SLASHER.OnTickBehaviour = function(slasher)
+function SLASHER.OnTickBehaviour(slasher)
 	local v1 = slasher.SlasherValue1 --Stage
 	local v2 = math.Clamp(slasher.SlasherValue2, 0, 2) --Claw cooldown
 	slasher.SlasherValue2 = v2
@@ -211,7 +211,7 @@ SLASHER.OnTickBehaviour = function(slasher)
 	slasher:SetNWInt("Slasher_Perception", final_perception)
 end
 
-SLASHER.Move = function(ply, mv)
+function SLASHER.Move(ply, mv)
 	if not ply:GetNWBool("TrollgeStage2") then
 		if ply.TrollgeMoveSet then
 			ply:SetGravity(ply.TrollgeGravity)
@@ -305,7 +305,7 @@ SLASHER.Move = function(ply, mv)
 	end
 end
 
-SLASHER.OnPrimaryFire = function(slasher, target)
+function SLASHER.OnPrimaryFire(slasher, target)
 	if slasher.SlasherValue1 ~= 0 then
 		SlashCo.Jumpscare(slasher, target)
 		return
@@ -366,7 +366,7 @@ SLASHER.OnPrimaryFire = function(slasher, target)
 	end
 end
 
-SLASHER.OnMainAbilityFire = function(slasher)
+function SLASHER.OnMainAbilityFire(slasher)
 	if slasher.SlasherValue1 ~= 2 and not slasher:GetNWBool("TrollgeDashing") and slasher.SlasherValue2 == 0 then
 		slasher:SetNWBool("TrollgeDashing", true)
 		slasher:PlayGlobalSound("slashco/slasher/trollge_screech.mp3", 125)
@@ -377,7 +377,7 @@ SLASHER.OnMainAbilityFire = function(slasher)
 	end
 end
 
-SLASHER.Animator = function(ply)
+function SLASHER.Animator(ply)
 	local trollge_stage1 = ply:GetNWBool("TrollgeStage1")
 	local trollge_stage2 = ply:GetNWBool("TrollgeStage2")
 	local trollge_slashing = ply:GetNWBool("TrollgeSlashing")
@@ -413,11 +413,11 @@ SLASHER.Animator = function(ply)
 	return ply.CalcIdeal, ply.CalcSeqOverride
 end
 
-SLASHER.CanSeeFlashlights = function(ply)
+function SLASHER.CanSeeFlashlights(ply)
 	return false
 end
 
-SLASHER.Footstep = function()
+function SLASHER.Footstep()
 	return true
 end
 
@@ -438,7 +438,7 @@ local dashTable = {
 	["d/"] = Material("slashco/ui/icons/slasher/kill_disabled"),
 }
 
-SLASHER.InitHud = function(_, hud)
+function SLASHER.InitHud(_, hud)
 	hud:SetAvatarTable(avatarTable)
 	hud:SetTitle("Trollge")
 
@@ -490,7 +490,7 @@ function SLASHER.Visibility(ply)
 	return ply.LookSpeed + ply:GetVelocity():Length() + ply.PosSpeed
 end
 
-SLASHER.ClientSideEffect = function()
+function SLASHER.ClientSideEffect()
 	for _, ply in ipairs(team.GetPlayers(TEAM_SURVIVOR)) do
 		if not ply:CanBeSeen() then
 			ply.MonitorLook = nil

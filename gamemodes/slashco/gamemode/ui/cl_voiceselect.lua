@@ -51,7 +51,7 @@ function PANEL:Init()
         element:SetSize(300,50)
         element:SetFont("TVCD")
         element:SetContentAlignment(5)
-        element.Paint = function()
+        function element.Paint()
             return
         end
         element.Prompt = v.prompt

@@ -439,7 +439,7 @@ net.Receive("mantislashco_SelectSlasher", function()
     end
 end)
 
-SlashCo.ChooseTheSlasherLobby = function(id)
+function SlashCo.ChooseTheSlasherLobby(id)
     if SERVER then
         SlashCo.LobbyData.PickedSlasher = id
         print("[SlashCo] Slasher Picked. (" .. id .. ")")
@@ -708,7 +708,7 @@ function lobbyFinish()
     end)
 end
 
-SlashCo.OfferingVoteFail = function()
+function SlashCo.OfferingVoteFail()
     SlashCo.LobbyData.Offering = 0
     SlashCo.LobbyData.VotedOffering = 0
     table.Empty(SlashCo.LobbyData.Offerors)
@@ -719,7 +719,7 @@ SlashCo.OfferingVoteFail = function()
     end
 end
 
-SlashCo.OfferingVoteSuccess = function(id)
+function SlashCo.OfferingVoteSuccess(id)
     local fail = false
 
     if id == 4 and #team.GetPlayers(TEAM_SPECTATOR) < 1 then

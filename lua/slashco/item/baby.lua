@@ -7,14 +7,14 @@ ITEM.Icon = "slashco/ui/icons/items/item_7"
 ITEM.Price = 35
 ITEM.Description = "Baby_desc"
 ITEM.CamPos = Vector(50,0,0)
-ITEM.DisplayColor = function(ply)
+function ITEM.DisplayColor(ply)
     local setcolor = 360 - math.Clamp(ply:Health(), 0, 100) * 1.2
     local color = HSVToColor(setcolor, 1, 0.5)
 
     return color.r, color.g, color.b, color.a
 end
 ITEM.IsSpawnable = true
-ITEM.OnUse = function(ply)
+function ITEM.OnUse(ply)
     --When used, half of the survivors health is consumed, and the survivor is teleported to a random location which is at least 2000u away from their currect position.
     --Activation takes 1 second. If the survivors health is lower than 51, the chance that the survivor will die upon use of the item will start increasing the lower their health.
     --(50 - 10%, 25 - 60% ,1 - 100%).

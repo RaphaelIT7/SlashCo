@@ -6,16 +6,16 @@ ITEM.Icon = "slashco/ui/icons/items/item_2_99"
 ITEM.Description = "You broke it!"
 ITEM.CamPos = Vector(40,0,15)
 ITEM.IsSpawnable = false
-ITEM.DisplayColor = function()
+function ITEM.DisplayColor()
 	return 128, 0, 0, 255
 end
-ITEM.PreDrop = function()
+function ITEM.PreDrop()
 	return true
 end
-ITEM.OnSwitchFrom = function(ply)
+function ITEM.OnSwitchFrom(ply)
 	timer.Remove("deathWardDamage_" .. ply:UserID())
 end
-ITEM.OnPickUp = function(ply)
+function ITEM.OnPickUp(ply)
 	if GameData.IsLobby then
 		return
 	end

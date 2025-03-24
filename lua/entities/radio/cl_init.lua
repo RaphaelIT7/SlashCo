@@ -27,7 +27,7 @@ net.Receive( "radio", function( len, ply )
     
     
     -- If not using convars, you can use this hook + Panel.SetValue()
-    DermaNumSlider.OnValueChanged = function( self, value )
+    function DermaNumSlider.OnValueChanged( self, value )
         code = math.Round(value)
     end
 
@@ -35,7 +35,7 @@ net.Receive( "radio", function( len, ply )
 DermaButton:SetText( "Scan" )					// Set the text on the button
 DermaButton:SetPos( 25, 50 )					// Set the position on the frame
 DermaButton:SetSize( 250, 30 )					// Set the size
-DermaButton.DoClick = function()
+function DermaButton.DoClick()
  
     if code > 108.00 and code < 111.00 then
 	    RunConsoleCommand( "cl_playerpaint" )

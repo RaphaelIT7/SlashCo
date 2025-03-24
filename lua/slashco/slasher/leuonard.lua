@@ -26,14 +26,14 @@ SLASHER.SpeedRating = "★★★★☆"
 SLASHER.EyeRating = "★★★☆☆"
 SLASHER.DiffRating = "★★★★☆"
 
-SLASHER.OnSpawn = function(slasher)
+function SLASHER.OnSpawn(slasher)
 	SlashCo.CreateItem("sc_dogg", SlashCo.RandomPosLocator(), Angle(0, 0, 0))
 	slasher.soundon = 0
 	slasher:SetNWBool("CanKill", true)
 	slasher:SetNWBool("CanChase", true)
 end
 
-SLASHER.OnTickBehaviour = function(slasher)
+function SLASHER.OnTickBehaviour(slasher)
 	local SO = SlashCo.CurRound.OfferingData.SO
 
 	local v1 = slasher.SlasherValue1 --Roid
@@ -227,15 +227,15 @@ SLASHER.OnTickBehaviour = function(slasher)
 	slasher:SetNWInt("Slasher_Perception", SLASHER.Perception)
 end
 
-SLASHER.OnPrimaryFire = function(slasher, target)
+function SLASHER.OnPrimaryFire(slasher, target)
 	SlashCo.Jumpscare(slasher, target)
 end
 
-SLASHER.OnSecondaryFire = function(slasher)
+function SLASHER.OnSecondaryFire(slasher)
 	SlashCo.StartChaseMode(slasher)
 end
 
-SLASHER.Animator = function(ply)
+function SLASHER.Animator(ply)
 	local chase = ply:GetNWBool("InSlasherChaseMode")
 
 	if not chase then
@@ -270,7 +270,7 @@ SLASHER.Animator = function(ply)
 	return ply.CalcIdeal, ply.CalcSeqOverride
 end
 
-SLASHER.Footstep = function(ply)
+function SLASHER.Footstep(ply)
 	if SERVER then
 		ply:EmitSound("slashco/slasher/leuonard_step" .. math.random(1, 3) .. ".mp3")
 		return true
@@ -281,7 +281,7 @@ SLASHER.Footstep = function(ply)
 	end
 end
 
-SLASHER.InitHud = function(_, hud)
+function SLASHER.InitHud(_, hud)
 	hud:SetAvatar(Material("slashco/ui/icons/slasher/s_14"))
 	hud:SetTitle("Leuonard")
 
@@ -320,7 +320,7 @@ SLASHER.InitHud = function(_, hud)
 	end
 end
 
-SLASHER.PreDrawHalos = function()
+function SLASHER.PreDrawHalos()
 	SlashCo.DrawHalo(ents.FindByClass("sc_dogg"), nil, 2, false)
 end
 

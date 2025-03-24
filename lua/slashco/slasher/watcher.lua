@@ -26,14 +26,14 @@ SLASHER.SpeedRating = "★★★★☆"
 SLASHER.EyeRating = "★★★★☆"
 SLASHER.DiffRating = "★★☆☆☆"
 
-SLASHER.OnSpawn = function(slasher)
+function SLASHER.OnSpawn(slasher)
 	slasher:SetViewOffset(Vector(0, 0, 100))
 	slasher:SetCurrentViewOffset(Vector(0, 0, 100))
 	slasher:SetNWBool("CanChase", true)
 	slasher:SetNWBool("CanKill", true)
 end
 
-SLASHER.OnTickBehaviour = function(slasher)
+function SLASHER.OnTickBehaviour(slasher)
 	--local SO = SlashCo.CurRound.OfferingData.SO
 
 	local v1 = slasher.SlasherValue1 --Survey Length
@@ -180,15 +180,15 @@ SLASHER.OnTickBehaviour = function(slasher)
 	slasher:SetNWInt("Slasher_Perception", SLASHER.Perception)
 end
 
-SLASHER.OnPrimaryFire = function(slasher, target)
+function SLASHER.OnPrimaryFire(slasher, target)
 	SlashCo.Jumpscare(slasher, target)
 end
 
-SLASHER.OnSecondaryFire = function(slasher)
+function SLASHER.OnSecondaryFire(slasher)
 	SlashCo.StartChaseMode(slasher)
 end
 
-SLASHER.OnMainAbilityFire = function(slasher)
+function SLASHER.OnMainAbilityFire(slasher)
 	local SO = SlashCo.CurRound.OfferingData.SO
 
 	if slasher.SlasherValue2 > 0 then
@@ -215,7 +215,7 @@ SLASHER.OnMainAbilityFire = function(slasher)
 	end)
 end
 
-SLASHER.OnSpecialAbilityFire = function(slasher)
+function SLASHER.OnSpecialAbilityFire(slasher)
 	--local SO = SlashCo.CurRound.OfferingData.SO
 
 	if SlashCo.CurRound.GameProgress < (10 - (slasher.SlasherValue4 / 25)) then
@@ -232,7 +232,7 @@ SLASHER.OnSpecialAbilityFire = function(slasher)
 	slasher:PlayGlobalSound("slashco/slasher/watcher_rage.wav", 100)
 end
 
-SLASHER.Animator = function(ply)
+function SLASHER.Animator(ply)
 	local chase = ply:GetNWBool("InSlasherChaseMode")
 
 	if ply:IsOnGround() then
@@ -250,7 +250,7 @@ SLASHER.Animator = function(ply)
 	return ply.CalcIdeal, ply.CalcSeqOverride
 end
 
-SLASHER.Footstep = function(ply)
+function SLASHER.Footstep(ply)
 	if SERVER then
 		ply:EmitSound("npc/footsteps/hardboot_generic" .. math.random(1, 6) .. ".wav", 50, 90, 0.75)
 		return false
@@ -273,7 +273,7 @@ end
 
 local surveyNoticeIcon = Material("slashco/ui/particle/icon_survey")
 local red = Color(255, 0, 0)
-SLASHER.InitHud = function(_, hud)
+function SLASHER.InitHud(_, hud)
 	hud:SetAvatar(Material("slashco/ui/icons/slasher/s_10"))
 	hud:SetTitle("Watcher")
 

@@ -4,10 +4,10 @@ local EFFECT = {}
 
 EFFECT.Name = "Awareness"
 
-EFFECT.OnApplied = function(ply)
+function EFFECT.OnApplied(ply)
 	SlashCo.SendValue(ply, "Awareness", true)
 end
-EFFECT.OnExpired = function(ply)
+function EFFECT.OnExpired(ply)
 	SlashCo.SendValue(ply, "Awareness", false)
 end
 
@@ -23,7 +23,7 @@ local colors = {
 	["$pp_colour_mulb"] = 0
 }
 
-EFFECT.Screenspace = function()
+function EFFECT.Screenspace()
 	local blur, pos = 99999
 	for _, v in pairs(ents.FindInSphere(GameData.LocalPlayer:EyePos(), 1000)) do
 		if v:IsPlayer() and v:Team() == TEAM_SLASHER then

@@ -9,13 +9,13 @@ ITEM.Description = "Rock_desc"
 ITEM.CamPos = Vector(50,0,0)
 ITEM.ChangesSpeed = true
 ITEM.IsSpawnable = true
-ITEM.OnFootstep = function()
+function ITEM.OnFootstep()
     return true
 end
-ITEM.OnSwitchFrom = function(ply)
+function ITEM.OnSwitchFrom(ply)
     ply:RemoveSpeedEffect("rock")
 end
-ITEM.OnPickUp = function(ply)
+function ITEM.OnPickUp(ply)
     ply:AddSpeedEffect("rock", 200, 10)
 end
 ITEM.ViewModel = {

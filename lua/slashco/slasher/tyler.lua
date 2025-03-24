@@ -27,16 +27,16 @@ SLASHER.EyeRating = "★☆☆☆☆"
 SLASHER.DiffRating = "★★★★☆"
 SLASHER.CannotBeSpectated = true
 
-SLASHER.OnSpawn = function(slasher)
+function SLASHER.OnSpawn(slasher)
 	slasher.SlasherValue1 = 0
 	slasher:SetVisible(false)
 end
 
-SLASHER.HideTime = function(slasher)
+function SLASHER.HideTime(slasher)
 	slasher.TylerTime = 25 + SlashCo.MapSize * 25 - slasher.SlasherValue4 * 3 - team.NumPlayers(TEAM_SURVIVOR)
 end
 
-SLASHER.OnTickBehaviour = function(slasher)
+function SLASHER.OnTickBehaviour(slasher)
 	local v1 = slasher.SlasherValue1 --State
 	local v2 = slasher.SlasherValue2 --Time Spent as Creator or destroyer
 	local v4 = slasher.SlasherValue4 --Destruction power
@@ -248,7 +248,7 @@ SLASHER.OnTickBehaviour = function(slasher)
 	slasher:SetNWInt("Slasher_Perception", final_perception)
 end
 
-SLASHER.OnPrimaryFire = function(slasher, target)
+function SLASHER.OnPrimaryFire(slasher, target)
 	if slasher.SlasherValue1 ~= 3 then
 		return
 	end
@@ -363,7 +363,7 @@ SLASHER.OnPrimaryFire = function(slasher, target)
 	end)
 end
 
-SLASHER.OnMainAbilityFire = function(slasher)
+function SLASHER.OnMainAbilityFire(slasher)
 	if slasher.SlasherValue1 ~= 0 then
 		return
 	end
@@ -376,7 +376,7 @@ SLASHER.OnMainAbilityFire = function(slasher)
 	slasher:SetVisible(true)
 end
 
-SLASHER.Animator = function(ply)
+function SLASHER.Animator(ply)
 	local tyler_creator = ply:GetNWBool("TylerTheCreator")
 	local tyler_creating = ply:GetNWBool("TylerCreating")
 
@@ -403,15 +403,15 @@ SLASHER.Animator = function(ply)
 	return ply.CalcIdeal, ply.CalcSeqOverride
 end
 
-SLASHER.Thirdperson = function(ply)
+function SLASHER.Thirdperson(ply)
 	return ply:GetNWInt("TylerState") == 1
 end
 
-SLASHER.Footstep = function()
+function SLASHER.Footstep()
 	return true
 end
 
-SLASHER.CanBeSeen = function(ply)
+function SLASHER.CanBeSeen(ply)
 	if SERVER then
 		return
 	end
@@ -431,7 +431,7 @@ local manifestTable = {
 	["d/"] = Material("slashco/ui/icons/slasher/kill_disabled")
 }
 
-SLASHER.InitHud = function(_, hud)
+function SLASHER.InitHud(_, hud)
 	hud:SetAvatarTable(avatarTable)
 	hud:SetTitle("Tyler_creator")
 

@@ -27,7 +27,7 @@ SLASHER.EyeRating = "★★☆☆☆"
 SLASHER.DiffRating = "★★☆☆☆"
 SLASHER.ItemToSpawn = "Baby"
 
-SLASHER.OnSpawn = function(slasher)
+function SLASHER.OnSpawn(slasher)
 	slasher:SetViewOffset(Vector(0, 0, 50))
 	slasher:SetCurrentViewOffset(Vector(0, 0, 50))
 
@@ -36,7 +36,7 @@ SLASHER.OnSpawn = function(slasher)
 	SLASHER.DoSound(slasher)
 end
 
-SLASHER.DoSound = function(slasher)
+function SLASHER.DoSound(slasher)
 	if not slasher:GetNWBool("PrincessMaulingChild") and not slasher:GetNWBool("PrincessMaulingBase") and not slasher:GetNWBool("PrincessMaulingSurvivor") and not slasher:GetNWBool("PrincessSniffing") then
 		if slasher:GetNWBool("InSlasherChaseMode") then
 			slasher:EmitSound("slashco/slasher/princess_chase" .. math.random(1, 15) .. ".mp3")
@@ -54,7 +54,7 @@ SLASHER.DoSound = function(slasher)
 	end)
 end
 
-SLASHER.OnTickBehaviour = function(slasher)
+function SLASHER.OnTickBehaviour(slasher)
 	local v1 = slasher.SlasherValue1 --aggression
 	local v2 = slasher.SlasherValue2 --aggression threshold
 
@@ -199,7 +199,7 @@ SLASHER.OnTickBehaviour = function(slasher)
 	slasher:SetNWInt("Slasher_Perception", perception)
 end
 
-SLASHER.Maul = function(slasher, target)
+function SLASHER.Maul(slasher, target)
 	timer.Remove("princessMaul_" .. slasher:UserID())
 	slasher:EmitSound("slashco/slasher/princess_bite.mp3")
 
@@ -298,7 +298,7 @@ SLASHER.Maul = function(slasher, target)
 	end)
 end
 
-SLASHER.OnPrimaryFire = function(slasher)
+function SLASHER.OnPrimaryFire(slasher)
 	if slasher:GetNWBool("PrincessMaulingChild") then
 		return
 	end
@@ -349,11 +349,11 @@ SLASHER.OnPrimaryFire = function(slasher)
 	end)
 end
 
-SLASHER.OnSecondaryFire = function(slasher)
+function SLASHER.OnSecondaryFire(slasher)
 	SlashCo.StartChaseMode(slasher)
 end
 
-SLASHER.OnMainAbilityFire = function(slasher)
+function SLASHER.OnMainAbilityFire(slasher)
 	if slasher:GetNWBool("PrincessMaulingChild") then
 		return
 	end
@@ -386,10 +386,10 @@ SLASHER.OnMainAbilityFire = function(slasher)
 	end)
 end
 
-SLASHER.OnSpecialAbilityFire = function(slasher)
+function SLASHER.OnSpecialAbilityFire(slasher)
 end
 
-SLASHER.Animator = function(ply)
+function SLASHER.Animator(ply)
 	local chase = ply:GetNWBool("InSlasherChaseMode")
 	local maul_child = ply:GetNWBool("PrincessMaulingChild")
 	local maul_normal = ply:GetNWBool("PrincessMaulingBase")
@@ -443,7 +443,7 @@ SLASHER.Animator = function(ply)
 	return ply.CalcIdeal, ply.CalcSeqOverride
 end
 
-SLASHER.Footstep = function(ply)
+function SLASHER.Footstep(ply)
 	if SERVER then
 		ply:EmitSound("slashco/slasher/princess_step" .. math.random(1, 3) .. ".mp3")
 
@@ -464,7 +464,7 @@ local maulTable = {
 	["d/"] = Material("slashco/ui/icons/slasher/kill_disabled")
 }
 
-SLASHER.InitHud = function(_, hud)
+function SLASHER.InitHud(_, hud)
 	hud:SetAvatar(Material("slashco/ui/icons/slasher/s_17"))
 	hud:SetTitle("Princess")
 
@@ -513,7 +513,7 @@ SLASHER.InitHud = function(_, hud)
 	end
 end
 
-SLASHER.PreDrawHalos = function()
+function SLASHER.PreDrawHalos()
 	SlashCo.DrawHalo(ents.FindByClass("sc_baby"), nil, 2, false)
 
 	local plyWithItem = {}

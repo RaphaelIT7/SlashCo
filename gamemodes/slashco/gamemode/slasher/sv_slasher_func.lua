@@ -36,7 +36,7 @@ function SlashCo.PrepareSlasherForSpawning()
 	end
 end
 
-SlashCo.OnSlasherSpawned = function(ply)
+function SlashCo.OnSlasherSpawned(ply)
 	ply:SetRunSpeed(SlashCoSlashers[ply:GetNWString("Slasher")].ProwlSpeed)
 	ply:SetWalkSpeed(SlashCoSlashers[ply:GetNWString("Slasher")].ProwlSpeed)
 

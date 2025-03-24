@@ -8,7 +8,7 @@ ITEM.Price = 15
 ITEM.Description = "Cookie_desc"
 ITEM.CamPos = Vector(50,0,20)
 ITEM.IsSpawnable = true
-ITEM.OnUse = function(ply)
+function ITEM.OnUse(ply)
     ply:EmitSound("slashco/survivor/eat_cookie.mp3")
     SlashCoSlashers.Sid.SidRage(ply)
     ply:AddEffect("FuelSpeed", 30)

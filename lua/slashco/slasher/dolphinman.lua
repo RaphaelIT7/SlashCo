@@ -27,11 +27,11 @@ SLASHER.EyeRating = "★★★☆☆"
 SLASHER.DiffRating = "★★★★☆"
 SLASHER.CannotBeSpectated = true
 
-SLASHER.OnSpawn = function(slasher)
+function SLASHER.OnSpawn(slasher)
 	slasher.Jump = slasher:GetJumpPower()
 end
 
-SLASHER.OnTickBehaviour = function(slasher)
+function SLASHER.OnTickBehaviour(slasher)
 	local v1 = slasher.SlasherValue1 --Hunt power
 
 	local hunt_boost = 0
@@ -150,11 +150,11 @@ SLASHER.OnTickBehaviour = function(slasher)
 	slasher:SetNWInt("Slasher_Perception", SLASHER.Perception * 1.4 ^ (slasher.DolphinKills or 0) + (hunt_boost * 3))
 end
 
-SLASHER.Thirdperson = function(ply)
+function SLASHER.Thirdperson(ply)
 	return ply:GetNWBool("DolphinInHiding")
 end
 
-SLASHER.CanBeSeen = function(ply)
+function SLASHER.CanBeSeen(ply)
 	if SERVER then
 		return
 	end
@@ -164,17 +164,17 @@ SLASHER.CanBeSeen = function(ply)
 	end
 end
 
-SLASHER.OnPrimaryFire = function(slasher, target)
+function SLASHER.OnPrimaryFire(slasher, target)
 	if SlashCo.Jumpscare(slasher, target) then
 		slasher.SlasherValue1 = math.min(100, slasher.SlasherValue1 + 25)
 		slasher.DolphinKills = (slasher.DolphinKills or 0) + 1
 	end
 end
 
-SLASHER.OnSecondaryFire = function(slasher)
+function SLASHER.OnSecondaryFire(slasher)
 end
 
-SLASHER.OnMainAbilityFire = function(slasher)
+function SLASHER.OnMainAbilityFire(slasher)
 	if not slasher:GetNWBool("DolphinHunting") and not slasher:GetNWBool("DolphinInHiding") and not slasher:GetNWBool("DolphinFound") then
 		if not SlashCo.IsPositionLegalForSlashers(slasher:GetPos()) then
 			return
@@ -192,10 +192,10 @@ SLASHER.OnMainAbilityFire = function(slasher)
 	end
 end
 
-SLASHER.OnSpecialAbilityFire = function(slasher)
+function SLASHER.OnSpecialAbilityFire(slasher)
 end
 
-SLASHER.Animator = function(ply)
+function SLASHER.Animator(ply)
 	local hunt = ply:GetNWBool("DolphinHunting")
 	local hide = ply:GetNWBool("DolphinInHiding")
 	local found = ply:GetNWBool("DolphinFound")
@@ -223,7 +223,7 @@ SLASHER.Animator = function(ply)
 	return ply.CalcIdeal, ply.CalcSeqOverride
 end
 
-SLASHER.Footstep = function(ply)
+function SLASHER.Footstep(ply)
 	if SERVER then
 		ply:EmitSound("slashco/slasher/amogus_step" .. math.random(1, 3) .. ".wav", 75, 130)
 	end
@@ -237,7 +237,7 @@ local hideIcons = {
 	["d/"] = Material("slashco/ui/icons/slasher/kill_disabled")
 }
 
-SLASHER.InitHud = function(_, hud)
+function SLASHER.InitHud(_, hud)
 	hud:SetAvatar(Material("slashco/ui/icons/slasher/s_16"))
 	hud:SetTitle("Dolphinman")
 

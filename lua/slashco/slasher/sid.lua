@@ -27,7 +27,7 @@ SLASHER.EyeRating = "★★★☆☆"
 SLASHER.DiffRating = "★★★★☆"
 SLASHER.ItemToSpawn = "Cookie"
 
-SLASHER.OnTickBehaviour = function(slasher)
+function SLASHER.OnTickBehaviour(slasher)
 	local SO = SlashCo.CurRound.OfferingData.SO
 
 	local v1 = math.Clamp(slasher.SlasherValue1, 0, 5) --Cookies Eaten
@@ -123,7 +123,7 @@ SLASHER.OnTickBehaviour = function(slasher)
 	slasher:SetNWInt("Slasher_Perception", final_perception)
 end
 
-SLASHER.OnPrimaryFire = function(slasher, target)
+function SLASHER.OnPrimaryFire(slasher, target)
 	if not slasher:GetNWBool("SidGun") then
 		SlashCo.Jumpscare(slasher, target)
 		return
@@ -306,7 +306,7 @@ SLASHER.OnPrimaryFire = function(slasher, target)
 	end
 end
 
-SLASHER.OnSecondaryFire = function(slasher)
+function SLASHER.OnSecondaryFire(slasher)
 	if not slasher:GetNWBool("SidGunEquipped") then
 		SlashCo.StartChaseMode(slasher)
 		return
@@ -347,7 +347,7 @@ SLASHER.OnSecondaryFire = function(slasher)
 	end
 end
 
-SLASHER.OnMainAbilityFire = function(slasher, target)
+function SLASHER.OnMainAbilityFire(slasher, target)
 	local SO = SlashCo.CurRound.OfferingData.SO
 	local SatO = SlashCo.CurRound.OfferingData.SatO
 
@@ -388,7 +388,7 @@ SLASHER.OnMainAbilityFire = function(slasher, target)
 	end)
 end
 
-SLASHER.OnSpecialAbilityFire = function(slasher)
+function SLASHER.OnSpecialAbilityFire(slasher)
 	if not slasher.CanUseGun then
 		return
 	end
@@ -440,7 +440,7 @@ SLASHER.OnSpecialAbilityFire = function(slasher)
 	end
 end
 
-SLASHER.Animator = function(ply)
+function SLASHER.Animator(ply)
 	local eating = ply:GetNWBool("SidEating")
 	local equipping_gun = ply:GetNWBool("SidGunEquipping")
 	local sid_executing = ply:GetNWBool("SidExecuting")
@@ -522,7 +522,7 @@ SLASHER.Animator = function(ply)
 	return ply.CalcIdeal, ply.CalcSeqOverride
 end
 
-SLASHER.Footstep = function(ply)
+function SLASHER.Footstep(ply)
 	if SERVER then
 		ply:EmitSound("slashco/slasher/sid_step" .. math.random(1, 2) .. ".mp3")
 		return true
@@ -558,7 +558,7 @@ local cookieTable = {
 	["d/"] = Material("slashco/ui/icons/slasher/kill_disabled")
 }
 
-SLASHER.InitHud = function(_, hud)
+function SLASHER.InitHud(_, hud)
 	hud:SetAvatar(Material("slashco/ui/icons/slasher/s_2"))
 	hud:SetTitle("Sid")
 
@@ -658,7 +658,7 @@ SLASHER.InitHud = function(_, hud)
 	end
 end
 
-SLASHER.PreDrawHalos = function()
+function SLASHER.PreDrawHalos()
 	SlashCo.DrawHalo(ents.FindByClass("sc_cookie"), nil, 2, false)
 
 	local plyWithItem = {}
@@ -671,7 +671,7 @@ SLASHER.PreDrawHalos = function()
 	SlashCo.DrawHalo(plyWithItem, nil, 2, false)
 end
 
-SLASHER.SidRage = function(ply)
+function SLASHER.SidRage(ply)
 	local pos = ply:GetPos()
 
 	for i = 1, #team.GetPlayers(TEAM_SLASHER) do

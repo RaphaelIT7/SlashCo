@@ -95,7 +95,7 @@ function DrawTheSlasherSelectorBox()
 			Slash:SetPos((30 + x) - icon_size * 0.06, (30 + y) - icon_size * 0.06)
 		end
 
-		Slash.Paint = function(self, w, h)
+		function Slash.Paint(self, w, h)
 			if is_available then
 				surface.SetMaterial(Material("slashco/ui/icons/slasher/s_" .. SlashCoSlashers[k].ID))
 			else
@@ -121,7 +121,7 @@ function DrawTheSlasherSelectorBox()
 	confirmselect:SetSize(ScrW() / 4, 40)
 	confirmselect:SetText(SlashCo.Language("ItemConfirm"))
 	confirmselect:SetFont("MenuFont2")
-	confirmselect.Paint = function(self, w, h)
+	function confirmselect.Paint(self, w, h)
 		draw.RoundedBox(0, 0, 0, w, h, Color(255, 0, 0, 255))
 	end
 
@@ -142,7 +142,7 @@ function DrawTheSlasherSelectorBox()
 	SlasherSelectFrame:SetKeyboardInputEnabled(false)
 	SlasherSelectFrame:SetDraggable(false)
 	SlasherSelectFrame:ShowCloseButton(false)
-	SlasherSelectFrame.Paint = function(self, w, h)
+	function SlasherSelectFrame.Paint(self, w, h)
 		draw.RoundedBox(0, 0, 0, w, h, color_black)
 	end
 

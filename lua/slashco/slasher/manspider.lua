@@ -27,13 +27,13 @@ SLASHER.EyeRating = "★★★☆☆"
 SLASHER.DiffRating = "★☆☆☆☆"
 SLASHER.CannotBeSpectated = true
 
-SLASHER.OnSpawn = function(slasher)
+function SLASHER.OnSpawn(slasher)
 	slasher:SetViewOffset(Vector(0, 0, 20))
 	slasher:SetCurrentViewOffset(Vector(0, 0, 20))
 	slasher.Jump = slasher:GetJumpPower()
 end
 
-SLASHER.OnTickBehaviour = function(slasher)
+function SLASHER.OnTickBehaviour(slasher)
 	local SO = SlashCo.CurRound.OfferingData.SO
 
 	local v1 = slasher.SlasherValue1 --Target SteamID
@@ -174,7 +174,7 @@ SLASHER.OnTickBehaviour = function(slasher)
 	slasher:SetNWInt("Slasher_Perception", SLASHER.Perception)
 end
 
-SLASHER.OnPrimaryFire = function(slasher, target)
+function SLASHER.OnPrimaryFire(slasher, target)
 	if not IsValid(target) or not target:IsPlayer() then
 		return
 	end
@@ -187,11 +187,11 @@ SLASHER.OnPrimaryFire = function(slasher, target)
 	end
 end
 
-SLASHER.Thirdperson = function(ply)
+function SLASHER.Thirdperson(ply)
 	return ply:GetNWBool("ManspiderNested")
 end
 
-SLASHER.CanBeSeen = function(ply)
+function SLASHER.CanBeSeen(ply)
 	if SERVER then
 		return
 	end
@@ -201,7 +201,7 @@ SLASHER.CanBeSeen = function(ply)
 	end
 end
 
-SLASHER.OnSecondaryFire = function(slasher)
+function SLASHER.OnSecondaryFire(slasher)
 	local target = slasher:GetEyeTrace().Entity
 
 	if not target:IsPlayer() then
@@ -215,7 +215,7 @@ SLASHER.OnSecondaryFire = function(slasher)
 	SlashCo.StartChaseMode(slasher)
 end
 
-SLASHER.OnMainAbilityFire = function(slasher)
+function SLASHER.OnMainAbilityFire(slasher)
 	if slasher.SlasherValue1 ~= "" then
 		return
 	end
@@ -241,7 +241,7 @@ SLASHER.OnMainAbilityFire = function(slasher)
 	end
 end
 
-SLASHER.OnSpecialAbilityFire = function(slasher)
+function SLASHER.OnSpecialAbilityFire(slasher)
 	local SO = SlashCo.CurRound.OfferingData.SO
 
 	if slasher.SlasherValue2 > 0 then
@@ -274,7 +274,7 @@ SLASHER.OnSpecialAbilityFire = function(slasher)
 	end)
 end
 
-SLASHER.Animator = function(ply)
+function SLASHER.Animator(ply)
 	local chase = ply:GetNWBool("InSlasherChaseMode")
 	local manspider_nest = ply:GetNWBool("ManspiderNested")
 
@@ -297,7 +297,7 @@ SLASHER.Animator = function(ply)
 	return ply.CalcIdeal, ply.CalcSeqOverride
 end
 
-SLASHER.Footstep = function(ply)
+function SLASHER.Footstep(ply)
 	if SERVER then
 		ply:EmitSound("slashco/slasher/manspider_step.mp3")
 		return true
@@ -330,7 +330,7 @@ local nestTable = {
 	["d/"] = Material("slashco/ui/icons/slasher/kill_disabled")
 }
 
-SLASHER.InitHud = function(_, hud)
+function SLASHER.InitHud(_, hud)
 	hud:SetAvatar(Material("slashco/ui/icons/slasher/s_9"))
 	hud:SetTitle("Manspider")
 

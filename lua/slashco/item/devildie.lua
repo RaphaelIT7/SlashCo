@@ -8,7 +8,7 @@ ITEM.Price = 40
 ITEM.Description = "DevilDie_desc"
 ITEM.CamPos = Vector(30,0,10)
 ITEM.IsSpawnable = true
-ITEM.OnUse = function(ply)
+function ITEM.OnUse(ply)
     --[[
 
     Upon use, this item will apply a random effect from the set.
