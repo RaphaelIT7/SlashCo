@@ -13,6 +13,7 @@ function SlashCo.RegisterItem(table, name)
 	end
 
 	SlashCoItems[name] = table
+	SlashCo.PrecacheItem(name)
 end
 
 function SlashCo.RegisterEffect(table, name)

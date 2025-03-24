@@ -2,6 +2,15 @@ SlashCo = SlashCo or {}
 SlashCo.Content = SlashCo.Content or {}
 SlashCo.Content.AddedMapToWorkshop = SlashCo.Content.AddedMapToWorkshop or false
 
+--[[
+	These precache tables store every single precached thing.
+	This is to keep better track of things AND to reduce the performance impact of autorefreshs.
+]]
+SlashCo.Content.PrecacheModels = SlashCo.Content.PrecacheModels or {}
+SlashCo.Content.PrecacheSounds = SlashCo.Content.PrecacheSounds or {}
+SlashCo.Content.PrecacheItems = SlashCo.Content.PrecacheItems or {}
+SlashCo.Content.PrecacheSlashers = SlashCo.Content.PrecacheSlashers or {}
+
 function SlashCo.FindWorkshopID(mapName)
 	if not string.EndsWith(mapName, ".bsp") then
 		mapName = mapName .. ".bsp"
@@ -63,5 +72,73 @@ else
 			net.WriteString(wsid)
 			net.WriteString(title)
 		net.Broadcast()
+	end
+end
+
+function SlashCo.PrecacheModel(modelName)
+	if SlashCo.Content.PrecacheModels[modelName] then
+		return
+	end
+
+	SlashCo.Content.PrecacheModels[modelName] = true
+	util.PrecacheModel(modelName)
+
+	print("[Content] Precached model \"" .. modelName .. "\"")
+end
+
+function SlashCo.PrecacheSound(soundName)
+	if SlashCo.Content.PrecacheSounds[soundName] then
+		return
+	end
+
+	SlashCo.Content.PrecacheSounds[soundName] = true
+	util.PrecacheModel(soundName)
+
+	print("[Content] Precached sound \"" .. soundName .. "\"")
+end
+
+function SlashCo.PrecacheSlasher(slasherName)
+	local slasherTbl = SlashCoSlashers[slasherName]
+	
+	if slasherTbl.Model then
+		SlashCo.PrecacheModel(slasherTbl.Model)
+	end
+
+	if slasherTbl.Precache then
+		slasherTbl.Precache()
+	end
+
+	if not SlashCo.Content.PrecacheSlashers[slasherName] then
+		print("[Content] Precached Slasher \"" .. slasherName .. "\"")
+		SlashCo.Content.PrecacheSlashers[slasherName] = true
+	end
+end
+
+function SlashCo.PrecacheItem(itemName)
+	local itemTbl = SlashCoItems[itemName]
+
+	if itemTbl.Model then
+		SlashCo.PrecacheModel(itemTbl.Model)
+	end
+
+	if itemTbl.Precache then
+		itemTbl.Precache()
+	end
+
+	if itemTbl.ViewModel and itemTbl.ViewModel.model then
+		SlashCo.PrecacheModel(itemTbl.ViewModel.model)
+	end
+
+	if itemTbl.WorldModelHolstered and itemTbl.WorldModelHolstered.model then
+		SlashCo.PrecacheModel(itemTbl.WorldModelHolstered.model)
+	end
+
+	if itemTbl.WorldModel and itemTbl.WorldModel.model then
+		SlashCo.PrecacheModel(itemTbl.WorldModel.model)
+	end
+
+	if not SlashCo.Content.PrecacheItems[itemName] then
+		print("[Content] Precached Item \"" .. itemName .. "\"")
+		SlashCo.Content.PrecacheItems[itemName] = true
 	end
 end

@@ -30,6 +30,15 @@ function SLASHER.OnSpawn(slasher)
 	slasher.SlasherValue1 = 1
 end
 
+local monsterModelName = "models/slashco/slashers/male_07/male_07_monster.mdl"
+local maleModelName = "models/Humans/Group01/male_07.mdl"
+local plateModelName = "models/hunter/plates/plate.mdl"
+function SLASHER.Precache()
+	SlashCo.PrecacheModel(monsterModelName)
+	SlashCo.PrecacheModel(maleModelName)
+	SlashCo.PrecacheModel(plateModelName)
+end
+
 function SLASHER.OnTickBehaviour(slasher)
 	local SO = SlashCo.CurRound.OfferingData.SO
 
@@ -96,9 +105,7 @@ function SLASHER.OnTickBehaviour(slasher)
 					2)) * (1 + SO) then
 				--Become Monster
 
-				local modelname = "models/slashco/slashers/male_07/male_07_monster.mdl"
-				util.PrecacheModel(modelname)
-				slasher:SetModel(modelname)
+				slasher:SetModel(monsterModelName)
 
 				slasher:SetNWBool("Male07Transforming", true)
 				slasher:SetNWBool("Male07Slashing", false)
@@ -209,9 +216,7 @@ function SLASHER.OnMainAbilityFire(slasher, target)
 		slasher:SetEyeAngles(target:EyeAngles())
 		target:Remove()
 
-		local modelname = "models/Humans/Group01/male_07.mdl"
-		util.PrecacheModel(modelname)
-		slasher:SetModel(modelname)
+		slasher:SetModel(maleModelName)
 
 		slasher:SetColor(Color(255, 255, 255, 255))
 		slasher:DrawShadow(true)
@@ -230,9 +235,7 @@ function SLASHER.OnMainAbilityFire(slasher, target)
 	end
 
 	if slasher.SlasherValue1 > 0 then
-		local modelname = "models/hunter/plates/plate.mdl"
-		util.PrecacheModel(modelname)
-		slasher:SetModel(modelname)
+		slasher:SetModel(plateModelName)
 
 		slasher:SetVisible(false)
 
@@ -274,7 +277,7 @@ function SLASHER.Animator(ply)
 			ply.CalcIdeal = ACT_IDLE
 			ply.CalcSeqOverride = ply:LookupSequence("idle_all")
 		end
-	elseif ply:GetModel() == "models/slashco/slashers/male_07/male_07_monster.mdl" then
+	elseif ply:GetModel() == monsterModelName then
 		if not male_slashing and not male_transforming then
 			ply.anim_antispam = false
 		end

@@ -168,7 +168,6 @@ if CLIENT then
 	end)
 end
 
-
 hook.Add("KeyPress", "ToggleLight", function(ply, key)
 	if not IsFirstTimePredicted() then
 		return
@@ -314,6 +313,10 @@ hook.Add("CalcView", "LobbySpecCam", function(pl, pos, ang, fov)
 		cur_scene = math.random(1, #cutscene_views)
 		cur_pos = cutscene_views[cur_scene].Start[1]
 		cur_ang = cutscene_views[cur_scene].Start[2]
+
+		net.Start("slashCo_SpectatorSceneToPVS")
+			net.WriteVector(cur_pos)
+		net.SendToServer()
 	end
 
 	local cur_dist = cur_pos:Distance( cutscene_views[cur_scene].Stop[1] )
@@ -330,6 +333,10 @@ hook.Add("CalcView", "LobbySpecCam", function(pl, pos, ang, fov)
 		cur_scene = math.random(1, #cutscene_views)
 		cur_pos = cutscene_views[cur_scene].Start[1]
 		cur_ang = cutscene_views[cur_scene].Start[2]
+
+		net.Start("slashCo_SpectatorSceneToPVS")
+			net.WriteVector(cur_pos)
+		net.SendToServer()
 	end
 
 	return GAMEMODE:CalcView(pl, cur_pos, cur_ang, fov)

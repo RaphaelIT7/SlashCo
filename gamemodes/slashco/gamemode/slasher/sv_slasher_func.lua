@@ -9,7 +9,7 @@ end
 function SlashCo.ApplySlasherToPlayer(ply)
 	if SlashCo.CurRound.Slashers[ply:SteamID64()] ~= nil then
 		--Set the correct Slasher
-		print("Assigning the correct Slasher to the player.")
+		print("[SlashCo] Assigning the correct Slasher to the player.")
 		ply:SetNWString("Slasher", SlashCo.CurRound.Slashers[ply:SteamID64()].SlasherID)
 	end
 end

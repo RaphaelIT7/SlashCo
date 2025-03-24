@@ -18,7 +18,7 @@ end
 
 function PLAYER:SetModel()
 	local modelname = self.Player:SlasherValue("Model", "models/Humans/Group01/male_07.mdl")
-	util.PrecacheModel(modelname)
+	SlashCo.PrecacheModel(modelname) -- The model should have already been precached by SlashCo.PrecacheSlasher
 	self.Player:SetModel(modelname)
 	self.Player:SetCanWalk(false)
 end
