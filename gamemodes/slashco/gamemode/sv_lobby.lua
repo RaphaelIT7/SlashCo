@@ -278,9 +278,9 @@ local function lobbyRoundSetup()
             SlashCo.BroadcastMasterDatabaseForClient(play)
         end
 
-        SlashCo.LobbyData.SelectedDifficulty = math.random(0, #SlashCo.DifficultyLevel.EASY) --Randomizing the Difficulty
+        SlashCo.LobbyData.SelectedDifficulty = math.random(0, #SlashCo.DifficultyLevel) --Randomizing the Difficulty
 
-        local diff = math.min(GetConVar("slashco_force_difficulty"):GetInt(), #SlashCo.DifficultyLevel.EASY)
+        local diff = math.min(GetConVar("slashco_force_difficulty"):GetInt(), #SlashCo.DifficultyLevel)
         if diff > -1 then
             SlashCo.LobbyData.SelectedDifficulty = diff
         end
