@@ -152,5 +152,11 @@ function SlashCo.PrecacheItem(itemName)
 end
 
 if SERVER then
-	hook.Run("SlashCo:Precache")
+	hook.Add("InitPostEntity", "SlashCo:CallPrecache", function()
+		hook.Run("SlashCo:Precache")
+	end)
+
+	if game.GetWorld() != NULL then -- Autorefresh support
+		hook.Run("SlashCo:Precache")
+	end
 end
