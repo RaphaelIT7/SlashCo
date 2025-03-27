@@ -60,7 +60,22 @@ include("sh_canbeseen.lua")
 include("sh_player.lua")
 include("sv_holylib.lua")
 
-local SlashCo = SlashCo or {}
+--Initialize global variable to hold functions.
+SlashCo = SlashCo or {}
+
+if not SlashCo.LastUpdate or (SlashCo.LastUpdate + 5) < CurTime() and game.IsDedicated() then
+	local updateCount = file.Read("slashco_gamemodeRefresh.txt", "DATA")
+	if not updateCount then
+		updateCount = 0
+	end
+
+	updateCount = updateCount + 1
+	SlashCo.LastUpdate = CurTime()
+
+	PrintMessage(HUD_PRINTTALK, "[Gamemode] Refresh (ver " .. tostring(updateCount) .. ")")
+
+	file.Write("slashco_gamemodeRefresh.txt", tostring(updateCount))
+end
 
 --[[
 
@@ -84,9 +99,6 @@ hook.Add("CanExitVehicle", "PlayerMotion", function(veh, ply)
 		return veh.VehicleName ~= "Airboat Seat"
 	end
 end)
-
---Initialize global variable to hold functions.
-SlashCo = SlashCo or {}
 
 function GM:Initialize()
 	--If there is no data folder then make one.
