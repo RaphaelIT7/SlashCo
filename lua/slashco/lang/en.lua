@@ -189,6 +189,9 @@ SlashCo.LangTable["Soda_desc"] = "Become invisible on use."
 SlashCo.LangTable["StepDecoy"] = "Step Decoy"
 SlashCo.LangTable["StepDecoy_desc"] = "If placed on a solid surface, this will imitate footsteps sounds which can distract slashers."
 
+SlashCo.LangTable["TeslaCoil"] = "Tesla Coil"
+SlashCo.LangTable["TeslaCoil_desc"] = "Stuns all slashers on the entire map for 20 seconds"
+
 --GameInfo
 
 SlashCo.LangTable["SurvivorInfo"] = [[Welcome to the SlashCo Power Recovery Program.
