@@ -113,6 +113,9 @@ end)
 
 local skyBoxVec = Vector(0, 0, 100000)
 function GM:SetupWorldFog() -- A basic world fog that dynamicly changes depending on the environment
+	if GameData.IsLobby then return end
+	if GameData.LocalPlayer:Team() == TEAM_SPECTATOR then return end
+
 	render.FogMode(MATERIAL_FOG_LINEAR)
 	render.FogColor(0, 0, 0)
 
