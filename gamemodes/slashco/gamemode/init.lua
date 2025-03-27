@@ -58,6 +58,7 @@ include("sv_objectives.lua")
 include("sh_roundpoints.lua")
 include("sh_canbeseen.lua")
 include("sh_player.lua")
+include("sv_holylib.lua")
 
 local SlashCo = SlashCo or {}
 
