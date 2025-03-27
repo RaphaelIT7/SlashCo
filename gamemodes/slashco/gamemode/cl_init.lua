@@ -116,9 +116,7 @@ function GM:SetupWorldFog() -- A basic world fog that dynamicly changes dependin
 	render.FogMode(MATERIAL_FOG_LINEAR)
 	render.FogColor(0, 0, 0)
 
-	local fogStart = 200
-	render.FogStart(fogStart)
-
+	local targetFogStart = 200
 	local pos = GameData.LocalPlayer:GetPos()
 	local isVisible = util.IsSkyboxVisibleFromPoint(pos)
 	local targetFogEnd = 3000
@@ -140,19 +138,26 @@ function GM:SetupWorldFog() -- A basic world fog that dynamicly changes dependin
 		targetFogEnd = 3000
 	end
 
+	if GetGlobal2Bool("DisableWorldFog") then
+		targetFogStart = 9000
+		targetFogEnd = 10000
+	end
+
 	local col = render.GetLightColor(pos)
 	local brighness = (0.299 * col[1] + 0.587 * col[2] + 0.114 * col[3]) * 50
 	brighness = math.min(brighness, 1) - 0.5
 
 	targetFogEnd = targetFogEnd + (targetFogEnd * brighness)
 
-	if (fogStart * 1.5) >= targetFogEnd then
-		targetFogEnd = fogStart * 1.5
+	if (targetFogStart * 1.5) >= targetFogEnd then
+		targetFogEnd = targetFogStart * 1.5
 	end
 
+	GameData.LastFogStart = Lerp(0.005, GameData.LastFogStart or 3000, targetFogStart)
 	GameData.LastFogEnd = Lerp(0.005, GameData.LastFogEnd or 3000, targetFogEnd)
 	--print(targetFogEnd, brighness, GameData.LastFogEnd)
 
+	render.FogStart(GameData.LastFogStart)
 	render.FogEnd(GameData.LastFogEnd)
 
 	return true

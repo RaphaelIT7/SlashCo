@@ -56,7 +56,7 @@ if SERVER then
 
 			print("[SlashCo] Beacon set to arm in " .. fin_time .. " seconds.")
 
-			timer.Create(self:EntIndex() .. "_BeaconArming",fin_time, 1, function()
+			timer.Create(self:EntIndex() .. "_BeaconArming", fin_time, 1, function()
 				ArmBeacon(self)
 			end)
 			timer.Create(self:EntIndex() .. "_BeaconBlipSound",3 , 0, function()

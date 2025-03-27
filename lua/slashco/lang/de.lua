@@ -186,6 +186,9 @@ SlashCo.LangTable["Soda_desc"] = "Werde bei der Verwendung unsichtbar."
 SlashCo.LangTable["StepDecoy"] = "Schritt Köder"
 SlashCo.LangTable["StepDecoy_desc"] = "Wenn es auf einer festen Oberfläche platziert wird, imitiert es Schrittgeräusche, die Slasher ablenken können."
 
+SlashCo.LangTable["TeslaCoil"] = "Tesla Spule"
+SlashCo.LangTable["TeslaCoil_desc"] = "Stunt alle Slasher auf der Map für 20 Sekunden"
+
 --GameInfo
 
 SlashCo.LangTable["SurvivorInfo"] = [[Willkommen beim SlashCo Strom Wiederherstellung Programm.
