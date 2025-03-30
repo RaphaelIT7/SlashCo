@@ -145,14 +145,14 @@ hook.Add("HUDPaint", "LobbyInfoText", function()
 
 			if clientReadiness then
 				if clientReadiness < 1 then
-					draw.SimpleText("       [" .. SlashCo.Language("NotReady") .. "]", "TVCD", scrW * 0.025,
+					draw.SimpleText("	   [" .. SlashCo.Language("NotReady") .. "]", "TVCD", scrW * 0.025,
 							scrH * 0.22, grey, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 				elseif clientReadiness == 1 then
-					draw.SimpleText("       [" .. SlashCo.Language("ReadyAs",
+					draw.SimpleText("	   [" .. SlashCo.Language("ReadyAs",
 							string.upper(SlashCo.Language("Survivor"))) .. "]", "TVCD", scrW * 0.025, scrH * 0.22,
 							green, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 				elseif clientReadiness == 2 then
-					draw.SimpleText("       [" .. SlashCo.Language("ReadyAs",
+					draw.SimpleText("	   [" .. SlashCo.Language("ReadyAs",
 							string.upper(SlashCo.Language("Slasher"))) .. "]", "TVCD", scrW * 0.025, scrH * 0.22, red,
 							TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 				end

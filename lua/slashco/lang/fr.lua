@@ -1,7 +1,7 @@
 --[[
 
-    Language: fr, (French), (Français)
-    Translator: Manti
+	Language: fr, (French), (Français)
+	Translator: Manti
 
 ]]
 

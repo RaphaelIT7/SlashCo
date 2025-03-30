@@ -263,9 +263,7 @@ end
 if SERVER and not game_playable then
 	timer.Simple(30, function()
 		for _, play in ipairs(player.GetAll()) do
-			play:ChatPrint([[[SlashCo] WARNING! There are no maps mounted! The gamemode is not playable!
-                
-Download the Maps at the Gamemode's workshop page under the "Required Items" section.]])
+			play:ChatPrint([[[SlashCo] WARNING! There are no maps mounted! The gamemode is not playable!\nDownload the Maps at the Gamemode's workshop page under the "Required Items" section.]])
 		end
 	end)
 end
