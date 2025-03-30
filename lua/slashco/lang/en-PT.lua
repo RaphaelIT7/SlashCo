@@ -1,7 +1,7 @@
 --[[
 
-    Language: en, (Pirate English), (Pirate English)
-    "Translator": Kōfuku
+	Language: en, (Pirate English), (Pirate English)
+	"Translator": Kōfuku
 
 ]]
 

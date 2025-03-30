@@ -80,13 +80,7 @@ end
 --Proximity voice chat
 
 hook.Add("PlayerCanHearPlayersVoice", "Maximum Range", function(listener, talker)
-	if talker:Team() == TEAM_SPECTATOR or talker:Team() == TEAM_SLASHER then
-		return false
-	end
-
-	if listener:GetPos():DistToSqr(talker:GetPos()) > 1000000 then
-		return false
-	end
+	return true
 end)
 
 hook.Add("GetFallDamage", "RealisticDamage", function(_, speed)
@@ -94,26 +88,7 @@ hook.Add("GetFallDamage", "RealisticDamage", function(_, speed)
 end)
 
 hook.Add("PlayerCanSeePlayersChat", "TeamChat", function(_, _, listener, speaker)
-	if listener:Team() == TEAM_SPECTATOR then
-		return true
-	end
-	if speaker:Team() == TEAM_SLASHER then
-		return false
-	end
-	if listener:Team() == TEAM_SLASHER then
-		return false
-	end
-	if speaker:Team() == TEAM_SPECTATOR and listener:Team() ~= TEAM_SPECTATOR then
-		return false
-	end
-
-	if listener:GetPos():DistToSqr(speaker:GetPos()) > 1000000 then
-		return false
-	else
-		if speaker:Team() == TEAM_SURVIVOR then
-			return true
-		end
-	end
+	return true
 end)
 
 hook.Add("ShowTeam", "DoNotAllowTeamSwitch", function()

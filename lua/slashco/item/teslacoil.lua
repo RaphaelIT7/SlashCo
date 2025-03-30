@@ -4,7 +4,7 @@ ITEM.Model = "models/props_c17/utilityconnecter006c.mdl"
 ITEM.EntClass = "sc_teslacoil"
 ITEM.Name = "TeslaCoil"
 ITEM.Icon = "slashco/ui/icons/items/item_teslacoil"
-ITEM.Price = 15
+ITEM.Price = 1
 ITEM.Description = "TeslaCoil_desc"
 ITEM.CamPos = Vector(110,0,80)
 function ITEM.MaxAllowed()

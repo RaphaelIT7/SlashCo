@@ -1,7 +1,7 @@
 --[[
 
-    Language: de, (German), (Deutsch)
-    Translator: Fuchs, eno
+	Language: de, (German), (Deutsch)
+	Translator: Fuchs, eno
 
 ]]
 

@@ -32,8 +32,8 @@ end
 function ENT:RunBehaviour()
 	while true do
 		-- Here is the loop, it will run forever
-		self:StartActivity(ACT_WALK)            -- Walk animation
-		self.loco:SetDesiredSpeed(100)        -- Walk speed
+		self:StartActivity(ACT_WALK)			-- Walk animation
+		self.loco:SetDesiredSpeed(100)		-- Walk speed
 
 		local pos = SlashCo.RandomPosLocator()
 		if g_SlashCoDebug then

@@ -1,7 +1,7 @@
 --[[
 
-    Language: en, (English), (English)
-    Translator: Manti
+	Language: en, (English), (English)
+	Translator: Manti
 
 ]]
 
