@@ -57,3 +57,9 @@ function GM:PlayerSpawnAsSpectator(ply)
 	ply:Spectate(OBS_MODE_ROAMING)
 	ply:SetMoveType(MOVETYPE_NOCLIP) -- Solves prediction issues as MOVETYPE_OBSERVER doesn't predict well
 end
+
+hook.Add("PlayerNoClip", "SlashCo:PreventSpectators", function(ply)
+	if ply:Team() == TEAM_SPECTATOR then
+		return false
+	end
+end)
