@@ -1,7 +1,12 @@
 local SlashCo = SlashCo
 local SlashCoItems = SlashCoItems
 
---//actual real code//--
+hook.Add("InitPostEntity", "SlashCo:LobbyBackgroundMusic", function()
+	if not GameData.IsLobby then return end
+
+	SlashCo.AudioSystem.EnableBackgroundMusic()
+	SlashCo.AudioSystem.SetBackgroundMusic("slashco/music/slashco_lobby.wav")
+end)
 
 local function lobbySaveCurData()
 	local diff = SlashCo.LobbyData.SelectedDifficulty
@@ -698,6 +703,8 @@ function lobbyFinish()
 		SlashCo.StartGameIntro()
 
 		lobbyLeaveTimer()
+
+		SlashCo.AudioSystem.DisableBackgroundMusic()
 
 		local heli = table.Random(ents.FindByClass("sc_helicopter"))
 
