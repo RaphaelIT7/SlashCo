@@ -590,76 +590,63 @@ hook.Add("PostDrawOpaqueRenderables", "LobbyScreens", function()
 
 		b_tick = b_tick + 0.5
 
-		local s_id = BriefingTable.ID
-		local s_cls = BriefingTable.CLASS
-		local s_dng = BriefingTable.DANGER
-		local s_n = BriefingTable.NAME
+		local slasherID = BriefingTable.ID
+		local slasherClass = BriefingTable.CLASS
+		local slasherDanger = BriefingTable.DANGER
+		local slasherName = BriefingTable.NAME
 		local pro_tip = BriefingTable.TIP
 
 		cam.Start3D2D(pos, angle, 0.09)
 
 		local monitorsize = 1300
 		local txtcolor = color_white
-		local s_cls_t = SlashCo.Language(TranslateSlasherClass(s_cls))
-		local s_dng_t = SlashCo.Language(TranslateDangerLevel(s_dng))
+		local slasherClassTranslated = SlashCo.Language(TranslateSlasherClass(slasherClass))
+		local slasherDangerTranslated = SlashCo.Language(TranslateDangerLevel(slasherDanger))
 
 		surface.SetDrawColor(0, 0, 0, 255)
 		surface.DrawRect(-monitorsize / 2, -monitorsize / 2, monitorsize, monitorsize)
 
 		surface.SetDrawColor(0, 0, 0, 255)
-		draw.SimpleText(SlashCo.Language("briefing"), "BriefingFont", 25 - monitorsize / 2, 25 - monitorsize / 2,
-				color_white)
+		draw.SimpleText(SlashCo.Language("briefing"), "BriefingFont", 25 - monitorsize / 2, 25 - monitorsize / 2, color_white)
+		draw.SimpleText(SlashCo.Language("Name", ""), "BriefingFont", 25 - monitorsize / 2, 250 - monitorsize / 2, color_white)
 
-		draw.SimpleText(SlashCo.Language("Name", ""), "BriefingFont", 25 - monitorsize / 2, 250 - monitorsize / 2,
-				color_white)
-		if s_n == "Unknown" then
+		if slasherName == "Unknown" then
 			txtcolor = Color(200, 0, 0, b_tick - 0)
 		else
 			txtcolor = Color(255, 255, 255, b_tick - 0)
 		end
 
-		draw.SimpleText(SlashCo.Language(s_n), "BriefingFont", 900 - monitorsize / 2, 250 - monitorsize / 2, txtcolor,
-				TEXT_ALIGN_CENTER,
-				TEXT_ALIGN_TOP)
+		draw.SimpleText(SlashCo.Language(slasherName), "BriefingFont", 900 - monitorsize / 2, 250 - monitorsize / 2, txtcolor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+		draw.SimpleText(SlashCo.Language("Class", ""), "BriefingFont", 25 - monitorsize / 2, 350 - monitorsize / 2, color_white)
 
-		draw.SimpleText(SlashCo.Language("Class", ""), "BriefingFont", 25 - monitorsize / 2, 350 - monitorsize / 2,
-				color_white)
-		if s_cls == 0 then
+		if slasherClass == SlashCo.SlasherClass.Unknown then
 			txtcolor = Color(200, 0, 0, b_tick - 255)
 		else
 			txtcolor = Color(255, 255, 255, b_tick - 255)
 		end
 
-		draw.SimpleText(s_cls_t, "BriefingFont", 900 - monitorsize / 2, 350 - monitorsize / 2, txtcolor,
-				TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+		draw.SimpleText(slasherClassTranslated, "BriefingFont", 900 - monitorsize / 2, 350 - monitorsize / 2, txtcolor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+		draw.SimpleText(SlashCo.Language("DangerLevel", ""), "BriefingFont", 25 - monitorsize / 2, 450 - monitorsize / 2, color_white)
 
-		draw.SimpleText(SlashCo.Language("DangerLevel", ""), "BriefingFont", 25 - monitorsize / 2,
-				450 - monitorsize / 2, color_white)
-
-		if s_dng == 1 then
+		if slasherDanger == SlashCo.DifficultyLevel.Moderate then
 			txtcolor = Color(255, 255, 0, b_tick - 255 * 2)
-		elseif s_dng == 2 then
+		elseif slasherDanger == SlashCo.DifficultyLevel.Considerable then
 			txtcolor = Color(255, 155, 155, b_tick - 255 * 2)
-		elseif s_dng == 3 then
+		elseif slasherDanger == SlashCo.DifficultyLevel.Devastating then
 			txtcolor = Color(255, 0, 0, b_tick - 255 * 2)
 		else
 			txtcolor = Color(200, 0, 0, b_tick - 255 * 2)
 		end
 
-		draw.SimpleText(s_dng_t, "BriefingFont", 900 - monitorsize / 2, 450 - monitorsize / 2, txtcolor,
-				TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
-
-		draw.SimpleText(SlashCo.Language("Notes") .. ":", "BriefingFont", 25 - monitorsize / 2, 700 - monitorsize / 2,
-				color_white)
+		draw.SimpleText(slasherDangerTranslated, "BriefingFont", 900 - monitorsize / 2, 450 - monitorsize / 2, txtcolor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+		draw.SimpleText(SlashCo.Language("Notes") .. ":", "BriefingFont", 25 - monitorsize / 2, 700 - monitorsize / 2, color_white)
 
 		local icondrawid = 0
-
 		if b_tick > 200 then
-			draw.SimpleText(SlashCo.Language(pro_tip), "BriefingNoteFont", 25 - monitorsize / 2, 800 - monitorsize / 2,
-					color_white)
+			draw.SimpleText(SlashCo.Language(pro_tip), "BriefingNoteFont", 25 - monitorsize / 2, 800 - monitorsize / 2, color_white)
 
-			if s_id ~= nil and s_id ~= 0 then
-				icondrawid = s_id
+			if slasherID ~= nil and slasherID ~= 0 then
+				icondrawid = slasherID
 			end
 		else
 			draw.SimpleText("...", "BriefingNoteFont", 25 - monitorsize / 2, 800 - monitorsize / 2, color_white)
