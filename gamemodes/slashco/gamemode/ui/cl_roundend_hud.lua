@@ -216,9 +216,9 @@ local stringTable = {
 		local lines = {
 			SlashCo.Language("cur_assignment", info[1]),
 			SlashCo.Language("slasher_assess"),
-			SlashCo.Language("Name", info[2]),
-			SlashCo.Language("Class", SlashCo.SlasherClass[info[3]]),
-			SlashCo.Language("DangerLevel", SlashCo.DangerLevel[info[4]]),
+			{ SlashCo.Language("Name", info[2]), SlashCo.GetNameColor(info[2]) },
+			{ SlashCo.Language("Class", SlashCo.SlasherClass[info[3]]), SlashCo.GetClassColor(info[3]) },
+			{ SlashCo.Language("DangerLevel", SlashCo.DangerLevel[info[4]]), SlashCo.GetDangerColor(info[4]) },
 			SlashCo.Language("Difficulty", SlashCo.DifficultyLevel[info[5]]),
 		}
 		if info[6] ~= "Regular" then
@@ -248,7 +248,30 @@ local function nextLine(panel, lines)
 	line:SetFont("OutroFont")
 	line:SetContentAlignment(8)
 	line:SetTall(40)
-	line:SetText(lines[#lines])
+
+	local lineData = lines[#lines]
+	local isMultiLabel = istable(lineData)
+	line:SetText(isMultiLabel and lineData[1] or lineData)
+	if isMultiLabel then
+		line:SetTextColor(Color(0, 0, 0, 0))
+		line.Paint = function(self, w, h)
+			surface.SetTextColor(color_white)
+			surface.SetFont("OutroFont")
+
+			local x, y = surface.GetTextSize(lineData[1])
+			local pos1 = ScrW() / 2 - (x / 2)
+			surface.SetTextPos(pos1, 0)
+
+			local split = string.Split(lineData[1], ":")
+			split[1] = split[1] .. ":"
+			surface.DrawText(split[1])
+
+			local x2, y2 = surface.GetTextSize(split[1])
+			surface.SetTextColor(lineData[2])
+			surface.SetTextPos(pos1 + x2, 0)
+			surface.DrawText(split[2])
+		end
+	end
 
 	timer.Simple(0, function()
 		local w = line:GetTextSize()
