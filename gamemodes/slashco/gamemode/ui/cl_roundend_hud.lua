@@ -211,7 +211,7 @@ local stringTable = {
 		return lines
 	end,
 	intro = function(info)
-		stop_lobbymusic = true --incredibly lame
+		SlashCo.AudioSystem.DisableBackgroundMusic()
 		surface.PlaySound("slashco/music/slashco_intro.mp3")
 		local lines = {
 			SlashCo.Language("cur_assignment", info[1]),
