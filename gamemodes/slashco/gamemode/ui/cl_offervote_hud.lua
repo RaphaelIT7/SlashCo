@@ -45,7 +45,7 @@ hook.Add("HUDPaint", "OfferingVoteHUD", function()
 			offerjingle_antispam = true
 		end
 
-		stop_lobbymusic = true
+		SlashCo.AudioSystem.DisableBackgroundMusic()
 
 		if o_tick == nil then
 			o_tick = 1
@@ -60,7 +60,7 @@ hook.Add("HUDPaint", "OfferingVoteHUD", function()
 
 		if o_tick == 0 then
 			show_offering_result_screen = false
-			stop_lobbymusic = false
+			SlashCo.AudioSystem.EnableBackgroundMusic()
 			lobbymusic_antispam = false
 		end
 
