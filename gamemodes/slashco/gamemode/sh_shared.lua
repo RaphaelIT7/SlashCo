@@ -25,17 +25,40 @@ SlashCo.HelicopterVoices = {
 	BEACON = 4,
 }
 
+function SlashCo.CopyColor(col)
+	return Color(col:Unpack())
+end
+
+SlashCo.UnknownCol = Color(200, 0, 0) -- Text Color used for fields that are unknown
+SlashCo.KnownCol = Color(255, 255, 255) -- Text Color used for fields which are known
+
+function SlashCo.GetDangerColor(danger)
+	return SlashCo.DangerLevel[SlashCo.DangerLevel[danger] .. "Col"]
+end
+
+function SlashCo.GetNameColor(name)
+	return name == "Unknown" and SlashCo.UnknownCol or SlashCo.KnownCol
+end
+
+function SlashCo.GetClassColor(class)
+	return class == SlashCo.SlasherClass.Unknown and SlashCo.UnknownCol or SlashCo.KnownCol
+end
+
 SlashCo.DangerLevel = {
 	Unknown = 0,
+	UnknownCol = SlashCo.UnknownCol,
 	[0] = "Unknown",
 
 	Moderate = 1,
+	ModerateCol = Color(255, 255, 0),
 	[1] = "Moderate",
 
 	Considerable = 2,
+	ConsiderableCol = Color(255, 155, 155),
 	[2] = "Considerable",
 
 	Devastating = 3,
+	DevastatingCol = Color(255, 0, 0),
 	[3] = "Devastating",
 }
 

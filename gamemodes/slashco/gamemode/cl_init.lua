@@ -610,33 +610,20 @@ hook.Add("PostDrawOpaqueRenderables", "LobbyScreens", function()
 		draw.SimpleText(SlashCo.Language("briefing"), "BriefingFont", 25 - monitorsize / 2, 25 - monitorsize / 2, color_white)
 		draw.SimpleText(SlashCo.Language("Name", ""), "BriefingFont", 25 - monitorsize / 2, 250 - monitorsize / 2, color_white)
 
-		if slasherName == "Unknown" then
-			txtcolor = Color(200, 0, 0, b_tick - 0)
-		else
-			txtcolor = Color(255, 255, 255, b_tick - 0)
-		end
+		txtcolor = SlashCo.CopyColor(SlashCo.GetNameColor(slasherName))
+		txtcolor[4] = b_tick - 0
 
 		draw.SimpleText(SlashCo.Language(slasherName), "BriefingFont", 900 - monitorsize / 2, 250 - monitorsize / 2, txtcolor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 		draw.SimpleText(SlashCo.Language("Class", ""), "BriefingFont", 25 - monitorsize / 2, 350 - monitorsize / 2, color_white)
 
-		if slasherClass == SlashCo.SlasherClass.Unknown then
-			txtcolor = Color(200, 0, 0, b_tick - 255)
-		else
-			txtcolor = Color(255, 255, 255, b_tick - 255)
-		end
+		txtcolor = SlashCo.CopyColor(SlashCo.GetClassColor(slasherClass))
+		txtcolor[4] = b_tick - 255
 
 		draw.SimpleText(slasherClassTranslated, "BriefingFont", 900 - monitorsize / 2, 350 - monitorsize / 2, txtcolor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 		draw.SimpleText(SlashCo.Language("DangerLevel", ""), "BriefingFont", 25 - monitorsize / 2, 450 - monitorsize / 2, color_white)
 
-		if slasherDanger == SlashCo.DifficultyLevel.Moderate then
-			txtcolor = Color(255, 255, 0, b_tick - 255 * 2)
-		elseif slasherDanger == SlashCo.DifficultyLevel.Considerable then
-			txtcolor = Color(255, 155, 155, b_tick - 255 * 2)
-		elseif slasherDanger == SlashCo.DifficultyLevel.Devastating then
-			txtcolor = Color(255, 0, 0, b_tick - 255 * 2)
-		else
-			txtcolor = Color(200, 0, 0, b_tick - 255 * 2)
-		end
+		txtcolor = SlashCo.CopyColor(SlashCo.GetDangerColor(slasherDanger))
+		txtcolor[4] = b_tick - 255
 
 		draw.SimpleText(slasherDangerTranslated, "BriefingFont", 900 - monitorsize / 2, 450 - monitorsize / 2, txtcolor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 		draw.SimpleText(SlashCo.Language("Notes") .. ":", "BriefingFont", 25 - monitorsize / 2, 700 - monitorsize / 2, color_white)
