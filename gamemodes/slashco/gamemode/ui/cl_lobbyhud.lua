@@ -6,7 +6,7 @@ if not GameData.IsLobby then
 	return
 end
 
-local longest_name, plynum, lobby_music
+local longest_name, plynum
 
 local grey = Color(128, 128, 128)
 local red = Color(255, 64, 64)
@@ -33,16 +33,6 @@ local UnReadyCheck = Material("slashco/ui/lobby_unready")
 
 hook.Add("HUDPaint", "LobbyInfoText", function()
 	local localPly = GameData.LocalPlayer
-	if stop_lobbymusic ~= true and (lobbymusic_antispam == nil or lobbymusic_antispam ~= true) then
-		lobby_music = CreateSound(localPly, "slashco/music/slashco_lobby.wav")
-		lobby_music:Play()
-		lobby_music:ChangeVolume(0.5)
-		lobbymusic_antispam = true
-	end
-
-	if IsValid(lobby_music) and stop_lobbymusic then
-		lobby_music:Stop()
-	end
 
 	local scrW, scrH = ScrW(), ScrH()
 	local point_count = CL_points or 0

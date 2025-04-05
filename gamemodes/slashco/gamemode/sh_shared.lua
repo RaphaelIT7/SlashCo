@@ -4,6 +4,7 @@ GM.Email = "N/A"
 GM.Website = "N/A"
 GM.TeamBased = true
 
+include("audiosystem/sh_audiosystem.lua")
 include("player_class/player_survivor.lua")
 include("player_class/player_slasher_base.lua")
 include("player_class/player_lobby.lua")
