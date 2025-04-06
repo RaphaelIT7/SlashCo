@@ -63,3 +63,36 @@ hook.Add("PlayerNoClip", "SlashCo:PreventSpectators", function(ply)
 		return false
 	end
 end)
+
+function PLAYER:MarkAsSeenBySlasher()
+	self:SetNW2Bool("WasSeenBySlasher", true)
+end
+
+function PLAYER:WasSeenBySlasher()
+	return self:GetNW2Bool("WasSeenBySlasher", false)
+end
+
+-- This function is VERY expensive, BUT it shouldn't be called too frequent anyways.
+function PLAYER:FindPlayersInView(dist, radius, notrace)
+	local pos = self:EyePos()
+	local foundEnts = ents.FindInCone(pos, self:GetEyeTrace().Normal, dist, radius)
+	local results = {}
+	for _, ent in ipairs(foundEnts) do
+		if ent:IsPlayer() and ent:Team() == TEAM_SURVIVOR then
+			if not notrace then
+				local tr = util.TraceLine({
+					start = pos,
+					endpos = ent:EyePos(),
+					filter = self,
+					mask = MASK_OPAQUE_AND_NPCS, -- It's not just and NPCs, it's and ANY entity.
+				})
+
+				if tr.Entity != ent then continue end -- Player is not fully visible.
+			end
+
+			table.insert(results, ent)
+		end
+	end
+
+	return results
+end

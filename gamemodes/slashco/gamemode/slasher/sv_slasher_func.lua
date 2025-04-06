@@ -73,6 +73,7 @@ hook.Add("Tick", "HandleSlasherAbilities", function()
 	for _, v in ipairs(team.GetPlayers(TEAM_SLASHER)) do
 		local slasher = v
 		local dist = slasher:SlasherValue("ChaseRange", 600) + (SO * 250)
+		local inv = -0.2
 
 		--Handle The Chase Functions \/ \/ \/
 		--SlashCoSlashers[slasher:GetNWString("Slasher")].IsChasing = slasher:GetNWBool("InSlasherChaseMode")
@@ -84,11 +85,14 @@ hook.Add("Tick", "HandleSlasherAbilities", function()
 			slasher.ChaseActivationCooldown = slasher.ChaseActivationCooldown - FrameTime()
 		end
 
+		for _, ply in ipairs(slasher:FindPlayersInView(dist / 2, slasher:SlasherValue("ChaseRadius", 0.91) + inv)) do
+			ply:MarkAsSeenBySlasher() -- They were seen.
+		end
+
 		if slasher:GetNWBool("InSlasherChaseMode") then
 			slasher.CurrentChaseTick = slasher.CurrentChaseTick + FrameTime()
 
 			--local inv = (1 - SlashCoSlashers[slasher:GetNWString("Slasher")].ChaseRadius) / 2
-			local inv = -0.2
 
 			local find = ents.FindInCone(slasher:GetPos(), slasher:GetEyeTrace().Normal, dist * 2,
 					slasher:SlasherValue("ChaseRadius", 0.91) + inv)
