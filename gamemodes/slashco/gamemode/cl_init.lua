@@ -752,6 +752,36 @@ function SlashCo.ReadSound(fileName)
 	return _sound
 end
 
+local function WasSeenBySlasher(_, _, old, new)
+	if new then
+		SlashCo.AudioSystem.CreateChannel("slashco/survivor/seen_by_slasher.mp3", "mono noplay", function(channel)
+			channel:SetVolume(0)
+			channel:Play()
+			SlashCo.AudioSystem.FadeIn(channel, 1)
+			SlashCo.AudioSystem.ParentChannelToEntity(channel, GameData.LocalPlayer)
+
+			timer.Create("SlashCo:SeenBySlasherSound", 1, 0, function() -- Properly unregister the channel when it finished playing.
+				if not IsValid(channel) or channel:GetState() != GMOD_CHANNEL_PLAYING then
+					SlashCo.AudioSystem.DestroyChannel(channel)
+					timer.Remove("SlashCo:SeenBySlasherSound")
+				end
+			end)
+		end)
+	end
+end
+
+local function SetupWasSeenHook()
+	local ply = GameData and GameData.LocalPlayer or LocalPlayer()
+
+	ply:SetNW2VarProxy("WasSeenBySlasher", WasSeenBySlasher)
+	WasSeenBySlasher(nil, nil, nil, ply:WasSeenBySlasher())
+end
+
+hook.Add("InitPostEntity", "SlashCo:WasLocalPlayerSeenBySlasher", SetupWasSeenHook)
+if game.GetWorld() != NULL then
+	SetupWasSeenHook()
+end
+
 SC_CLIENT_LOADED = true
 
 ---load patch files; these are specifically intended to modify existing addon code

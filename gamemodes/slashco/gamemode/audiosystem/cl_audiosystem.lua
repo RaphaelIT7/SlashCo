@@ -1,4 +1,5 @@
 SlashCo.AudioSystem.Channels = SlashCo.AudioSystem.Channels or {} -- All IGModAudioChannel instances
+SlashCo.AudioSystem.ParentedChannels = SlashCo.AudioSystem.ParentedChannels or {}
 SlashCo.AudioSystem.BackgroundChannel = SlashCo.AudioSystem.BackgroundChannel or nil
 
 --[[local slashco_enable_backgroundmusic = CreateClientConVar("slashco_enable_backgroundmusic", "1", true, false)
@@ -48,8 +49,13 @@ function SlashCo.AudioSystem.CreateChannel(soundFile, mode, callback)
 	end)
 end
 
+-- This causes the channel to follow the entities position, BUT the channel WONT be removed if the entity is removed.
+function SlashCo.AudioSystem.ParentChannelToEntity(channel, entity)
+	SlashCo.AudioSystem.ParentedChannels[channel] = entity
+end
+
 function SlashCo.AudioSystem.DestroyChannel(channel, fadeOutTime)
-	if channel:GetState() == GMOD_CHANNEL_PLAYING then
+	if IsValid(channel) and channel:GetState() == GMOD_CHANNEL_PLAYING then
 		local vol = channel:GetVolume()
 		if vol > 0 then
 			timer.Remove("SlashCo:FadeInAudioChannel" .. channel:GetFileName()) -- Remove any fadeIn timer that might exist
@@ -62,6 +68,7 @@ function SlashCo.AudioSystem.DestroyChannel(channel, fadeOutTime)
 					channel:Stop()
 					SlashCo.AudioSystem.CheckChannels()
 					SlashCo.AudioSystem.Channels[channel] = nil
+					SlashCo.AudioSystem.ParentedChannels[channel] = nil
 					return
 				end
 
@@ -75,6 +82,7 @@ function SlashCo.AudioSystem.DestroyChannel(channel, fadeOutTime)
 
 	SlashCo.AudioSystem.CheckChannels()
 	SlashCo.AudioSystem.Channels[channel] = nil
+	SlashCo.AudioSystem.ParentedChannels[channel] = nil
 end
 
 function SlashCo.AudioSystem.FadeIn(channel, fadeInTime, targetVol)
@@ -186,7 +194,21 @@ local function UpdateBackgroundMusic()
 	end
 end
 
+local function UpdateChannelPositions()
+	for channel, ent in pairs(SlashCo.AudioSystem.ParentedChannels) do
+		--[[
+			Why don't we remove the channel if the parent is gone?
+			Because on full updates, the parent might disappear and then reappear.
+		]]
+		if not IsValid(ent) then continue end
+
+		channel:SetPos(ent:GetPos())
+	end
+end
+
 function SlashCo.AudioSystem.Think()
 	UpdateBackgroundMusic()
+	UpdateChannelPositions()
 end
+
 hook.Add("Think", "SlashCo:AudioSystem", SlashCo.AudioSystem.Think)
