@@ -4,19 +4,10 @@ ITEM.Model = "models/props_c17/utilityconnecter006c.mdl"
 ITEM.EntClass = "sc_teslacoil"
 ITEM.Name = "TeslaCoil"
 ITEM.Icon = "slashco/ui/icons/items/item_teslacoil"
-ITEM.Price = 1
+ITEM.Price = 50
 ITEM.Description = "TeslaCoil_desc"
-ITEM.CamPos = Vector(110,0,80)
-function ITEM.MaxAllowed()
-	return 1
-end
+ITEM.CamPos = Vector(110, 0, 80)
 ITEM.IsSpawnable = false
-function ITEM.OnUse(ply)
-	--If the holder of the item is the last one alive and at least one generator has been activated, the rescue helicopter will come prematurely.
-
-	local ent = SlashCo.CreateItem("sc_activeteslacoil", ply:WorldSpaceCenter(), Angle(0, 0, 0))
-	ent:DropToFloor()
-end
 ITEM.ViewModel = {
 	type = "Model",
 	model = ITEM.Model,
@@ -55,5 +46,16 @@ ITEM.WorldModel = {
 	skin = 0,
 	bodygroup = {}
 }
+
+function ITEM.OnUse(ply)
+	--If the holder of the item is the last one alive and at least one generator has been activated, the rescue helicopter will come prematurely.
+
+	local ent = SlashCo.CreateItem("sc_activeteslacoil", ply:WorldSpaceCenter(), Angle(0, 0, 0))
+	ent:DropToFloor()
+end
+
+function ITEM.MaxAllowed()
+	return 1
+end
 
 SlashCo.RegisterItem(ITEM, ITEM.Name)
