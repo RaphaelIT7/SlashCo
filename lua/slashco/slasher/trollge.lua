@@ -61,7 +61,7 @@ local function stopDash(slasher)
 end
 
 function SLASHER.OnTickBehaviour(slasher)
-	local v1 = slasher.SlasherValue1 --Stage
+	local stage = slasher.SlasherValue1 --Stage
 	local v2 = math.Clamp(slasher.SlasherValue2, 0, 2) --Claw cooldown
 	slasher.SlasherValue2 = v2
 	local v3 = slasher.SlasherValue3 --blood
@@ -74,20 +74,22 @@ function SLASHER.OnTickBehaviour(slasher)
 		slasher.SlasherValue2 = v2 - FrameTime()
 	end
 
-	if v1 == 0 then
+	if stage == 0 then
 		slasher:SetNWBool("TrollgeStage1", false)
 		slasher:SetNWBool("TrollgeStage2", false)
 	end
-	if v1 == 1 then
+
+	if stage == 1 then
 		slasher:SetNWBool("TrollgeStage1", true)
 		slasher:SetNWBool("TrollgeStage2", false)
 	end
-	if v1 == 2 then
+
+	if stage == 2 then
 		slasher:SetNWBool("TrollgeStage1", false)
 		slasher:SetNWBool("TrollgeStage2", true)
 	end
 
-	if not slasher:GetNWBool("TrollgeTransition") and not slasher:GetNWBool("TrollgeStage1") and SlashCo.CurRound.GameProgress > 4 and v1 < 1 then
+	if not slasher:GetNWBool("TrollgeTransition") and not slasher:GetNWBool("TrollgeStage1") and SlashCo.CurRound.GameProgress > 4 and stage < 1 then
 		slasher:SetNWBool("TrollgeTransition", true)
 		slasher:Freeze(true)
 		slasher:StopSound("slashco/slasher/trollge_breathing.wav")
@@ -121,7 +123,7 @@ function SLASHER.OnTickBehaviour(slasher)
 		slasher.SlasherValue3 = 8
 	end
 
-	if not slasher:GetNWBool("TrollgeTransition") and not slasher:GetNWBool("TrollgeStage2") and SlashCo.CurRound.GameProgress > (10 - (v3 / 2)) and v1 == 1 then
+	if not slasher:GetNWBool("TrollgeTransition") and not slasher:GetNWBool("TrollgeStage2") and SlashCo.CurRound.GameProgress > (10 - (v3 / 2)) and stage == 1 then
 		slasher:SetNWBool("TrollgeTransition", true)
 		slasher:Freeze(true)
 		slasher:StopSound("slashco/slasher/trollge_stage1.wav")
@@ -155,13 +157,13 @@ function SLASHER.OnTickBehaviour(slasher)
 		end)
 	end
 
-	if v1 == 1 then
+	if stage == 1 then
 		final_eyesight = 10 - (slasher:GetVelocity():Length() / 35)
 		final_perception = 5 - (slasher:GetVelocity():Length() / 60)
 	end
 
-	if slasher:GetNWInt("TrollgeStage") ~= v1 then
-		slasher:SetNWInt("TrollgeStage", v1)
+	if slasher:GetNWInt("TrollgeStage") ~= stage then
+		slasher:SetNWInt("TrollgeStage", stage)
 	end
 
 	if slasher:GetNWBool("TrollgeDashing") then

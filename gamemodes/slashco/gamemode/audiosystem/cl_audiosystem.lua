@@ -85,21 +85,34 @@ function SlashCo.AudioSystem.DestroyChannel(channel, fadeOutTime)
 	SlashCo.AudioSystem.ParentedChannels[channel] = nil
 end
 
-function SlashCo.AudioSystem.FadeIn(channel, fadeInTime, targetVol)
+function SlashCo.AudioSystem.FadeTo(channel, fadeInTime, targetVol)
 	targetVol = targetVol or 1
 	fadeInTime = fadeInTime or 1
 
 	local vol = channel:GetVolume()
+	local lowerVol = targetVol < vol
 	local timerName = "SlashCo:FadeInAudioChannel" .. channel:GetFileName()
 	local updateFreq = 0.05
-	local volumeIncrement = targetVol / math.ceil(fadeInTime / updateFreq)
+	local volumeIncrement = math.abs(targetVol - vol) / math.ceil(fadeInTime / updateFreq)
 	timer.Create(timerName, updateFreq, 0, function() -- Let the sound fade away
-		if !IsValid(channel) or vol >= 1 then
+		local reachedTarget = false
+		if lowerVol then
+			reachedTarget = targetVol >= vol
+		else
+			reachedTarget = vol >= targetVol
+		end
+
+		if !IsValid(channel) or reachedTarget then
 			timer.Remove(timerName)
 			return
 		end
 
-		vol = channel:GetVolume() + volumeIncrement
+		if lowerVol then
+			vol = channel:GetVolume() - volumeIncrement
+		else
+			vol = channel:GetVolume() + volumeIncrement
+		end
+
 		channel:SetVolume(vol)
 	end)
 end
@@ -138,7 +151,7 @@ function SlashCo.AudioSystem.PlayBackgroundMusic(fileName)
 		channel:Play()
 		channel:EnableLooping(true)
 		SlashCo.AudioSystem.BackgroundChannel:SetTime(SlashCo.AudioSystem.GetBackgroundMusicTime())
-		SlashCo.AudioSystem.FadeIn(channel, 5)
+		SlashCo.AudioSystem.FadeTo(channel, 5, SlashCo.AudioSystem.GetBackgroundMusicVolume())
 	end)
 end
 
@@ -158,6 +171,12 @@ local function OnBackgroundMusicStateChange(ent, name, old, new)
 	end
 end
 
+local function OnBackgroundMusicVolumeChange(ent, name, old, new)
+	if IsValid(SlashCo.AudioSystem.BackgroundChannel) then
+		SlashCo.AudioSystem.FadeTo(SlashCo.AudioSystem.BackgroundChannel, 5, new)
+	end
+end
+
 function SlashCo.AudioSystem.Init()
 	local world = game.GetWorld()
 
@@ -170,6 +189,9 @@ function SlashCo.AudioSystem.Init()
 
 	world:SetNW2VarProxy("SlashCo:ShouldPlayBackgroundMusic", OnBackgroundMusicStateChange)
 	OnBackgroundMusicStateChange(world, "SlashCo:ShouldPlayBackgroundMusic", nil, SlashCo.AudioSystem.ShouldPlayBackgroundMusic())
+
+	world:SetNW2VarProxy("SlashCo:BackgroundMusicVolume", OnBackgroundMusicVolumeChange)
+	OnBackgroundMusicVolumeChange(world, "SlashCo:BackgroundMusicVolume", nil, SlashCo.AudioSystem.GetBackgroundMusicVolume())
 end
 
 hook.Add("InitPostEntity", "SlashCo:AudioSystem", SlashCo.AudioSystem.Init)
@@ -186,11 +208,11 @@ local function UpdateBackgroundMusic()
 		if SlashCo.AudioSystem.BackgroundChannel:GetState() != GMOD_CHANNEL_PLAYING then -- Fk stopsound
 			SlashCo.AudioSystem.BackgroundChannel:Play()
 		end
-	end
 
-	local backgroundMusicTime = SlashCo.AudioSystem.GetBackgroundMusicTime()
-	if not math.IsNearlyEqual(SlashCo.AudioSystem.BackgroundChannel:GetTime(), backgroundMusicTime, 1) then -- Allow a tolerance of 1 second difference.
-		SlashCo.AudioSystem.BackgroundChannel:SetTime(backgroundMusicTime)
+		local backgroundMusicTime = SlashCo.AudioSystem.GetBackgroundMusicTime()
+		if not math.IsNearlyEqual(SlashCo.AudioSystem.BackgroundChannel:GetTime(), backgroundMusicTime, 1) then -- Allow a tolerance of 1 second difference.
+			SlashCo.AudioSystem.BackgroundChannel:SetTime(backgroundMusicTime)
+		end
 	end
 end
 
