@@ -63,20 +63,6 @@ include("sv_holylib.lua")
 --Initialize global variable to hold functions.
 SlashCo = SlashCo or {}
 
-if not SlashCo.LastUpdate or (SlashCo.LastUpdate + 5) < CurTime() and game.IsDedicated() then
-	local updateCount = file.Read("slashco_gamemodeRefresh.txt", "DATA")
-	if not updateCount then
-		updateCount = 0
-	end
-
-	updateCount = updateCount + 1
-	SlashCo.LastUpdate = CurTime()
-
-	PrintMessage(HUD_PRINTTALK, "[Gamemode] Refresh (ver " .. tostring(updateCount) .. ")")
-
-	file.Write("slashco_gamemodeRefresh.txt", tostring(updateCount))
-end
-
 --[[
 
 SlashCo Credits:
