@@ -19,13 +19,18 @@ function SlashCo.AudioSystem.DisableBackgroundMusic()
 	SetGlobal2Bool("SlashCo:ShouldPlayBackgroundMusic", false)
 end
 
-function SlashCo.AudioSystem.SetBackgroundMusic(soundFile)
+function SlashCo.AudioSystem.SetBackgroundMusic(soundFile, volume)
 	SetGlobal2String("SlashCo:BackgroundMusic", soundFile)
+	SetGlobal2Float("SlashCo:BackgroundMusicVolume", volume or 1)
 	SetGlobal2Int("SlashCo:StartTimeBackgroundMusic", engine.TickCount()) -- Timestamp to syncronize the music for everyone
 end
 
 function SlashCo.AudioSystem.GetBackgroundMusic(fallBack)
 	return GetGlobal2String("SlashCo:BackgroundMusic", fallBack or "")
+end
+
+function SlashCo.AudioSystem.GetBackgroundMusicVolume(fallBack)
+	return GetGlobal2Float("SlashCo:BackgroundMusicVolume", fallBack or 1)
 end
 
 -- Server & client files are loaded at last

@@ -32,6 +32,10 @@ if CLIENT then
 	return
 end
 
+function ENT:SetupDataTables()
+	self:NetworkVar("Bool", "Running") -- ToDo: Render green light when the generator is done
+end
+
 function ENT:Initialize()
 	self:SetModel(SlashCo.GeneratorModel)
 	self:SetSolid(SOLID_VPHYSICS)
@@ -60,10 +64,10 @@ end
 
 function ENT:SendData(ply)
 	net.Start("mantislashco_GasPourProgress")
-	net.WriteUInt(TimeToFuel, 8)
-	net.WriteEntity(self.FuelingCan)
-	net.WriteBool(self.IsFueling)
-	net.WriteFloat(self.TimeUntilFueled)
+		net.WriteUInt(TimeToFuel, 8)
+		net.WriteEntity(self.FuelingCan)
+		net.WriteBool(self.IsFueling)
+		net.WriteFloat(self.TimeUntilFueled)
 	net.Send(ply)
 end
 
@@ -138,6 +142,7 @@ function ENT:CheckProgress(dontFailStart)
 
 		self.IsRunning = true
 		self.Progress = 5
+		self:SetRunning(true)
 		self:EmitSound("slashco/generator_start.wav", 85, 100, 1)
 
 		timer.Simple(6.4, function()

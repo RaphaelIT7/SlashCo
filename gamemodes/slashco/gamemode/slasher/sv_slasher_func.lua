@@ -40,6 +40,7 @@ end
 function SlashCo.OnSlasherSpawned(ply)
 	ply:SetRunSpeed(SlashCoSlashers[ply:GetNWString("Slasher")].ProwlSpeed)
 	ply:SetWalkSpeed(SlashCoSlashers[ply:GetNWString("Slasher")].ProwlSpeed)
+	ply:SetNW2Float("SlasherAnger", 0)
 
 	ply.ChaseActivationCooldown = 0
 	ply.KillDelayTick = 0
@@ -383,3 +384,36 @@ function SlashCo.BustDoor(slasher, target, force)
 		target:Remove()
 	end)
 end
+
+function SlashCo.AddSlasherAnger(slasher, anger)
+	slasher:SetNW2Float("SlasherAnger", slasher:GetNW2Float("SlasherAnger", 0) + anger)
+end
+
+function SlashCo.GetSlasherAnger(slasher)
+	return slasher:GetNW2Float("SlasherAnger", 0)
+end
+
+function SlashCo.GetGlobalSlasherAnger()
+	local slashers = team.GetPlayers(TEAM_SLASHER)
+	local count = #slashers
+	local totalAnger = 0
+
+	for _, slasher in ipairs(slashers) do
+		totalAnger = totalAnger + slasher:GetNW2Float("SlasherAnger", 0)
+	end
+
+	return totalAnger / count
+end
+
+timer.Create("SlashCo:SlasherAnger", 1, 0, function()
+	local addAnger = 0.05 -- Added base anger every second.
+
+	for _, ply in ipairs(team.GetPlayers(TEAM_SLASHER)) do
+		SlashCo.AddSlasherAnger(ply, addAnger)
+	end
+
+	--[[if SlashCo.GetGlobalSlasherAnger() > 20 and not SlashCo.AudioSystem.ShouldPlayBackgroundMusic() then
+		SlashCo.AudioSystem.SetBackgroundMusic("slashco/slasher/ambience/angry.mp3", 5)
+		SlashCo.AudioSystem.EnableBackgroundMusic()
+	end]]
+end)
