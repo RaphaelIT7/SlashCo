@@ -10,6 +10,14 @@ SlashCo.Content.PrecacheModels = SlashCo.Content.PrecacheModels or {}
 SlashCo.Content.PrecacheSounds = SlashCo.Content.PrecacheSounds or {}
 SlashCo.Content.PrecacheItems = SlashCo.Content.PrecacheItems or {}
 SlashCo.Content.PrecacheSlashers = SlashCo.Content.PrecacheSlashers or {}
+SlashCo.Content.DebugPrint = SlashCo.Content.DebugPrint or false -- For debugging
+
+-- NOTE: Errors aren't put behind DebugPrint as something clearly went wrong.
+local function DebugPrint(msg)
+	if SlashCo.Content.DebugPrint then
+		print(msg)
+	end
+end
 
 function SlashCo.FindWorkshopID(mapName)
 	if not string.EndsWith(mapName, ".bsp") then
@@ -40,16 +48,16 @@ if CLIENT then
 		local wsid = net.ReadString()
 		local title = net.ReadString()
 
-		print("Received precache signal")
+		DebugPrint("[Content] Received precache signal")
 		steamworks.FileInfo(wsid, function(result)
 			if result.installed and not result.disabled then  -- The map is already installed :3
-				print("[Content] The next map is already installed\n")
+				DebugPrint("[Content] The next map is already installed\n")
 				return
 			end
 
 			steamworks.DownloadUGC(wsid, function(path, file)
 				if path then
-					print("[Content] Successfully precached \"" .. title .. "\" (" .. wsid .. ") for the next round")
+					DebugPrint("[Content] Successfully precached \"" .. title .. "\" (" .. wsid .. ") for the next round")
 				else
 					print("[Content] Failed to precache \"" .. title .. "\" (" .. wsid .. ")")
 				end
@@ -61,11 +69,11 @@ else
 	function SlashCo.PrecacheNextMap()
 		local mapName = SlashCo.LobbyData.SelectedMap
 		local wsid, title = SlashCo.FindWorkshopID(mapName)
-		if not wsid then
+		if not wsid then -- Could happen if a server uses fastdl
 			print("[Content] Failed to precache next map as it wasn't found in any addon! (" .. mapName .. ")")
 			return
 		else
-			print("[Content] Sent out precache signal for map \"" .. mapName .. "\" (\"" .. title .. "\" - " .. wsid .. ")")
+			DebugPrint("[Content] Sent out precache signal for map \"" .. mapName .. "\" (\"" .. title .. "\" - " .. wsid .. ")")
 		end
 
 		net.Start("slashco_PrecacheMap")
@@ -83,7 +91,7 @@ function SlashCo.PrecacheModel(modelName)
 	SlashCo.Content.PrecacheModels[modelName] = true
 	util.PrecacheModel(modelName)
 
-	print("[Content] Precached model \"" .. modelName .. "\"")
+	DebugPrint("[Content] Precached model \"" .. modelName .. "\"")
 end
 
 function SlashCo.PrecacheSound(soundName)
@@ -94,7 +102,7 @@ function SlashCo.PrecacheSound(soundName)
 	SlashCo.Content.PrecacheSounds[soundName] = true
 	util.PrecacheModel(soundName)
 
-	print("[Content] Precached sound \"" .. soundName .. "\"")
+	DebugPrint("[Content] Precached sound \"" .. soundName .. "\"")
 end
 
 function SlashCo.PrecacheSlasher(slasherName)
@@ -117,7 +125,7 @@ function SlashCo.PrecacheSlasher(slasherName)
 	end
 
 	if not SlashCo.Content.PrecacheSlashers[slasherName] then
-		print("[Content] Precached Slasher \"" .. slasherName .. "\"")
+		DebugPrint("[Content] Precached Slasher \"" .. slasherName .. "\"")
 		SlashCo.Content.PrecacheSlashers[slasherName] = true
 	end
 end
@@ -146,7 +154,7 @@ function SlashCo.PrecacheItem(itemName)
 	end
 
 	if not SlashCo.Content.PrecacheItems[itemName] then
-		print("[Content] Precached Item \"" .. itemName .. "\"")
+		DebugPrint("[Content] Precached Item \"" .. itemName .. "\"")
 		SlashCo.Content.PrecacheItems[itemName] = true
 	end
 end
