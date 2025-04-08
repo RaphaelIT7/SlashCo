@@ -79,8 +79,21 @@ end
 
 --Proximity voice chat
 
+local proximity_chat = CreateConVar("slashco_proximity_chat", "1", FCVAR_ARCHIVE, "Enables proximity chat")
+local proximity_voice = CreateConVar("slashco_proximity_voice", "1", FCVAR_ARCHIVE, "Enables proximity voicechat")
+
 hook.Add("PlayerCanHearPlayersVoice", "Maximum Range", function(listener, talker)
-	return true
+	if not proximity_voice:GetBool() then
+		return true
+	end
+
+	if talker:Team() == TEAM_SPECTATOR or talker:Team() == TEAM_SLASHER then
+		return false
+	end
+
+	if listener:GetPos():DistToSqr(talker:GetPos()) > 1000000 then
+		return false
+	end
 end)
 
 hook.Add("GetFallDamage", "RealisticDamage", function(_, speed)
@@ -88,7 +101,30 @@ hook.Add("GetFallDamage", "RealisticDamage", function(_, speed)
 end)
 
 hook.Add("PlayerCanSeePlayersChat", "TeamChat", function(_, _, listener, speaker)
-	return true
+	if not proximity_chat:GetBool() then
+		return true
+	end
+
+	if listener:Team() == TEAM_SPECTATOR then
+		return true
+	end
+	if speaker:Team() == TEAM_SLASHER then
+		return false
+	end
+	if listener:Team() == TEAM_SLASHER then
+		return false
+	end
+	if speaker:Team() == TEAM_SPECTATOR and listener:Team() ~= TEAM_SPECTATOR then
+		return false
+	end
+
+	if listener:GetPos():DistToSqr(speaker:GetPos()) > 1000000 then
+		return false
+	else
+		if speaker:Team() == TEAM_SURVIVOR then
+			return true
+		end
+	end
 end)
 
 hook.Add("ShowTeam", "DoNotAllowTeamSwitch", function()
