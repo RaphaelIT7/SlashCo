@@ -8,7 +8,7 @@ hook.Add("EntityNetworkedVarChanged", "SlashCoImpervious", function(ent, name, _
 	ent:CollisionRulesChanged()
 end)
 
-hook.Add("ShouldCollide", "SlashCoImpervious", function(ent1, ent2)
+hook.Add("ShouldCollide", "SlashCo:Impervious", function(ent1, ent2)
 	if not ent1.IsImpervious and not ent2.IsImpervious then
 		return
 	end
@@ -95,4 +95,25 @@ function PLAYER:FindPlayersInView(dist, radius, notrace)
 	end
 
 	return results
+end
+
+function PLAYER:IsStuck(worldOnly)
+	if self:Team() == TEAM_SPECTATOR or self:GetMoveType() == MOVETYPE_NOCLIP then
+		return false
+	end
+
+	local settings = {
+		start = self:GetPos(),
+		endpos = self:GetPos(),
+		filter = self,
+		mask = MASK_PLAYERSOLID,
+	}
+
+	if worldOnly then
+		settings.collisiongroup = COLLISION_GROUP_WORLD
+		settings.mask = COLLISION_GROUP_NONE
+	end
+
+	local tr = util.TraceEntityHull(settings, self)
+	return tr.Hit
 end

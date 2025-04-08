@@ -475,3 +475,38 @@ concommand.Add("slashco_debug_printbats", function(ply)
 
 	doPrint(ply, string.format("total: %s", count))
 end, nil, "Print all battery spawns and their associated generators", FCVAR_CHEAT + FCVAR_PROTECTED)
+
+-- NOTE: This could be abused. Verify that its accurate enouth to not be abused. Maybe add a distance limit
+concommand.Add("slashco_unstuck", function(ply, _, args)
+	if not ply:IsStuck() then
+		ply:ChatPrint("Your not stuck.")
+		return
+	end
+
+	ply:ChatPrint("Look at a free spot and wait 3 seconds")
+	timer.Simple(3, function()
+		local pos = ply:GetEyeTrace().HitPos
+		local tr = util.TraceEntityHull({
+			start = pos,
+			endpos = pos,
+			filter = ply,
+		}, ply)
+
+		if not tr.Hit then
+			ply:SetPos(tr.HitPos)
+		end
+	end)
+end)
+
+timer.Create("SlashCo:CheckStuck", 5, 0, function()
+	for _, ply in ipairs(player.GetAll()) do
+		if not ply:IsStuck() then continue end
+		if ply.IsImpervious and not ply:IsStuck(true) then continue end
+
+		ply._STUCKCOUNT = (ply._STUCKCOUNT or 0) + 1
+		if ply._STUCKCOUNT >= 3 then
+			ply:ChatPrint("If your stuck, run the \"slashco_unstuck\" console command and look at a free spot")
+			ply._STUCKCOUNT = 0
+		end
+	end
+end)
