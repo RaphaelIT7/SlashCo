@@ -187,7 +187,7 @@ SlashCo.LangTable["StepDecoy"] = "Schritt Köder"
 SlashCo.LangTable["StepDecoy_desc"] = "Wenn es auf einer festen Oberfläche platziert wird, imitiert es Schrittgeräusche, die Slasher ablenken können."
 
 SlashCo.LangTable["TeslaCoil"] = "Tesla Spule"
-SlashCo.LangTable["TeslaCoil_desc"] = "Macht alle Slasher auf der Map für 20 Sekunden bewegungsunfähig"
+SlashCo.LangTable["TeslaCoil_desc"] = "Macht alle Slasher auf der Map für 15 Sekunden bewegungsunfähig"
 
 --GameInfo
 

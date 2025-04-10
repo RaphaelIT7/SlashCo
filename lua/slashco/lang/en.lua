@@ -190,7 +190,7 @@ SlashCo.LangTable["StepDecoy"] = "Step Decoy"
 SlashCo.LangTable["StepDecoy_desc"] = "If placed on a solid surface, this will imitate footsteps sounds which can distract slashers."
 
 SlashCo.LangTable["TeslaCoil"] = "Tesla Coil"
-SlashCo.LangTable["TeslaCoil_desc"] = "Stuns all slashers on the entire map for 20 seconds"
+SlashCo.LangTable["TeslaCoil_desc"] = "Stuns all slashers on the entire map for 15 seconds"
 
 --GameInfo
 
