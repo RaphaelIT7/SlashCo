@@ -185,6 +185,7 @@ if SERVER then
 
 	function ENT:Think()
 		self:NextThink(CurTime())
+		self:DrawShadow(false) -- Love to bug through the map.
 
 		local SatPlayers = SlashCo.CurRound.HelicopterRescuedPlayers
 		local plyCount = #SatPlayers
