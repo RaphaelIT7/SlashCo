@@ -116,6 +116,7 @@ SlashCo.States = {
 	ENDING = 3,
 }
 SlashCo.State = SlashCo.State or SlashCo.States.LOBBY
+SlashCo.IsPlayable = SlashCo.IsPlayable or false -- false if were missing maps to play on.
 
 GameData = GameData or {} -- A table containing data that is frequently used, also stores data across lua refreshs to not break when editing.
 GameData.Map = game.GetMap()
@@ -246,51 +247,62 @@ SCInfo.Maps = {
 	},
 }
 
-local configs, _ = file.Find("slashco/configs/maps/*", "LUA")
+function SlashCo.LoadMapConfigs()
+	local configs, _ = file.Find("slashco/configs/maps/*", "LUA")
+	local wasPlayable = SlashCo.IsPlayable
+	SlashCo.IsPlayable = false
 
-local game_playable = false
-
-if SERVER then
-	SCInfo.MinimumMapPlayers = 6
-end
-
-for _, v in ipairs(configs) do
-	local config = util.JSONToTable(file.Read("slashco/configs/maps/" .. v, "LUA"))
-	if not config then
-		continue
+	if SERVER then
+		SCInfo.MinimumMapPlayers = 6
 	end
 
-	local mapid = string.Replace(v, ".lua", "")
-	SCInfo.Maps[mapid] = SCInfo.Maps[mapid] or {}
+	for _, v in ipairs(configs) do
+		local config = util.JSONToTable(file.Read("slashco/configs/maps/" .. v, "LUA"))
+		if not config then continue end
 
-	if type(config.Manifest) == "table" then
-		if config.Manifest.DoNotUseThisConfig then
-			SCInfo.Maps[mapid] = nil
-			continue
+		local mapid = string.Replace(v, ".lua", "")
+		SCInfo.Maps[mapid] = SCInfo.Maps[mapid] or {}
+
+		if type(config.Manifest) == "table" then
+			if config.Manifest.DoNotUseThisConfig then
+				SCInfo.Maps[mapid] = nil
+				continue
+			end
+
+			SCInfo.Maps[mapid].NAME = config.Manifest.Name or "Unspecified Map Name"
+			SCInfo.Maps[mapid].DEFAULT = config.Manifest.Default --wtf does this do...
+			SCInfo.Maps[mapid].MIN_PLAYERS = config.Manifest.MinimumPlayers or 1
+		else
+			SCInfo.Maps[mapid].NAME = "Unspecified Map Name"
+			SCInfo.Maps[mapid].MIN_PLAYERS = 1
 		end
 
-		SCInfo.Maps[mapid].NAME = config.Manifest.Name or "Unspecified Map Name"
-		SCInfo.Maps[mapid].DEFAULT = config.Manifest.Default --wtf does this do...
-		SCInfo.Maps[mapid].MIN_PLAYERS = config.Manifest.MinimumPlayers or 1
-	else
-		SCInfo.Maps[mapid].NAME = "Unspecified Map Name"
-		SCInfo.Maps[mapid].MIN_PLAYERS = 1
+		if SERVER then
+			SCInfo.MinimumMapPlayers = math.min(SCInfo.Maps[mapid].MIN_PLAYERS, SCInfo.MinimumMapPlayers)
+		end
+
+		SlashCo.IsPlayable = true
 	end
 
 	if SERVER then
-		SCInfo.MinimumMapPlayers = math.min(SCInfo.Maps[mapid].MIN_PLAYERS, SCInfo.MinimumMapPlayers)
-	end
-
-	game_playable = true
-end
-
-if SERVER and not game_playable then
-	timer.Simple(30, function()
-		for _, play in ipairs(player.GetAll()) do
-			play:ChatPrint([[[SlashCo] WARNING! There are no maps mounted! The gamemode is not playable!\nDownload the Maps at the Gamemode's workshop page under the "Required Items" section.]])
+		if not SlashCo.IsPlayable then
+			timer.Simple(math.max(30 - CurTime(), 0), function() -- If the game has already been running for a while don't use a 30sec timer
+				for _, play in ipairs(player.GetAll()) do
+					play:ChatPrint("[SlashCo] WARNING! There are no maps mounted!\nThe gamemode is not playable!\nDownload the Maps at the Gamemode's workshop page under the \"Required Items\" section.\nNOTE: After downloading a map you don't have to restart the game")
+				end
+			end)
+		elseif SlashCo.IsPlayable and not wasPlayable then
+			timer.Simple(math.max(30 - CurTime(), 0), function() -- If the game has already been running for a while don't use a 30sec timer
+				for _, play in ipairs(player.GetAll()) do
+					play:ChatPrint("[SlashCo] Loaded configs for freshly mounted maps\nThe gamemode is now playable")
+				end
+			end)
 		end
-	end)
+	end
 end
+
+SlashCo.LoadMapConfigs()
+hook.Add("GameContentChanged", "SlashCo:RefreshMapConfigs", SlashCo.LoadMapConfigs)
 
 -- determine if a position is far enough away from generators and survivors
 function SlashCo.IsPositionLegalForSlashers(pos, noSurvivorCheck, distFactor)
