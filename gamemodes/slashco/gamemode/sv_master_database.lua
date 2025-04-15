@@ -1,28 +1,19 @@
---local SlashCo = SlashCo
-
---The Master Player Database
-
 --[[
-
+	The Master Player Database
 	Serverside SQL database which holds player stats and achievements.
-
 ]]
 
-SlashCoDatabase = {}
+SlashCoDatabase = SlashCoDatabase or {}
 
-function SlashCoDatabase.EstablishDatabase(_)
-	if not sql.TableExists( "slashco_master_database" ) then --Create the database table for basic statistics
-		for _, ply in ipairs( player.GetAll() ) do
-			ply:ChatPrint("[SlashCo] The Master Database does not exist. Creating it now.")
-		end
-
-		sql.Query("CREATE TABLE slashco_master_database(PlayerID TEXT, PlayerName TEXT, SurvivorRoundsWon NUMBER, SlasherRoundsWon NUMBER, Points NUMBER);" )
+function SlashCoDatabase.EstablishDatabase()
+	if sql.TableExists("slashco_master_database") then return end --Create the database table for basic statistics
+	for _, ply in ipairs( player.GetAll() ) do
+		ply:ChatPrint("[SlashCo] The Master Database does not exist. Creating it now.")
 	end
-end
 
-if not sql.TableExists( "slashco_master_database" ) then
-	SlashCoDatabase.EstablishDatabase()
+	sql.Query("CREATE TABLE slashco_master_database(PlayerID TEXT, PlayerName TEXT, SurvivorRoundsWon NUMBER, SlasherRoundsWon NUMBER, Points NUMBER);")
 end
+SlashCoDatabase.EstablishDatabase()
 
 function SlashCoDatabase.UpdateStats(id, s_type, increase)
 	if s_type ~= "SurvivorRoundsWon" and s_type ~= "SlasherRoundsWon" and s_type ~= "Points" then
@@ -30,11 +21,9 @@ function SlashCoDatabase.UpdateStats(id, s_type, increase)
 		return
 	end
 
-	local database = sql.Query("SELECT " .. s_type .. " FROM slashco_master_database WHERE PlayerID ='" .. id .. "'; ")
+	local database = sql.Query("SELECT " .. s_type .. " FROM slashco_master_database WHERE PlayerID ='" .. id .. "';")
 	local name = sql.Query("SELECT PlayerName FROM slashco_master_database WHERE PlayerID ='" .. id .. "'; ")[1].PlayerName
-
 	local current_stat
-
 	if s_type == "SurvivorRoundsWon" then
 		current_stat = database[1].SurvivorRoundsWon
 	elseif s_type == "SlasherRoundsWon" then
@@ -65,8 +54,7 @@ function SlashCoDatabase.GetStat(id, s_type)
 		return 0
 	end
 
-	local database = sql.Query("SELECT " .. s_type .. " FROM slashco_master_database WHERE PlayerID ='" .. id .. "'; ")
-
+	local database = sql.Query("SELECT " .. s_type .. " FROM slashco_master_database WHERE PlayerID ='" .. id .. "';")
 	if s_type == "SurvivorRoundsWon" then
 		return database[1].SurvivorRoundsWon
 	elseif s_type == "SlasherRoundsWon" then
@@ -76,22 +64,18 @@ function SlashCoDatabase.GetStat(id, s_type)
 	end
 end
 
-if CLIENT then return end
-
-function SlashCoDatabase.OnPlayerJoined (id)
+function SlashCoDatabase.OnPlayerJoined(id)
 	local database = sql.Query("SELECT * FROM slashco_master_database; ")
 
 	if database == nil or database == false then
-		sql.Query("INSERT INTO slashco_master_database(PlayerID, PlayerName, SurvivorRoundsWon, SlasherRoundsWon, Points) VALUES( '" .. id .. "', '" .. player.GetBySteamID64(id):GetName() .. "', 0, 0, 0 ); ")
+		sql.Query("INSERT INTO slashco_master_database(PlayerID, PlayerName, SurvivorRoundsWon, SlasherRoundsWon, Points) VALUES('" .. id .. "', '" .. player.GetBySteamID64(id):GetName() .. "', 0, 0, 0);")
 
 		print("[SlashCo] Master Database has no entries. This Player will be the first entry.")
-
 		return
 	end
 
 	local is_in = false
 	local index = 0
-
 	for i = 1, #database do
 		if database[i].PlayerID == id then
 			is_in = true
@@ -101,7 +85,7 @@ function SlashCoDatabase.OnPlayerJoined (id)
 	end
 
 	if is_in == false then
-		sql.Query("INSERT INTO slashco_master_database(PlayerID, PlayerName, SurvivorRoundsWon, SlasherRoundsWon, Points) VALUES( '" .. id .. "', '" .. player.GetBySteamID64(id):GetName() .. "', 0, 0, 0 ); ")
+		sql.Query("INSERT INTO slashco_master_database(PlayerID, PlayerName, SurvivorRoundsWon, SlasherRoundsWon, Points) VALUES('" .. id .. "', '" .. player.GetBySteamID64(id):GetName() .. "', 0, 0, 0);")
 
 		print("[SlashCo] This Player is not in the Database, and has been inserted.")
 	elseif is_in == true then
