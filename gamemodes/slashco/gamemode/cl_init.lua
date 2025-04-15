@@ -553,6 +553,8 @@ hook.Add("PostDrawOpaqueRenderables", "LobbyScreens", function()
 		return
 	end
 
+	if bDrawingDepth or bDrawingSkybox or isDraw3DSkybox then return end
+
 	do
 		local ent = table.Random(ents.FindByClass("sc_offertable"))
 		local angle = ent:LocalToWorldAngles(Angle(0, 90, 90))
