@@ -1,6 +1,10 @@
 local SLASHER = {}
 
 SLASHER.Name = "Borgmire"
+SLASHER.Aliases = {
+	"Borg",
+	"Tim",
+}
 SLASHER.ID = 8
 SLASHER.Class = 1
 SLASHER.DangerLevel = 3
