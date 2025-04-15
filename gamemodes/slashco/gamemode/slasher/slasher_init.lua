@@ -11,6 +11,7 @@ function SlashCo.RegisterSlasher(table, name)
 		return
 	end
 
+	name = name or table.Name
 	SlashCoSlashers[name] = table
 end
 

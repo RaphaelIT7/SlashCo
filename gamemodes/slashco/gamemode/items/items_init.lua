@@ -12,6 +12,7 @@ function SlashCo.RegisterItem(table, name)
 		return
 	end
 
+	name = name or table.Name
 	SlashCoItems[name] = table
 	SlashCo.PrecacheItem(name)
 end
@@ -22,6 +23,7 @@ function SlashCo.RegisterEffect(table, name)
 		return
 	end
 
+	name = name or table.Name
 	SlashCoEffects[name] = table
 end
 
