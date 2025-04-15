@@ -35,6 +35,60 @@ surface.CreateFont("TVCD", {
 	outline = false
 })
 
+surface.CreateFont("TVCDMedium", {
+	font = "Tvcd",
+	extended = false,
+	size = 27.5,
+	weight = 500,
+	blursize = 1,
+	scanlines = 4,
+	antialias = true,
+	underline = false,
+	italic = false,
+	strikeout = false,
+	symbol = false,
+	rotary = false,
+	shadow = false,
+	additive = false,
+	outline = false
+})
+
+surface.CreateFont("TVCDMediumBig", {
+	font = "Tvcd",
+	extended = false,
+	size = 35,
+	weight = 500,
+	blursize = 1,
+	scanlines = 4,
+	antialias = true,
+	underline = false,
+	italic = false,
+	strikeout = false,
+	symbol = false,
+	rotary = false,
+	shadow = false,
+	additive = false,
+	outline = false
+})
+
+surface.CreateFont("TVCDBig", {
+	font = "Tvcd",
+	extended = false,
+	size = 50,
+	weight = 500,
+	blursize = 1,
+	scanlines = 4,
+	antialias = true,
+	underline = false,
+	italic = false,
+	strikeout = false,
+	symbol = false,
+	rotary = false,
+	shadow = false,
+	additive = false,
+	outline = false
+})
+
 surface.CreateFont("HalfCutTitle", {
 	font = "Half Cut Gothic",
 	extended = false,

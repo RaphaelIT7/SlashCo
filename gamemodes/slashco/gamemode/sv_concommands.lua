@@ -476,7 +476,8 @@ concommand.Add("slashco_debug_printbats", function(ply)
 	doPrint(ply, string.format("total: %s", count))
 end, nil, "Print all battery spawns and their associated generators", FCVAR_CHEAT + FCVAR_PROTECTED)
 
--- NOTE: This could be abused. Verify that its accurate enouth to not be abused. Maybe add a distance limit
+-- NOTE: This could be abused.
+-- ToDo: Verify that its accurate enouth to not be abused. Maybe add a distance limit
 concommand.Add("slashco_unstuck", function(ply, _, args)
 	if not ply:IsStuck() then
 		ply:ChatPrint("Your not stuck.")

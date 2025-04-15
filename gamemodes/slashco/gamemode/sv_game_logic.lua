@@ -236,9 +236,8 @@ function SlashCo.EndRound()
 		end
 	end
 
+	local winners = {}
 	if heliCount > 0 then
-		local winners = {}
-
 		--Add to stats of the remaining survivors' wins
 		for _, v in ipairs(SlashCo.CurRound.HelicopterRescuedPlayers) do
 			if not IsValid(v) then continue end
@@ -246,7 +245,7 @@ function SlashCo.EndRound()
 			SlashCoDatabase.UpdateStats(v:SteamID64(), "SurvivorRoundsWon", 1)
 
 			v:SetPoints("survive")
-			winners[v:UserID()] = true
+			winners[v:SteamID64()] = true
 		end
 
 		if heliCount == 1 and #SlashCo.CurRound.SlasherData.AllSurvivors > 1 then
@@ -254,13 +253,14 @@ function SlashCo.EndRound()
 		end
 
 		for _, v in ipairs(team.GetPlayers(TEAM_SURVIVOR)) do
-			if not winners[v:UserID()] then
+			if not winners[v:SteamID64()] then
 				v:SetPoints("left_behind")
 			end
 		end
 	end
 
 	SlashCo.State = SlashCo.States.ENDING
+	hook.Run("SlashCo:EndRound", winners)
 
 	print("[SlashCo] Round over, returning to lobby in " .. tostring(lobbyDelay) .. " seconds.")
 
