@@ -22,7 +22,6 @@ util.AddNetworkString("mantislashco_OfferingEndVote")
 util.AddNetworkString("mantislashco_OfferingVoteFinished")
 util.AddNetworkString("mantislashco_GiveMasterDatabase")
 util.AddNetworkString("mantislashco_SendRoundData")
-util.AddNetworkString("mantislashco_HelicopterMusic")
 util.AddNetworkString("mantislashco_LobbySlasherInformation")
 util.AddNetworkString("mantislashco_SurvivorVoicePrompt")
 util.AddNetworkString("mantislashco_SurvivorPings")
@@ -231,6 +230,7 @@ local pointStateSlasher = {
 
 function SlashCo.RoundOverScreen(state)
 	quietHeli()
+	SlashCo.AudioSystem.DisableBackgroundMusic()
 
 	--yucky yucky
 	local goodSurvivorTable = {}
