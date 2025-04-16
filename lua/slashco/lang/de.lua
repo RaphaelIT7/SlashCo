@@ -581,6 +581,7 @@ SlashCo.LangTable["points_fast"] = "[%s] SCHNELLER ERFOLG"
 SlashCo.LangTable["points_benadryl"] = "[%s] BENADRYL"
 SlashCo.LangTable["points_working"] = "[%s] DEINEN JOB ERLEDIGT"
 
+-- ToDo: Translate
 -- document localization
 
 -- UI

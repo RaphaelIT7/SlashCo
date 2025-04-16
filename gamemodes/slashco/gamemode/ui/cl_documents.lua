@@ -180,7 +180,7 @@ local selection = {
 
 		draw.SimpleText("[" .. string.upper(slasher and slasher.Name or SlashCo.Language("documents_unknown_name")) .. "]", "TVCDMediumBig", h / 1.45, w / 1.3, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		if slasher then
-			// :skull:
+			-- :skull:
 			local danger_level_adj = SlashCo.Language(SlashCo.DangerLevel[slasher.DangerLevel]:gsub("^%l", string.upper))
 			local slasher_class_adj = SlashCo.Language(SlashCo.SlasherClass[slasher.Class]:gsub("^%l", string.upper))
 
@@ -336,7 +336,7 @@ hook.Add("PostDrawOpaqueRenderables", "LobbyDocumentScreen", function(bDrawingDe
 		surface.SetDrawColor(0, 0, 0, 255)
 		surface.DrawRect(0, 0, w, h)
 
-		// ToDo: Make The text align to the screen properly or else this happens: https://i.imgur.com/TlvTEnX.png
+		-- ToDo: Make The text align to the screen properly or else this happens: https://i.imgur.com/TlvTEnX.png
 		draw.SimpleText(SlashCo.Language("documents_ui_left_click"), "TVCD", w * 1.55, (h / 2), color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
 		draw.SimpleText(SlashCo.Language("documents_ui_right_click"), "TVCD", w * 1.55, (h / 2) + (h / 20), color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
 
