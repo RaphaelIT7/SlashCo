@@ -297,6 +297,8 @@ SlashCo.LangTable["Abomignat_desc"] = [[Der monströse Slasher, der einfache Fä
 -Es kann einen schnellen Ausfallschritt auf kurze Distanz ausführen, um seine Opfer zu erledigen.
 -Der Crawling-Modus ermöglicht ein schnelles Durchqueren der Map.]]
 SlashCo.LangTable["Abomignat_tip"] = "-Dieser Slasher gibt beim Angreifen Geschwindigkeitsstöße von sich."
+SlashCo.LangTable["abomignat_alias_alien"] = "Das Alien"
+SlashCo.LangTable["abomignat_alias_rat"] = "Die Ratte"
 
 SlashCo.LangTable["Abomignat_enablecrawling"] = "Krabbeln aktivieren"
 SlashCo.LangTable["Abomignat_disablecrawling"] = "Krabbeln deaktivieren"
@@ -325,6 +327,9 @@ SlashCo.LangTable["Bababooey_desc"] = [[Der Phantom Slasher, der sich auf Illusi
 -Bababooey kann sich unsichtbar machen.
 -Er kann einen Phantomklon von sich selbst erschaffen, um Überlebende zu erschrecken und zu lokalisieren.]]
 SlashCo.LangTable["Bababooey_tip"] = "-Dieser Slasher hat die Fähigkeit, sich selbst in Luft aufzulösen."
+SlashCo.LangTable["bababooey_alias_phantom"] = "Phantom"
+SlashCo.LangTable["bababooey_alias_man"] = "Der Mann"
+SlashCo.LangTable["bababooey_alias_mist"] = "Der Nebel"
 
 SlashCo.LangTable["Bababooey_enableinvis"] = "Unsichtbarkeit aktivieren"
 SlashCo.LangTable["Bababooey_disableinvis"] = "Unsichtbarkeit deaktivieren"
@@ -338,6 +343,8 @@ SlashCo.LangTable["Borgmire_desc"] = [[Der brutale Slasher, der Überlebende mit
 -Borgmire ist am effektivsten bei kurzen Verfolgungen.
 -Er kann Überlebende in der Nähe aufheben und werfen, um ihnen schweren Schaden hinzuzufügen.]]
 SlashCo.LangTable["Borgmire_tip"] = "-Dieser Slasher scheint bei langen Verfolgungen unter Erschöpfung zu leiden."
+SlashCo.LangTable["borgmire_alias_tim"] = "Tim"
+SlashCo.LangTable["borgmire_alias_borg"] = "Borg"
 
 SlashCo.LangTable["Borgmire_punch"] = "Schlag"
 SlashCo.LangTable["Borgmire_throw"] = "Wurf"
@@ -375,6 +382,7 @@ SlashCo.LangTable["Dolphinman_desc"] = [[Der geduldige Slasher, der auf Überleb
 -Wenn er gefunden wurde, wird seine Kraft aktiviert und bleibt aktiv, bis er keinen Jagd mehr hat.
 -Tötung von Überlebenden erhöht die Jagd.]]
 SlashCo.LangTable["Dolphinman_tip"] = "-Dieser Slasher scheint sich seinen Opfern nicht von selbst zu nähern."
+SlashCo.LangTable["dolphinman_alias_dolfin"] = "Dolfin"
 
 SlashCo.LangTable["Dolphinman_cannothide"] = "Du kannst dich hier nicht verstecken. Ein Überlebender ist zu nah."
 SlashCo.LangTable["Dolphinman_hide"] = "Verstecken"
@@ -440,6 +448,8 @@ SlashCo.LangTable["Princess_desc"] = [[Der wilde Slasher, der Kinder zerfleischt
 -Die Wutgrenze kann durch das Zerfleischen von Babies erhöht werden, wodurch die Wut zurückgesetzt wird.
 -Je höher die Wut, desto schneller und brutaler ist die Jagd.]]
 SlashCo.LangTable["Princess_tip"] = "-Dieser Slasher kann mit Babies abgelenkt werden."
+SlashCo.LangTable["princess_alias_cupcake"] = "Cupcake"
+SlashCo.LangTable["princess_alias_satan"] = "Satan Tod Zerstörer"
 
 SlashCo.LangTable["Princess_sniff"] = "schnüffeln"
 SlashCo.LangTable["Princess_maul"] = "zerfleischen"
