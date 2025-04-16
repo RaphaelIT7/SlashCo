@@ -144,7 +144,7 @@ local selection = {
 		local documents = {}
 		for _, document in SortedPairs(SlashCoDocumentTypes["Slasher"] or {}) do
 			local hasDocument = SlashCo.HasDocument(document.Name)
-			if DrawTextWithHitbox("[" .. string.upper(hasDocument and document.Name or "Unknown") .. "]", "TVCDMedium", w / 5 + (row * w / 2.1), (h / 18) * count, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER) then
+			if DrawTextWithHitbox("[" .. string.upper(hasDocument and document.Name or " ??? ") .. "]", "TVCDMedium", w / 5 + (row * w / 2.1), (h / 18) * count, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER) then
 				pointer = count + (row * rowSplit) -- if we changed rows, we need to 
 			end
 
@@ -178,9 +178,11 @@ local selection = {
 		surface.SetMaterial(slasher and Material("slashco/ui/icons/slasher/s_" .. slasher.ID) or unknownIcon)
 		surface.DrawTexturedRect(w / 20, h - (h / 2.7), w / 3, h / 3)
 
-		draw.SimpleText("[" .. string.upper(slasher and slasher.Name or "Unknown") .. "]", "TVCDMediumBig", h / 1.45, w / 1.3, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText("[" .. string.upper(slasher and slasher.Name or "UNKNOWN") .. "]", "TVCDMediumBig", h / 1.45, w / 1.3, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		if slasher then
 			draw.SimpleText(string.upper(SlashCo.DangerLevel[slasher.DangerLevel] .. " " .. SlashCo.SlasherClass[slasher.Class]), "TVCDMedium", h / 1.45, w / 1.17, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		else
+			draw.SimpleText("ENCOUNTER SLASHER TO UNLOCK ENTRY", "TVCDSmall", h / 1.45, w / 1.17, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end
 
 		if IsPressing(MOUSE_LEFT) and slasher then
@@ -299,6 +301,8 @@ for _, document in pairs(SlashCoDocumentTypes["Slasher"] or {}) do
 				draw.SimpleText(rowText, "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 				row = row + 1
 			end
+		else
+			draw.SimpleText("[SURVIVE SLASHER FOR MORE INFO]", "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 		end
 
 		surface.SetDrawColor(255, 255, 255, 255)
