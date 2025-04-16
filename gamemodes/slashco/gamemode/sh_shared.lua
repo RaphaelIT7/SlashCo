@@ -123,6 +123,7 @@ GameData.Map = game.GetMap()
 GameData.Lobby = "sc_lobby" -- Map name of the lobby
 GameData.IsLobby = GameData.Map == GameData.Lobby
 GameData.MaxPlayers = game.MaxPlayers()
+GameData.IsSinglePlayer = game.SinglePlayer()
 
 if CLIENT then
 	--GameData.LocalPlayer = nil
