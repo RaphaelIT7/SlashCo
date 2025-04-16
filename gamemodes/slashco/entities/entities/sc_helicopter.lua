@@ -24,6 +24,10 @@ hook.Add("SlashCo:Precache", "PrecacheHelicopter", function()
 	SlashCo.PrecacheSound("slashco/helicopter_rotors_close.wav")
 end)
 
+function ENT:SetupDataTables()
+	self:NetworkVar("Bool", 0, "Airborne")
+end
+
 function ENT:Initialize()
 	if SERVER then
 		self:SetModel(SlashCo.HelicopterModel)
@@ -52,6 +56,10 @@ function ENT:Initialize()
 		self.targsmoothy = self.targsmoothy or 0
 		self.targsmoothz = self.targsmoothz or 0
 		self.vel = self.vel or 0
+	end
+
+	if CLIENT then
+		self.pixvis = util.GetPixelVisibleHandle()
 	end
 
 	self:EmitSound("slashco/helicopter_engine_distant.wav", 90, 150, 1, CHAN_STATIC)
@@ -202,14 +210,9 @@ if SERVER then
 
 			if ground.Hit then
 				IsAirborne = 0
-
-				local vPoint = self:GetPos()
-				local fx = EffectData()
-				fx:SetOrigin(vPoint)
-				fx:SetScale(math.random(20, 150))
-				fx:SetEntity(self)
-				util.Effect("ThumperDust", fx)
 			end
+
+			self:SetAirborne(IsAirborne == 1)
 
 			self:SetAngles(Angle(self.pitchgo + self.sway_x, self.final_dir + self.sway_y, self.sway_z))
 			self:SetPos(self:GetPos() + ((Vector(self.targsmoothx * self.acceleration - self.sway_x,
@@ -318,5 +321,18 @@ if SERVER then
 else
 	function ENT:Draw()
 		self:DrawModel()
+
+		-- This was moved to the client to reduce networking and noticably improve FPS (+50 FPS?!?)
+		local curTime = CurTime()
+		if not self:GetAirborne() and (self.NextEffect or 0) < curTime and util.PixelVisible(self:GetPos(), 150, self.pixvis) > 0.1 then
+			self.NextEffect = curTime + 0.04
+
+			local vPoint = self:GetPos()
+			local fx = EffectData()
+			fx:SetOrigin(vPoint)
+			fx:SetScale(math.random(20, 150))
+			fx:SetEntity(self)
+			util.Effect("ThumperDust", fx)
+		end
 	end
 end
