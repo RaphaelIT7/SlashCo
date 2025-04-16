@@ -344,14 +344,3 @@ hook.Add("scValue_RoundEnd", "SlashCoRoundEnd", function(state, survivors, rescu
 		nextLine(panel, linesPlay)
 	end)
 end)
-
-local helimusic_antispam
-local heli_music
-net.Receive("mantislashco_HelicopterMusic", function()
-	if not helimusic_antispam then
-		heli_music = CreateSound(GameData.LocalPlayer, "slashco/music/slashco_helicopter.wav")
-		heli_music:Play()
-		helimusic_antispam = true
-		g_AmbientStop = true
-	end
-end)

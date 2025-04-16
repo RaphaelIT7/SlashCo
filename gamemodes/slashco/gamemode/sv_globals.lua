@@ -294,8 +294,8 @@ function SlashCo.SummonEscapeHelicopter(distress)
 			SlashCo.HelicopterGoAboveLand(ent)
 		end)
 
-		net.Start("mantislashco_HelicopterMusic")
-		net.Broadcast()
+		SlashCo.AudioSystem.SetBackgroundMusic("slashco/music/slashco_helicopter.wav", 3)
+		SlashCo.AudioSystem.EnableBackgroundMusic()
 	end)
 end
 
