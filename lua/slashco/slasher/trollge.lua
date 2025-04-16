@@ -480,7 +480,9 @@ function SLASHER.InitHud(_, hud)
 	end
 end
 
-function SLASHER.Visibility(ply)
+function SLASHER.Visibility(slasher, ply)
+	ply = ply or slasher -- This was done to allow this function to be called using ply:SlasherFunction("Visibility", ply)
+
 	local eyeAng = ply:EyeAngles()
 	local lAng = math.sqrt(eyeAng.p^2 + eyeAng.y^2 + eyeAng.r^2)
 	ply.MonitorLook = ply.MonitorLook or lAng
@@ -511,7 +513,7 @@ function SLASHER.ClientSideEffect()
 		end
 
 		ply:SetMaterial("lights/white")
-		ply:SetColor(Color(255, 255, 255, SLASHER.Visibility(ply)))
+		ply:SetColor(Color(255, 255, 255, SLASHER.Visibility(nil, ply)))
 		ply:SetRenderMode(RENDERMODE_TRANSCOLOR)
 	end
 end
