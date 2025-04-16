@@ -17,6 +17,24 @@ surface.CreateFont("LobbyFont1", {
 	color = black,
 })
 
+surface.CreateFont("TVCDSmall", {
+	font = "Tvcd",
+	extended = false,
+	size = 18,
+	weight = 500,
+	blursize = 1,
+	scanlines = 4,
+	antialias = true,
+	underline = false,
+	italic = false,
+	strikeout = false,
+	symbol = false,
+	rotary = false,
+	shadow = false,
+	additive = false,
+	outline = false
+})
+
 surface.CreateFont("TVCD", {
 	font = "Tvcd",
 	extended = false,
