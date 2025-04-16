@@ -322,6 +322,25 @@ for _, document in pairs(SlashCoDocumentTypes["Slasher"] or {}) do
 	end
 end
 
+local marker_hook_added = false
+
+local function draw_documents_screen_marker(draw_marker)
+	if draw_marker and not marker_hook_added then
+		hook.Add("HUDPaint", "documents_screen_crosshair", function()
+			local screen_width, screen_height = ScrW(), ScrH()
+			local marker_width, marker_height = screen_width * 0.02, screen_height * 0.02
+
+			surface.SetDrawColor(190, 24, 24, 255)
+			surface.DrawCircle(screen_width / 2, screen_height / 2, 5, Color(190, 24, 24))
+		end)
+		marker_hook_added = true
+
+	elseif not draw_marker and marker_hook_added then
+		hook.Remove("HUDPaint", "documents_screen_crosshair")
+		marker_hook_added = false
+	end
+end
+
 hook.Add("PostDrawOpaqueRenderables", "LobbyDocumentScreen", function(bDrawingDepth, bDrawingSkybox, isDraw3DSkybox)
 	if not GameData.IsLobby then
 		return
@@ -344,6 +363,8 @@ hook.Add("PostDrawOpaqueRenderables", "LobbyDocumentScreen", function(bDrawingDe
 		-- debugoverlay.BoxAngles( screenPos, screenMins, screenMaxs, screenAngle, 0.02, hitPos != nil and Color(0,255,0) or Color( 255,0, 0, 10) )
 
 		if GameData.LocalPlayer:EyePos():DistToSqr(screenPos) < 100000 then
+			draw_documents_screen_marker(true)
+
 			if wasLeftMousePressed and not input.IsButtonDown(MOUSE_LEFT) then
 				wasLeftMousePressed = false
 			end
@@ -356,13 +377,14 @@ hook.Add("PostDrawOpaqueRenderables", "LobbyDocumentScreen", function(bDrawingDe
 			if not drawFunc then -- Our option was invalid, fall back to the set fallback.
 				GameData.DocumentOption = fallBackOption
 				drawFunc = selection[GameData.DocumentOption]
-			end
+			end 
 
 			if drawFunc then
 				callID = 0
 				drawFunc(w, h)
 			end
 		else
+			draw_documents_screen_marker(false)
 			GameData.DocumentOption = fallBackOption -- Reset.
 		end
 	cam.End3D2D()
