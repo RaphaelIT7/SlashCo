@@ -210,7 +210,7 @@ local function UpdateBackgroundMusic()
 		end
 
 		local backgroundMusicTime = SlashCo.AudioSystem.GetBackgroundMusicTime()
-		if not math.IsNearlyEqual(SlashCo.AudioSystem.BackgroundChannel:GetTime(), backgroundMusicTime, 1) then -- Allow a tolerance of 1 second difference.
+		if not math.IsNearlyEqual(SlashCo.AudioSystem.BackgroundChannel:GetTime(), backgroundMusicTime, 1) and not GameData.IsSinglePlayer then -- Allow a tolerance of 1 second difference, if were in single player we don't care.
 			SlashCo.AudioSystem.BackgroundChannel:SetTime(backgroundMusicTime)
 		end
 	end
