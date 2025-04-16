@@ -249,7 +249,7 @@ SCInfo.Maps = {
 	},
 }
 
-function SlashCo.LoadMapConfigs()
+function SlashCo.LoadMapConfigs(initialCheck)
 	local configs, _ = file.Find("slashco/configs/maps/*", "LUA")
 	local wasPlayable = SlashCo.IsPlayable
 	SlashCo.IsPlayable = false
@@ -293,7 +293,7 @@ function SlashCo.LoadMapConfigs()
 					play:ChatPrint("[SlashCo] WARNING! There are no maps mounted!\nThe gamemode is not playable!\nDownload the Maps at the Gamemode's workshop page under the \"Required Items\" section.\nNOTE: After downloading a map you don't have to restart the game")
 				end
 			end)
-		elseif SlashCo.IsPlayable and not wasPlayable then
+		elseif SlashCo.IsPlayable and not wasPlayable and not initialCheck then
 			timer.Simple(math.max(30 - CurTime(), 0), function() -- If the game has already been running for a while don't use a 30sec timer
 				for _, play in ipairs(player.GetAll()) do
 					play:ChatPrint("[SlashCo] Loaded configs for freshly mounted maps\nThe gamemode is now playable")
@@ -303,7 +303,7 @@ function SlashCo.LoadMapConfigs()
 	end
 end
 
-SlashCo.LoadMapConfigs()
+SlashCo.LoadMapConfigs(true)
 hook.Add("GameContentChanged", "SlashCo:RefreshMapConfigs", SlashCo.LoadMapConfigs)
 
 -- determine if a position is far enough away from generators and survivors

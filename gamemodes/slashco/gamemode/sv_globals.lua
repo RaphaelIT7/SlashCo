@@ -4,13 +4,21 @@ SlashCo.CurConfig = {}
 
 function GetRandomMap(ply_count)
 	local keys = table.GetKeys(SCInfo.Maps)
-	local rand, rand_name
-	repeat
-		rand = math.random(1, #keys)
-		rand_name = keys[rand] --random id for this roll
-	until SCInfo.Maps[rand_name].MIN_PLAYERS <= (ply_count + (SCInfo.MinimumMapPlayers - 1)) and rand_name ~= "error"
+	if #keys == 0 then -- if we have no maps, we return early as else we enter a infinite loop that would crash the game.
+		return "error"
+	end
 
-	return rand_name
+	local tries = #keys * 4
+	for k=1, tries do -- This formerly was a repeat until loop, that loved to crash the game.
+		local rand = math.random(1, #keys)
+		local rand_name = keys[rand]
+		if rand_name ~= "error" and SCInfo.Maps[rand_name].MIN_PLAYERS <= (ply_count + (SCInfo.MinimumMapPlayers - 1)) then
+			return rand_name
+		end
+	end
+
+	print("[SlashCo] Ran out of tries to select map to stop a game crash, this should usualy never happen.")
+	return "error"
 end
 
 SlashCo.LobbyData = SlashCo.LobbyData or {

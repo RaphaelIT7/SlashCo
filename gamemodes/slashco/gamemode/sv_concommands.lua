@@ -501,6 +501,7 @@ timer.Create("SlashCo:CheckStuck", 5, 0, function()
 	for _, ply in ipairs(player.GetAll()) do
 		if not ply:IsStuck() then continue end
 		if ply.IsImpervious and not ply:IsStuck(true) then continue end
+		if SlashCo.State != SlashCo.States.IN_GAME then continue end
 
 		ply._STUCKCOUNT = (ply._STUCKCOUNT or 0) + 1
 		if ply._STUCKCOUNT >= 3 then

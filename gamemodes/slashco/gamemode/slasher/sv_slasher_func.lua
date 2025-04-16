@@ -86,7 +86,7 @@ hook.Add("Tick", "HandleSlasherAbilities", function()
 			slasher.ChaseActivationCooldown = slasher.ChaseActivationCooldown - FrameTime()
 		end
 
-		for _, ply in ipairs(slasher:FindPlayersInView(dist / 2, slasher:SlasherValue("ChaseRadius", 0.91) + inv)) do
+		for _, ply in ipairs(slasher:FindPlayersInView(slasher:SlasherValue("Eyesight") * 100, slasher:SlasherValue("ChaseRadius", 0.91) + inv)) do
 			ply:MarkAsSeenBySlasher() -- They were seen.
 		end
 
