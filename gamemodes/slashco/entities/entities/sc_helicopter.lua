@@ -111,6 +111,10 @@ if SERVER then
 
 		if not userEnteredAlready then
 			table.insert(SlashCo.CurRound.HelicopterRescuedPlayers, activator)
+
+			-- To be a bit more generous, we stop the time as soon as they enter the helicopter instead of waiting until SlashCo.EndRound() is executed.
+			activator:SetNW2Bool("QuickEscape", (CurTime() - GetGlobalFloat("SCStartTime")) < SlashCo.QuickEscapeTime)
+			activator:SetNW2Float("EscapeTime", CurTime() - GetGlobalFloat("SCStartTime"))
 		end
 
 		local vehicle = ents.Create("prop_vehicle_prisoner_pod")

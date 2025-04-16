@@ -139,8 +139,9 @@ hook.Add("SlashCo:EndRound", "SlashCo:HandoutDocuments", function(winners)
 			rating = rating - 1
 		end
 
-		-- ToDo: Implement code for quick escape. Until then rating is limited to 1
-		rating = 1
+		if not ply:GetNW2Bool("QuickEscape") then
+			rating = rating - 1
+		end
 
 		if not winners[ply:SteamID64()] then
 			rating = 0 -- Didn't survive
