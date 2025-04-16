@@ -300,6 +300,8 @@ SlashCo.LangTable["Abomignat_desc"] = [[The Monstrous Slasher which uses basic a
 -It can perform a short-range high-speed lunge to finish off its victims.
 -Its Crawling Mode can enable swift map traversal.]]
 SlashCo.LangTable["Abomignat_tip"] = "-This Slasher enters bursts of speed while attacking."
+SlashCo.LangTable["abomignat_alias_alien"] = "The Alien"
+SlashCo.LangTable["abomignat_alias_rat"] = "The Rat"
 
 SlashCo.LangTable["enable crawling"] = "enable crawling"
 SlashCo.LangTable["disable crawling"] = "disable crawling"
@@ -329,6 +331,9 @@ survivors off-guard.
 -Bababooey can turn himself invisible.
 -He can create a phantom clone of himself to scare and locate Survivors.]]
 SlashCo.LangTable["Bababooey_tip"] = "-This Slasher has the ability to vanish into thin air."
+SlashCo.LangTable["bababooey_alias_phantom"] = "Phantom"
+SlashCo.LangTable["bababooey_alias_man"] = "The Man"
+SlashCo.LangTable["bababooey_alias_mist"] = "The Mist"
 
 SlashCo.LangTable["enable invisibility"] = "enable invisibility"
 SlashCo.LangTable["disable invisibility"] = "disable invisibility"
@@ -342,6 +347,8 @@ SlashCo.LangTable["Borgmire_desc"] = [[The Brute Slasher who can overpower survi
 -Borgmire is most effective in short chases.
 -He can pick up and throw nearby Survivors for heavy damage.]]
 SlashCo.LangTable["Borgmire_tip"] = "-This Slasher seems to suffer from exhaustion during long chases."
+SlashCo.LangTable["borgmire_alias_tim"] = "Tim"
+SlashCo.LangTable["borgmire_alias_borg"] = "Borg"
 
 SlashCo.LangTable["punch"] = "punch"
 SlashCo.LangTable["throw"] = "throw"
@@ -379,6 +386,7 @@ SlashCo.LangTable["Dolphinman_desc"] = [[The Patient Slasher who waits for survi
 -Upon being found, his power will activate, and stay active until he runs out of Hunt.
 -Killing Survivors increases Hunt.]]
 SlashCo.LangTable["Dolphinman_tip"] = "-This Slasher does not appear to approach victims on its own."
+SlashCo.LangTable["dolphinman_alias_dolfin"] = "Dolfin"
 
 SlashCo.LangTable["Dolphinman_cannothide"] = "You cannot hide here. A survivor is too close."
 SlashCo.LangTable["hide"] = "hide"
@@ -444,6 +452,8 @@ SlashCo.LangTable["Princess_desc"] = [[The Feral Slasher who mauls children.
 -The Agression Threshold can be increased by mauling Babies, which will reset your Aggression.
 -The higher your aggression, the faster and more brutal your chase is.]]
 SlashCo.LangTable["Princess_tip"] = "-This Slasher can be distracted with Babies."
+SlashCo.LangTable["princess_alias_cupcake"] = "Cupcake"
+SlashCo.LangTable["princess_alias_satan"] = "Satan Death Destroyer"
 
 SlashCo.LangTable["sniff"] = "sniff"
 SlashCo.LangTable["maul"] = "maul"

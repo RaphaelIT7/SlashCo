@@ -356,7 +356,6 @@ hook.Add("PostDrawOpaqueRenderables", "LobbyDocumentScreen", function(bDrawingDe
 		surface.SetDrawColor(0, 0, 0, 255)
 		surface.DrawRect(0, 0, w, h)
 
-		-- ToDo: Make The text align to the screen properly or else this happens: https://i.imgur.com/TlvTEnX.png
 		draw.SimpleText(SlashCo.Language("documents_ui_left_click"), "TVCD", w * 1, (h / 2), color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_LEFT)
 		draw.SimpleText(SlashCo.Language("documents_ui_right_click"), "TVCD", w * 1, (h / 2) + (h / 20), color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_LEFT)
 
