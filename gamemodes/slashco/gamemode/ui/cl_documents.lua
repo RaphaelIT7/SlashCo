@@ -253,7 +253,8 @@ for _, document in pairs(SlashCoDocumentTypes["Slasher"] or {}) do
 
 		for _, name in ipairs(slasher.Aliases or {}) do
 			row = row + 1
-			draw.SimpleText("\"" .. name .. "\"", "TVCD", h / 3.1, rowSize * row, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			-- ToDo: locals for this
+			draw.SimpleText("\"" .. name .. "\"", "TVCD", h * 0.1, rowSize * row, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		end
 
 		row = row + 1
@@ -261,14 +262,14 @@ for _, document in pairs(SlashCoDocumentTypes["Slasher"] or {}) do
 		
 		row = row + 1
 		local locals_slasher_class_adj = SlashCo.Language(SlashCo.SlasherClass[slasher.Class]:gsub("^%l", string.upper))
-		draw.SimpleText("[" .. string.upper(locals_slasher_class_adj) .. "]", "TVCD", h / 3.1, rowSize * row, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText("[" .. string.upper(locals_slasher_class_adj) .. "]", "TVCD", h * 0.1, rowSize * row, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
 		row = row + 1
 		draw.SimpleText(SlashCo.Language("documents_danger_level"), "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 
 		row = row + 1
 		local locals_danger_level_adj = SlashCo.Language(SlashCo.DangerLevel[slasher.DangerLevel]:gsub("^%l", string.upper))
-		draw.SimpleText("[" .. string.upper(locals_danger_level_adj) .. "]", "TVCD", h / 3.1, rowSize * row, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText("[" .. string.upper(locals_danger_level_adj) .. "]", "TVCD", h * 0.1, rowSize * row, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
 		if row < 13 then -- Offset to align everything
 			row = 13
