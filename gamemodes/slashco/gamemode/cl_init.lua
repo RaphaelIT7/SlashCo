@@ -761,7 +761,7 @@ local function WasSeenBySlasher(_, _, old, new)
 		SlashCo.AudioSystem.CreateChannel("slashco/survivor/seen_by_slasher.mp3", "mono noplay", function(channel)
 			channel:SetVolume(0)
 			channel:Play()
-			SlashCo.AudioSystem.FadeIn(channel, 1)
+			SlashCo.AudioSystem.FadeTo(channel, 1)
 			SlashCo.AudioSystem.ParentChannelToEntity(channel, GameData.LocalPlayer)
 
 			timer.Create("SlashCo:SeenBySlasherSound", 1, 0, function() -- Properly unregister the channel when it finished playing.
@@ -778,7 +778,9 @@ local function SetupWasSeenHook()
 	local ply = GameData and GameData.LocalPlayer or LocalPlayer()
 
 	ply:SetNW2VarProxy("WasSeenBySlasher", WasSeenBySlasher)
-	WasSeenBySlasher(nil, nil, nil, ply:WasSeenBySlasher())
+
+	-- Plays the sound if the player was already seen
+	-- WasSeenBySlasher(nil, nil, nil, ply:WasSeenBySlasher())
 end
 
 hook.Add("InitPostEntity", "SlashCo:WasLocalPlayerSeenBySlasher", SetupWasSeenHook)
