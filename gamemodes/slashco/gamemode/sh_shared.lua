@@ -17,6 +17,7 @@ SlashCo.GensNeeded = 2 --Default number of generators needed
 SlashCo.GeneratorModel = "models/slashco/other/generator/generator.mdl" --Model path for the generators
 SlashCo.HelicopterModel = "models/slashco/other/helicopter/helicopter.mdl" --Model path for the helicopter
 SlashCo.GhostPingDelay = 480
+SlashCo.QuickEscapeTime = 600 -- Time in seconds to count as a quick escape
 
 SlashCo.HelicopterVoices = {
 	INTRO = 1,
