@@ -78,7 +78,7 @@ function PLAYER:FindPlayersInView(dist, radius, notrace)
 	local foundEnts = ents.FindInCone(pos, self:GetEyeTrace().Normal, dist, radius)
 	local results = {}
 	for _, ent in ipairs(foundEnts) do
-		if ent:IsPlayer() and ent:Team() == TEAM_SURVIVOR then
+		if ent:IsPlayer() and ent:Team() == TEAM_SURVIVOR and ent:CanBeSeen() then
 			if not notrace then
 				local tr = util.TraceLine({
 					start = pos,
@@ -91,6 +91,14 @@ function PLAYER:FindPlayersInView(dist, radius, notrace)
 			end
 
 			table.insert(results, ent)
+		end
+	end
+
+	if self:Team() == TEAM_SLASHER then
+		for idx, ply in ipairs(results) do
+			if self:SlasherFunction("Visibility", ply) == 0 then
+				table.remove(results, idx)
+			end
 		end
 	end
 
