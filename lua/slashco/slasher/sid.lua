@@ -2,8 +2,8 @@ local SLASHER = {}
 
 SLASHER.Name = "Sid"
 SLASHER.Aliases = {
-	"Sidney Monster",
-	"Cookie Monster",
+	SlashCo.Language("sid_alias_sidney"),
+	SlashCo.Language("sid_alias_cookie"),
 }
 SLASHER.ID = 2
 SLASHER.Class = 2

@@ -467,6 +467,8 @@ SlashCo.LangTable["Sid_desc"] = [[The Psychotic Slasher which keeps his rage in 
 -Cookies will pacify him for a while.
 -Sid's special ability allows him to devastate Survivors at long range.]]
 SlashCo.LangTable["Sid_tip"] = "-Loud gunshots have been heard in zones where this Slasher was present."
+SlashCo.LangTable["sid_alias_sidney"] = "Sidney Monster"
+SlashCo.LangTable["sid_alias_cookie"] = "Cookie Monster"
 
 SlashCo.LangTable["Sid_gun_title"] = "Sid (with a gun)"
 SlashCo.LangTable["gun uses"] = "gun uses"
@@ -484,6 +486,7 @@ SlashCo.LangTable["Speedrunner_desc"] = [[The Speed Slasher whose speed grows at
 but allowing him to regain it faster, and more of it.
 -RNG Sacrifice will have additional effects on the round when it is used.]]
 SlashCo.LangTable["Speedrunner_tip"] = "-This Slasher grows exeptionally faster with time."
+SlashCo.LangTable["speedrunner_alias_hunted"] = "The Hunted"
 
 SlashCo.LangTable["speed"] = "speed"
 SlashCo.LangTable["rng sacrifice"] = "rng sacrifice"
@@ -496,6 +499,8 @@ SlashCo.LangTable["Thirsty_desc"] = [[The Milk Slasher whose abilities depend on
 -The Thirstier he is, the slower he is, but can sense the position of players.
 -Thirsty is really quiet.]]
 SlashCo.LangTable["Thirsty_tip"] = "-This Slasher is heavily linked with Milk Jugs."
+SlashCo.LangTable["thirsty_alias_thirsty"] = "Thirsty Demon"
+SlashCo.LangTable["thirsty_alias_milk"] = "Milk Demon"
 
 SlashCo.LangTable["drink milk"] = "drink milk"
 SlashCo.LangTable["milkies"] = "milkies"
@@ -510,6 +515,7 @@ blood he has collected.
 -He must collect enough blood to unlock his true form.
 -He can not collect blood after the round has progressed enough.]]
 SlashCo.LangTable["Trollge_tip"] = "-Its eyesight seems to be limited to moving objects."
+SlashCo.LangTable["trollege_alias_comedy"] = "Comedy"
 
 SlashCo.LangTable["dash"] = "dash"
 SlashCo.LangTable["claw"] = "claw"
@@ -538,6 +544,8 @@ SlashCo.LangTable["Watcher_desc"] = [[The Observing Slasher whose power relies o
 -He will be slowed down if he is looked at, but anyone who does so will be located.
 -The Watcher can stalk Survivors to build up his special ability, Full Surveillance.]]
 SlashCo.LangTable["Watcher_tip"] = "-This Slasher suffers from a loss of speed while observed."
+SlashCo.LangTable["watcher_alias_agent"] = "The Agent"
+SlashCo.LangTable["watcher_alias_brother"] = "Big Brother"
 
 SlashCo.LangTable["survey"] = "survey"
 SlashCo.LangTable["full surveillance"] = "full surveillance"

@@ -463,6 +463,8 @@ SlashCo.LangTable["Sid_desc"] = [[Der psychotische Slasher, der seine Wut mit Ke
 -Kekse werden ihn für eine Weile besänftigen.
 -Sids spezielle Fähigkeit erlaubt es ihm, Überlebende aus großer Distanz zu vernichten.]]
 SlashCo.LangTable["Sid_tip"] = "-Laute Gewehrschüsse wurden in Zonen gehört, in denen dieser Slasher anwesend war."
+SlashCo.LangTable["sid_alias_sidney"] = "Sidney Monster"
+SlashCo.LangTable["sid_alias_cookie"] = "Keks Monster"
 
 SlashCo.LangTable["Sid_gun_title"] = "Sid (mit einer Waffe)"
 SlashCo.LangTable["Sid_gunuses"] = "Waffe verwendungen"
@@ -480,6 +482,7 @@ SlashCo.LangTable["Speedrunner_desc"] = [[Der schnelle Slasher, bei dem die Gesc
 wodurch die Geschwindigkeit zurückgesetzt wird, aber es erlaubt ihm, sie schneller und mehr auf einmal wiederzuerlangen.
 -RNG Opferung hat zusätzliche Auswirkungen auf die Runde, wenn es eingesetzt wird.]]
 SlashCo.LangTable["Speedrunner_tip"] = "-Dieser Slasher wird mit der Zeit außerordentlich schnell."
+SlashCo.LangTable["speedrunner_alias_hunted"] = "Der Gejagte"
 
 SlashCo.LangTable["Speedrunner_speed"] = "Geschwindigkeit"
 SlashCo.LangTable["Speedrunner_sacrifice"] = "RNG Opferung"
@@ -492,6 +495,8 @@ SlashCo.LangTable["Thirsty_desc"] = [[Der Milch Slasher, dem seine Fähigkeiten 
 -Je durstiger er ist, desto langsamer wird er, aber er kann die Position der Spieler spüren.
 -Thirsty ist sehr leise.]]
 SlashCo.LangTable["Thirsty_tip"] = "-Dieser Slasher ist schwer mit Milch Krügen verbunden."
+SlashCo.LangTable["thirsty_alias_thirsty"] = "Durstiger Dämon"
+SlashCo.LangTable["thirsty_alias_milk"] = "Milch Dämon"
 
 SlashCo.LangTable["Thirsty_drinkmilk"] = "Milch trinken"
 SlashCo.LangTable["Thirsty_milkies"] = "milkies"
@@ -506,6 +511,7 @@ Blut das er gesammelt hat vergrößert.
 -Er muss genug Blut sammeln, um seine wahre Form zu erreichen.
 -Er kann kein Blut mehr sammeln, wenn die Runde weit genug fortgeschritten ist]]
 SlashCo.LangTable["Trollge_tip"] = "-Seine Sehkraft scheint auf bewegliche Objekte beschränkt zu sein."
+SlashCo.LangTable["trollege_alias_comedy"] = "Komödie"
 
 SlashCo.LangTable["Trollge_dash"] = "Sprint"
 SlashCo.LangTable["Trollge_claw"] = "Kralle"
@@ -534,6 +540,8 @@ SlashCo.LangTable["Watcher_desc"] = [[Der beobachtende Slasher, dessen Kraft auf
 -Er wird verlangsamt, wenn er angeschaut wird, aber jeder, der dies tut, wird aufgedeckt.
 -Der Wächter kann Überlebende verfolgen, um seine Spezialfähigkeit „Vollständige Überwachung“ zu entwickeln.]]
 SlashCo.LangTable["Watcher_tip"] = "-Dieser Slasher leidet unter einem Geschwindigkeitsverlust, wenn er beobachtet wird."
+SlashCo.LangTable["watcher_alias_agent"] = "Der Agent"
+SlashCo.LangTable["watcher_alias_brother"] = "Großer Bruder"
 
 SlashCo.LangTable["Watcher_survey"] = "BEOBACHTEN"
 SlashCo.LangTable["Watcher_fullsurveillance"] = "VOLLE ÜBERWACHUNG"
