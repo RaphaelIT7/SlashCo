@@ -1,6 +1,6 @@
 local DOCUMENT = {}
 
-DOCUMENT.Name = "Tyler"
+DOCUMENT.Name = "Amogus"
 DOCUMENT.Type = "Slasher"
 
 DOCUMENT.Description = SlashCo.Language(string.lower(DOCUMENT.Name .. "_description"))

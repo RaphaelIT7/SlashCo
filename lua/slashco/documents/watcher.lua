@@ -4,8 +4,7 @@ DOCUMENT.Name = "The Watcher"
 DOCUMENT.Type = "Slasher"
 DOCUMENT.Slasher = "Watcher"
 
--- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/The_Watcher
-DOCUMENT.Description = [[An umbra entity, taking the form of an extremely tall old man wearing an olive overcoat, round glasses and a hat. The entity awkwardly stumbles when moving, and has mostly been reported to observe victims patiently while hidden in the dark. This Slasher has been reported to prefer to stay in groups, and has shown to be a brutal killer when acting alone.]]
-DOCUMENT.AdditionalDescription = [[This Slasher cannot passively gain [ANGER]. The Watcher will VERY RAPIDLY gain [ANGER] when observing a victim.]]
+DOCUMENT.Description = SlashCo.Language(string.lower(DOCUMENT.Name .. "_description"))
+DOCUMENT.AdditionalDescription = SlashCo.Language(string.lower(DOCUMENT.Name .. "_description_additional"))
 
 SlashCo.RegisterDocument(DOCUMENT)
