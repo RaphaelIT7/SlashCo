@@ -13,9 +13,6 @@ ENT.Purpose			= "Rescue."
 ENT.Instructions	= ""
 ENT.PingType = "DISTRESS BEACON"
 
-local rotate = 0
-local intensity = 0
-
 local function ArmBeacon(ent)
 	if ent:GetNWBool("BeaconBroken") then return end
 
@@ -100,6 +97,8 @@ else
 		self:DrawModel()
 	end
 
+	local rotate = 0
+	local intensity = 0
 	function ENT:Think()
 		if self:GetNWBool("BeaconBroken") then return end
 

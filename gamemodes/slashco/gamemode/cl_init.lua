@@ -121,6 +121,7 @@ function GM:SetupWorldFog() -- A basic world fog that dynamicly changes dependin
 
 	render.FogMode(MATERIAL_FOG_LINEAR)
 	render.FogColor(0, 0, 0)
+	render.FogMaxDensity(1)
 
 	local targetFogStart = 200
 	local pos = GameData.LocalPlayer:GetPos()
