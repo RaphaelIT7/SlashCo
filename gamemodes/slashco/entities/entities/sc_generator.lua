@@ -19,21 +19,86 @@ hook.Add("SlashCo:Precache", "PrecacheGenerator", function()
 	SlashCo.PrecacheSound("slashco/generator_failstart.wav")
 	SlashCo.PrecacheSound("ambient/machines/zap1.wav")
 	SlashCo.PrecacheSound("slashco/battery_insert.wav")
+	SlashCo.PrecacheModel("models/props_c17/light_cagelight01_on.mdl")
 end)
 
 local DefaultTimeToFuel = 13
 local TimeToFuel = DefaultTimeToFuel
 
+function ENT:SetupDataTables()
+	self:NetworkVar("Bool", 0, "Running")
+	self:NetworkVar("Int", 0, "CansRemaining")
+end
+
 if CLIENT then
+	local lightAng = Angle(0, 0, 180)
+	local screenAng = Angle(0, 180, 90)
+	local screenPos = Vector(-37, 18.8, 45.75)
 	function ENT:Draw()
+		if GameData.GeneratorLight and not GameData.GeneratorLight:IsValid() then
+			GameData.GeneratorLight = nil
+		end
+		GameData.GeneratorLight = GameData.GeneratorLight or ClientsideModel("models/props_c17/light_cagelight01_on.mdl", RENDERGROUP_OTHER)
+
+		local cacheData = self.cacheData
+		if not cacheData then
+			local lightPos = self:GetPos()
+			local mins, maxs = self:GetModelBounds()
+			lightPos[3] = lightPos[3] + (maxs[3] / 1.55)
+			
+			local ang = self:GetAngles()
+			ang:Add(lightAng)
+
+			cacheData = {
+				pos = lightPos,
+				ang = ang,
+				entindex = self:EntIndex(),
+				screenPos = self:LocalToWorld(screenPos),
+				screenAng = self:LocalToWorldAngles(screenAng),
+			}
+			self.cacheData = cacheData
+		end
+
+		local running = self:GetRunning()
+		GameData.GeneratorLight:SetPos(cacheData.pos)
+		GameData.GeneratorLight:SetColor4Part(not running and 255 or 0, running and 255 or 0, 0, 255)
+		GameData.GeneratorLight:SetAngles(cacheData.ang)
+		GameData.GeneratorLight:DrawModel()
+
+		local curTime = CurTime()
+		local dlight = DynamicLight(cacheData.entindex + 99996)
+		if dlight then
+			dlight.pos = cacheData.pos
+			dlight.r = not running and 255 or 0
+			dlight.g = running and 255 or 0
+			dlight.b = 0
+			dlight.brightness = 5
+			dlight.Decay = 1000
+			--dlight.nomodel = true -- We don't need that.
+			dlight.Size = math.abs(math.sin(curTime)) * 200
+			dlight.DieTime = curTime + 0.1
+		end
+
 		self:DrawModel()
+
+		-- Small fuel UI showing how full a generator is
+		local maximumFuel = 4 -- How many fuel canisters can go into a single generator, if this changes this code needs to be updated manually.
+		local remaining = self:GetCansRemaining()
+		cam.Start3D2D(cacheData.screenPos, cacheData.screenAng, 0.05)
+			surface.SetDrawColor(0, 0, 0, 255)
+			surface.DrawRect(0, 0, 100, 190)
+
+			surface.SetDrawColor(255, 255, 255, 255)
+			surface.DrawOutlinedRect(5, 5, 90, 180, 2)
+
+			local xOffset = 37
+			for k=0, ((maximumFuel - 1) - remaining) do
+				surface.DrawRect(15, 180 - xOffset - (xOffset * k + (k * 5)), 70, 30)
+			end
+		cam.End3D2D()
 	end
 
 	return
-end
-
-function ENT:SetupDataTables()
-	self:NetworkVar("Bool", "Running") -- ToDo: Render green light when the generator is done
 end
 
 function ENT:Initialize()
@@ -44,11 +109,16 @@ function ENT:Initialize()
 	self:GetPhysicsObject():EnableMotion(false)
 	self:SetUseType(SIMPLE_USE)
 	self.Progress = 0
+
+	local gasPerGen = GetGlobal2Int("SlashCoGasCansPerGenerator", SlashCo.GasPerGen)
+	self.CansRemaining = gasPerGen
+	self:SetCansRemaining(self.CansRemaining)
 end
 
 function ENT:ChangeCanProgress(amount)
 	local gasPerGen = GetGlobal2Int("SlashCoGasCansPerGenerator", SlashCo.GasPerGen)
 	self.CansRemaining = math.Clamp((self.CansRemaining or gasPerGen) - amount, 0, gasPerGen)
+	self:SetCansRemaining(self.CansRemaining)
 	self.Progress = math.Clamp((gasPerGen - self.CansRemaining) * (4 / gasPerGen), 0, 4) + (self.HasBattery and 1 or 0)
 
 	if self.CansRemaining == 0 then
