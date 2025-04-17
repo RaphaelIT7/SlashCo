@@ -115,6 +115,7 @@ function PLAYER:IsStuck(worldOnly)
 		endpos = self:GetPos(),
 		filter = self,
 		mask = MASK_PLAYERSOLID,
+		collisiongroup = COLLISION_GROUP_PLAYER,
 	}
 
 	if worldOnly then
