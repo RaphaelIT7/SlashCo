@@ -84,6 +84,10 @@ if CLIENT then
 		-- Small fuel UI showing how full a generator is
 		local gasPerGen = GetGlobal2Int("SlashCoGasCansPerGenerator", SlashCo.GasPerGen)
 		local remaining = self:GetCansRemaining()
+		if remaining < 0 then
+			remaining = 0
+		end
+
 		cam.Start3D2D(cacheData.screenPos, cacheData.screenAng, 0.05)
 			surface.SetDrawColor(0, 0, 0, 255)
 			surface.DrawRect(0, 0, 100, 190)
