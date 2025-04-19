@@ -581,12 +581,12 @@ hook.Add("PlayerChangedTeam", "octoSlashCoPlayerChangedTeam", function(ply, old,
 	end
 
 	if old == TEAM_SURVIVOR then
-		ply:SetNWBool("DynamicFlashlight", false)
+		ply:SetNW2Bool("DynamicFlashlight", false)
 	end
 
 	if GameData.IsLobby then
 		net.Start("mantislashco_GiveLobbyStatus")
-		net.WriteUInt(SlashCo.LobbyData.LOBBYSTATE, 3)
+			net.WriteUInt(SlashCo.LobbyData.LOBBYSTATE, 3)
 		net.Broadcast()
 	end
 end)
@@ -602,7 +602,7 @@ function GM:PlayerDeath(victim)
 		return
 	end
 
-	victim:SetNWBool("DynamicFlashlight", false)
+	victim:SetNW2Bool("DynamicFlashlight", false)
 
 	local dontTickLife = victim:ItemFunction("OnDie")
 	if dontTickLife then
@@ -709,11 +709,12 @@ hook.Add("PlayerSwitchFlashlight", "DynamicFlashlight.Switch", function(ply, sta
 		return false
 	end
 
-	ply:SetNWBool("DynamicFlashlight", not ply:GetNWBool("DynamicFlashlight"))
-	if ply:GetNWBool("DynamicFlashlight") then
+	ply:SetNW2Bool("DynamicFlashlight", not ply:GetNW2Bool("DynamicFlashlight"))
+	if ply:GetNW2Bool("DynamicFlashlight") then
 		ply:EmitSound("slashco/survivor/flashlight-switchoff.wav", 60, 100)
 	end
-	if not ply:GetNWBool("DynamicFlashlight") then
+
+	if not ply:GetNW2Bool("DynamicFlashlight") then
 		ply:EmitSound("slashco/survivor/flashlight-switchon.wav", 60, 100)
 	end
 

@@ -264,7 +264,7 @@ function SLASHER.InitHud(_, hud)
 	hud:AddControl("R", "drink milk", milkTable)
 	hud:ChaseAndKill()
 
-	hud:AddMeter("milkies", 4 + GetGlobalInt("SatO"), "", nil, true)
+	hud:AddMeter("milkies", 4 + GetGlobal2Int("SatO"), "", nil, true)
 	hud:TieMeterInt("milkies", "ThirstyMilkDrank", true)
 
 	hud:AddMeter("thirst")

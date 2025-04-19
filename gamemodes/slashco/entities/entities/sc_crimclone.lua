@@ -13,6 +13,10 @@ hook.Add("SlashCo:Precache", "PrecacheClone", function()
 	SlashCo.PrecacheSound("slashco/slasher/criminal_loop.wav")
 end)
 
+function ENT:SetupDataTables()
+	self:NetworkVar("Bool", 0, "MainRageClone")
+end
+
 function ENT:Initialize()
 	self:SetModel("models/slashco/slashers/criminal/criminal.mdl")
 
@@ -86,11 +90,11 @@ if SERVER then
 			if rage_switch then
 				self:SetBodygroup(0, 1)
 				self:SetSkin(1)
-				if not self:GetNWBool("MainRageClone") then self:SetNWBool("MainRageClone", true) end
+				if not self:GetMainRageClone() then self:SetMainRageClone(true) end
 			else
 				self:SetBodygroup(0, 0)
 				self:SetSkin(0)
-				if self:GetNWBool("MainRageClone") then self:SetNWBool("MainRageClone", false) end
+				if self:GetMainRageClone() then self:SetMainRageClone(false) end
 			end
 		end
 	end

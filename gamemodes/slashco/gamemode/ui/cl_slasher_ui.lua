@@ -35,7 +35,7 @@ hook.Add("HUDPaint", "BaseSlasherHUD", function()
 
 	--Activating the Beacon
 	for _, v in ipairs(ents.FindByClass("sc_activebeacon")) do
-		if v:GetNWBool("ArmingBeacon") then
+		if v:GetArmingBeacon() then
 			local pos = (v:GetPos()):ToScreen()
 
 			if pos.visible then

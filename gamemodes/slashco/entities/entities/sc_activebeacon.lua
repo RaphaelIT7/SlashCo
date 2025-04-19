@@ -13,12 +13,17 @@ ENT.Purpose			= "Rescue."
 ENT.Instructions	= ""
 ENT.PingType = "DISTRESS BEACON"
 
+function ENT:SetupDataTables()
+	self:NetworkVar("Bool", 0, "BeaconBroken")
+	self:NetworkVar("Bool", 1, "ArmingBeacon")
+end
+
 local function ArmBeacon(ent)
-	if ent:GetNWBool("BeaconBroken") then return end
+	if ent:GetBeaconBroken() then return end
 
 	timer.Remove(ent:EntIndex() .. "_BeaconBlipSound")
 	ent:PlayGlobalSound("slashco/survivor/distress_siren.wav", 100)
-	ent:SetNWBool("ArmingBeacon", false)
+	ent:SetArmingBeacon(false)
 	SlashCo.BeaconArming = nil
 	SlashCo.SummonEscapeHelicopter(true)
 	SlashCo.CurRound.DistressBeaconUsed = true
@@ -44,7 +49,7 @@ if SERVER then
 	end
 
 	function ENT:Think()
-		if self:GetNWBool("BeaconBroken") then return end
+		if self:GetBeaconBroken() then return end
 
 		if self.DoArming and not self.TimersStarted then
 			local ms = SlashCo.MapSize --SCInfo.Maps[game.GetMap()].SIZE
@@ -63,12 +68,12 @@ if SERVER then
 		end
 
 
-		if self:GetNWBool("ArmingBeacon") and team.NumPlayers(TEAM_SURVIVOR) < 2 then
+		if self:GetArmingBeacon() and team.NumPlayers(TEAM_SURVIVOR) < 2 then
 			timer.Remove(self:EntIndex() .. "_BeaconArming")
 			ArmBeacon(self)
 		end
 
-		if not self:GetNWBool("ArmingBeacon") then return end
+		if not self:GetArmingBeacon() then return end
 
 		for k, v in ipairs(team.GetPlayers(TEAM_SLASHER)) do
 			if v:GetPos():Distance(self:GetPos()) < 50 then
@@ -77,7 +82,7 @@ if SERVER then
 				timer.Remove(self:EntIndex() .. "_BeaconBlipSound")
 				self:SetModel("models/props_c17/light_cagelight02_off.mdl")
 
-				self:SetNWBool("ArmingBeacon", false)
+				self:SetArmingBeacon(false)
 				SlashCo.BeaconArming = nil
 				self:PhysicsInit(SOLID_VPHYSICS)
 				self:SetMoveType(MOVETYPE_VPHYSICS)
@@ -88,7 +93,7 @@ if SERVER then
 
 				phys:ApplyForceCenter(Vector(math.random(-25,25),math.random(-25,25),math.random(-25,25)))
 
-				self:SetNWBool("BeaconBroken", true)
+				self:SetBeaconBroken(true)
 			end
 		end
 	end
@@ -100,9 +105,9 @@ else
 	local rotate = 0
 	local intensity = 0
 	function ENT:Think()
-		if self:GetNWBool("BeaconBroken") then return end
+		if self:GetBeaconBroken() then return end
 
-		if self:GetNWBool("ArmingBeacon") then
+		if self:GetArmingBeacon() then
 			intensity = intensity + (FrameTime() * 300)
 
 			local dlight = DynamicLight(self:EntIndex() + 99996)
@@ -128,7 +133,7 @@ else
 			end
 		end
 
-		if self:GetNWBool("ArmingBeacon") then return end
+		if self:GetArmingBeacon() then return end
 
 		rotate = rotate + (FrameTime() * 300)
 
