@@ -121,8 +121,8 @@ SlashCo.IsPlayable = SlashCo.IsPlayable or false -- false if were missing maps t
 
 GameData = GameData or {} -- A table containing data that is frequently used, also stores data across lua refreshs to not break when editing.
 GameData.Map = game.GetMap()
-GameData.Lobby = GameData.Lobby or "sc_lobby" -- Map name of the default lobby, it might change after GM:InitPostEntity was called. You should always use GameData.IsLobby if you can as it's value is accurate and networked.
-GameData.IsLobby = GameData.Map == GameData.Lobby -- This value is accurate after GM:InitPostEntity was called, if you use it before it was called you might experience issues.
+GameData.Lobby = GameData.Lobby or "sc_lobby" -- Map name of the default lobby, might change after GM:InitPostEntity was called(if you use it before it was called you might experience issues so don't use it too early)
+GameData.IsLobby = GameData.Map == GameData.Lobby -- true if the current map is a lobby, same as above don't use it too early.
 GameData.MaxPlayers = game.MaxPlayers()
 GameData.IsSinglePlayer = game.SinglePlayer()
 
@@ -135,9 +135,11 @@ if CLIENT then
 	GameData.TimeLeft = GameData.TimeLeft or nil
 	GameData.LocalIsSlasher = GameData.LocalIsSlasher or false
 	GameData.IsLobby = GetGlobal2Bool("SlashCo:IsLobby", GameData.IsLobby) -- For autorefresh
+	GameData.Lobby = GetGlobal2String("SlashCo:Lobby", GameData.Lobby) -- For autorefresh
 
 	function GM:InitPostEntity()
 		GameData.IsLobby = GetGlobal2Bool("SlashCo:IsLobby", GameData.IsLobby)
+		GameData.Lobby = GetGlobal2String("SlashCo:Lobby", GameData.Lobby)
 
 		GameData.LocalPlayer = LocalPlayer()
 		GameData.LocalSteamID = GameData.LocalPlayer:SteamID()
@@ -145,8 +147,6 @@ if CLIENT then
 	end
 else
 	function GM:InitPostEntity()
-		SetGlobal2Bool("SlashCo:IsLobby", GameData.IsLobby) -- Network our state.
-
 		if GameData.IsLobby then
 			GameData.Lobby = GameData.Map
 			cookie.Set("SlashCo:LastLobby", GameData.Lobby)
@@ -161,6 +161,9 @@ else
 			]]
 			GameData.Lobby = cookie.GetString("SlashCo:LastLobby", GameData.Lobby)
 		end
+
+		SetGlobal2Bool("SlashCo:IsLobby", GameData.IsLobby) -- Network our state.
+		SetGlobal2String("SlashCo:Lobby", GameData.Lobby)
 	end
 end
 
