@@ -58,7 +58,7 @@ function ITEM.OnUse(ply)
 		local ent = SlashCo.CreateItem("sc_activebeacon", ply:WorldSpaceCenter(), Angle(0, 0, 0))
 		ent.DoArming = true
 		ent:DropToFloor()
-		ent:SetNWBool("ArmingBeacon", true)
+		ent:SetArmingBeacon(true)
 		SlashCo.BeaconArming = true
 	else --instant because alone
 		SlashCo.CurRound.DistressBeaconUsed = true

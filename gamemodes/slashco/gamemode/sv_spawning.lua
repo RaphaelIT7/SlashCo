@@ -678,9 +678,9 @@ local function startRound(noSetup)
 	SlashCo.State = SlashCo.States.IN_GAME
 	SlashCo.CurRound.GameProgress = 0
 
-	SetGlobalFloat("SCStartTime", CurTime())
+	SetGlobal2Float("SCStartTime", CurTime())
 	timer.Simple(SlashCo.GhostPingDelay, function()
-		SetGlobalBool("SpectatorsCanPing", true)
+		SetGlobal2Bool("SpectatorsCanPing", true)
 		for _, v in ipairs(team.GetPlayers(TEAM_SPECTATOR)) do
 			v:ChatText("spectators_can_ping")
 		end
@@ -691,7 +691,7 @@ local function startRound(noSetup)
 	end
 	if SlashCo.CurRound.OfferingData.CurrentOffering == 2 then
 		SlashCo.CurRound.OfferingData.SatO = 1
-		SetGlobalInt("SatO", 1)
+		SetGlobal2Int("SatO", 1)
 	end
 	if SlashCo.CurRound.OfferingData.CurrentOffering == 4 then
 		SlashCo.CurRound.OfferingData.DO = true

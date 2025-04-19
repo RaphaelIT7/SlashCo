@@ -299,7 +299,7 @@ hook.Add("Think", "LobbyFailSafe", function()
 		return
 	end
 
-	local timePassed = CurTime() - GetGlobalFloat("SCStartTime")
+	local timePassed = CurTime() - GetGlobal2Float("SCStartTime")
 	if timePassed > 90 and not SlashCo.FailSafeActivate then
 		local slashers = team.GetPlayers(TEAM_SLASHER)
 		if #slashers == 0 then

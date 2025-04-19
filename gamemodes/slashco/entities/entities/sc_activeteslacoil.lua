@@ -16,6 +16,13 @@ ENT.PingType = "TESLACOIL"
 
 local stunTime = 15 -- How long the slashers get stunned
 
+function ENT:SetupDataTables()
+	self:NetworkVar("Bool", 0, "NoLight")
+	self:NetworkVar("Float", 0, "ChargeBeginning")
+	self:NetworkVar("Float", 1, "BrightnessTime")
+	self:NetworkVar("Int", 0, "ChargeState")
+end
+
 if SERVER then
 	hook.Add("SlashCo:Precache", "PrecacheBeacon", function()
 		SlashCo.PrecacheSound("slashco/survivor/teslacoil_chargeup.wav")
@@ -33,44 +40,42 @@ if SERVER then
 		self:SetCollisionGroup(COLLISION_GROUP_PASSABLE_DOOR) --Collide with everything but the player
 		self:SetAngles(Angle(0, 0, 0))
 		self:DropToFloor()
-		self:SetNW2Float("ChargeBeginning", CurTime())
-		self:SetNW2Float("BrightnessTime", CurTime())
-		self:SetNW2Bool("NoLight", true)
-		self:SetNW2Int("ChargeState", 0)
+		self:SetChargeBeginning(CurTime())
+		self:SetBrightnessTime(CurTime())
+		self:SetNoLight(true)
+		self:SetChargeState(0)
 	end
 
 	function ENT:Think()
-		if self:GetNW2Bool("TeslaCoilBroken") then return end
-
 		local startTime = self:GetNW2Float("ChargeBeginning")
 		local state = self:GetNW2Int("ChargeState")
 		if state == 0 then
 			self:PlayGlobalSound("slashco/survivor/teslacoil_chargeup.wav", 100)
-			self:SetNW2Int("ChargeState", 1)
+			self:SetChargeState(1)
 		end
 
 		if (CurTime() - startTime) > 9.5 and state == 1 then
-			self:SetNW2Int("ChargeState", 2)
-			self:SetNW2Float("BrightnessTime", CurTime())
-			self:SetNW2Bool("NoLight", false)
+			self:SetChargeState(2)
+			self:SetBrightnessTime(CurTime())
+			self:SetNoLight(false)
 		end
 
 		if (CurTime() - startTime) > 18.5 and state == 2 then
-			self:SetNW2Int("ChargeState", 3)
-			self:SetNW2Bool("NoLight", true)
+			self:SetChargeState(3)
+			self:SetNoLight(true)
 		end
 
 		if (CurTime() - startTime) > 20 and state == 3 then
-			self:SetNW2Int("ChargeState", 4)
-			self:SetNW2Bool("NoLight", false)
-			self:SetNW2Float("BrightnessTime", CurTime())
+			self:SetChargeState(4)
+			self:SetNoLight(false)
+			self:SetBrightnessTime(CurTime())
 			util.ScreenShake(self:GetPos(), 30, 100, 5, 5000, true)
 			SetGlobal2Bool("DisableWorldFog", true)
 		end
 
 		if (CurTime() - startTime) > 25.5 and state == 4 then
-			self:SetNW2Int("ChargeState", 5)
-			self:SetNW2Float("BrightnessTime", CurTime() + 3)
+			self:SetChargeState(5)
+			self:SetBrightnessTime(CurTime() + 3)
 			SetGlobal2Bool("DisableWorldFog", false)
 			for _, ply in ipairs(team.GetPlayers(TEAM_SLASHER)) do
 				ply:PlayGlobalSound("slashco/survivor/teslacoil_stun.wav", 100, 5)
@@ -78,7 +83,7 @@ if SERVER then
 		end
 
 		if (CurTime() - startTime) > 29 and state == 5 then
-			self:SetNW2Int("ChargeState", 6)
+			self:SetChargeState(6)
 			for _, ply in ipairs(team.GetPlayers(TEAM_SLASHER)) do
 				ply:SetNW2Float("TeslaStunned", CurTime() + stunTime)
 				ply:SetNW2Float("LastTeslaStun", CurTime())
@@ -88,7 +93,7 @@ if SERVER then
 		end
 
 		if (CurTime() - startTime) > 32 and state == 6 then
-			self:SetNW2Int("ChargeState", 7)
+			self:SetChargeState(7)
 			SetGlobal2Bool("DisableWorldFog", false)
 		end
 	end
@@ -104,7 +109,7 @@ else
 	local lightningMaterial = Material("sprites/lgtning")
 	local fullWhiteCol = Color(255, 255, 255, 255)
 	function ENT:Draw()
-		local state = self:GetNW2Int("ChargeState")
+		local state = self:GetChargeState()
 		local noLighting = state > 1 and state < 5 and not self:GetNW2Bool("NoLight")
 		if noLighting then
 			render.SuppressEngineLighting(true)
@@ -161,9 +166,7 @@ else
 		material = "sprites/lgtning.vmt"
 	}
 	function ENT:Think()
-		if self:GetNW2Bool("TeslaCoilBroken") then return end
-
-		local state = self:GetNW2Int("ChargeState")
+		local state = self:GetChargeState()
 		if state >= 1 and not self:GetNW2Bool("NoLight") then
 			local intensity = CurTime() - self:GetNW2Float("BrightnessTime")
 			if state > 5 then

@@ -161,7 +161,7 @@ function SLASHER.OnMainAbilityFire(slasher)
 		slasher:SetNWBool("AmogusFuelDisguise", false)
 		slasher:SetNWBool("AmogusDisguised", false)
 		slasher:EmitSound("slashco/slasher/amogus_reveal.mp3")
-		slasher:SetNWBool("DynamicFlashlight", false)
+		slasher:SetNW2Bool("DynamicFlashlight", false)
 
 		slasher:SlasherHudFunc("SetAvatar", "default")
 		slasher:SlasherHudFunc("SetTitle", "Amogus")
