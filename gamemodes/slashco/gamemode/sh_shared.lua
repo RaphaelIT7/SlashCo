@@ -121,8 +121,8 @@ SlashCo.IsPlayable = SlashCo.IsPlayable or false -- false if were missing maps t
 
 GameData = GameData or {} -- A table containing data that is frequently used, also stores data across lua refreshs to not break when editing.
 GameData.Map = game.GetMap()
-GameData.DefaultLobby = "sc_lobby" -- Map name of the default lobby. This value does NOT point to the actuall lobby name, use GameData.IsLobby as it's value is accurate and networked, this is because other maps can also be a lobby, they use the info_sc_settings entity for this.
-GameData.IsLobby = GameData.Map == GameData.DefaultLobby -- This value is accurate after GM:InitPostEntity was called, if you use it before it was called you might experience issues.
+GameData.Lobby = GameData.Lobby or "sc_lobby" -- Map name of the default lobby, it might change after GM:InitPostEntity was called. You should always use GameData.IsLobby if you can as it's value is accurate and networked.
+GameData.IsLobby = GameData.Map == GameData.Lobby -- This value is accurate after GM:InitPostEntity was called, if you use it before it was called you might experience issues.
 GameData.MaxPlayers = game.MaxPlayers()
 GameData.IsSinglePlayer = game.SinglePlayer()
 
@@ -134,6 +134,7 @@ if CLIENT then
 	GameData.LobbyInfoTable = GameData.LobbyInfoTable or {}
 	GameData.TimeLeft = GameData.TimeLeft or nil
 	GameData.LocalIsSlasher = GameData.LocalIsSlasher or false
+	GameData.IsLobby = GetGlobal2Bool("SlashCo:IsLobby", GameData.IsLobby) -- For autorefresh
 
 	function GM:InitPostEntity()
 		GameData.IsLobby = GetGlobal2Bool("SlashCo:IsLobby", GameData.IsLobby)
@@ -147,9 +148,18 @@ else
 		SetGlobal2Bool("SlashCo:IsLobby", GameData.IsLobby) -- Network our state.
 
 		if GameData.IsLobby then
+			GameData.Lobby = GameData.Map
+			cookie.Set("SlashCo:LastLobby", GameData.Lobby)
+
 			SlashCo.CreateHelicopter(Vector(644.594, -423.175, 40.004), Angle(0, 45, 0))
 			SlashCo.CreateItemStash(Vector(-483.500, -260.000, 88.000), Angle(90, 180, 180))
 			SlashCo.CreateOfferTable(Vector(940.838, 890.909, -191.853), Angle(0, -90, 0))
+		else
+			--[[
+				Restore the last lobby value, if you for example started on sc_lobby_v2 and play a round.
+				after the round it wouldn't know where to return to, so we restore the last lobby we've been on and use that.
+			]]
+			GameData.Lobby = cookie.GetString("SlashCo:LastLobby", GameData.Lobby)
 		end
 	end
 end
