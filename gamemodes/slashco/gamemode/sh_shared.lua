@@ -121,8 +121,8 @@ SlashCo.IsPlayable = SlashCo.IsPlayable or false -- false if were missing maps t
 
 GameData = GameData or {} -- A table containing data that is frequently used, also stores data across lua refreshs to not break when editing.
 GameData.Map = game.GetMap()
-GameData.Lobby = "sc_lobby" -- Map name of the lobby
-GameData.IsLobby = GameData.Map == GameData.Lobby
+GameData.DefaultLobby = "sc_lobby" -- Map name of the default lobby. This value does NOT point to the actuall lobby name, use GameData.IsLobby as it's value is accurate and networked, this is because other maps can also be a lobby, they use the info_sc_settings entity for this.
+GameData.IsLobby = GameData.Map == GameData.DefaultLobby -- This value is accurate after GM:InitPostEntity was called, if you use it before it was called you might experience issues.
 GameData.MaxPlayers = game.MaxPlayers()
 GameData.IsSinglePlayer = game.SinglePlayer()
 
@@ -136,12 +136,16 @@ if CLIENT then
 	GameData.LocalIsSlasher = GameData.LocalIsSlasher or false
 
 	function GM:InitPostEntity()
+		GameData.IsLobby = GetGlobal2Bool("SlashCo:IsLobby", GameData.IsLobby)
+
 		GameData.LocalPlayer = LocalPlayer()
 		GameData.LocalSteamID = GameData.LocalPlayer:SteamID()
 		GameData.LocalSteamID64 = GameData.LocalPlayer:SteamID64()
 	end
 else
 	function GM:InitPostEntity()
+		SetGlobal2Bool("SlashCo:IsLobby", GameData.IsLobby) -- Network our state.
+
 		if GameData.IsLobby then
 			SlashCo.CreateHelicopter(Vector(644.594, -423.175, 40.004), Angle(0, 45, 0))
 			SlashCo.CreateItemStash(Vector(-483.500, -260.000, 88.000), Angle(90, 180, 180))
