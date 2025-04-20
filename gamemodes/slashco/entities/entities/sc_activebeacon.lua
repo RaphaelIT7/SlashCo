@@ -1,10 +1,6 @@
 AddCSLuaFile()
 
---local SlashCo = SlashCo
-local SlashCoItems = SlashCoItems
-
 ENT.Type = "anim"
-
 ENT.ClassName 		= "sc_activebeacon"
 ENT.PrintName		= "active beacon"
 ENT.Author			= "Manti"

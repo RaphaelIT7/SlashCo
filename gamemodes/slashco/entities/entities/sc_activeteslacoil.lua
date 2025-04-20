@@ -1,11 +1,6 @@
-
 AddCSLuaFile()
 
---local SlashCo = SlashCo
-local SlashCoItems = SlashCoItems
-
 ENT.Type = "anim"
-
 ENT.ClassName 		= "sc_activeteslacoil"
 ENT.PrintName		= "active teslacoil"
 ENT.Author			= "RaphaelIT7"
@@ -54,45 +49,46 @@ if SERVER then
 			self:SetChargeState(1)
 		end
 
-		if (CurTime() - startTime) > 9.5 and state == 1 then
+		local curTime = CurTime()
+		if (curTime - startTime) > 9.5 and state == 1 then
 			self:SetChargeState(2)
-			self:SetBrightnessTime(CurTime())
+			self:SetBrightnessTime(curTime)
 			self:SetNoLight(false)
 		end
 
-		if (CurTime() - startTime) > 18.5 and state == 2 then
+		if (curTime - startTime) > 18.5 and state == 2 then
 			self:SetChargeState(3)
 			self:SetNoLight(true)
 		end
 
-		if (CurTime() - startTime) > 20 and state == 3 then
+		if (curTime - startTime) > 20 and state == 3 then
 			self:SetChargeState(4)
 			self:SetNoLight(false)
-			self:SetBrightnessTime(CurTime())
+			self:SetBrightnessTime(curTime)
 			util.ScreenShake(self:GetPos(), 30, 100, 5, 5000, true)
 			SetGlobal2Bool("DisableWorldFog", true)
 		end
 
-		if (CurTime() - startTime) > 25.5 and state == 4 then
+		if (curTime - startTime) > 25.5 and state == 4 then
 			self:SetChargeState(5)
-			self:SetBrightnessTime(CurTime() + 3)
+			self:SetBrightnessTime(curTime + 3)
 			SetGlobal2Bool("DisableWorldFog", false)
 			for _, ply in ipairs(team.GetPlayers(TEAM_SLASHER)) do
 				ply:PlayGlobalSound("slashco/survivor/teslacoil_stun.wav", 100, 5)
 			end
 		end
 
-		if (CurTime() - startTime) > 29 and state == 5 then
+		if (curTime - startTime) > 29 and state == 5 then
 			self:SetChargeState(6)
 			for _, ply in ipairs(team.GetPlayers(TEAM_SLASHER)) do
-				ply:SetNW2Float("TeslaStunned", CurTime() + stunTime)
-				ply:SetNW2Float("LastTeslaStun", CurTime())
+				ply:SetNW2Float("TeslaStunned", curTime + stunTime)
+				ply:SetNW2Float("LastTeslaStun", curTime)
 				ply:ScreenFade(SCREENFADE.OUT, Color(0, 0, 0), 0.5, stunTime)
 			end
 			SetGlobal2Bool("DisableWorldFog", true)
 		end
 
-		if (CurTime() - startTime) > 32 and state == 6 then
+		if (curTime - startTime) > 32 and state == 6 then
 			self:SetChargeState(7)
 			SetGlobal2Bool("DisableWorldFog", false)
 		end
