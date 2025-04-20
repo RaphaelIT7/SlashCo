@@ -510,3 +510,55 @@ timer.Create("SlashCo:CheckStuck", 5, 0, function()
 		end
 	end
 end)
+
+concommand.Add("slashco_debug_lobbybot", function(ply)
+	if GameData.LobbyBot and GameData.LobbyBot:IsValid() then
+		GameData.LobbyBot:Kick("Bye")
+	end
+
+	timer.Simple(0, function()
+		GameData.LobbyBot = player.CreateNextBot("Bot")
+
+		timer.Simple(0, function()
+			if not GameData.LobbyBot or not GameData.LobbyBot:IsValid() then return end
+
+			hook.Run("PlayerButtonDown", GameData.LobbyBot, KEY_COMMA)
+		end)
+	end)
+end)
+
+concommand.Add("slashco_debug_lobbybot_readysurvivor", function(ply)
+	if not GameData.LobbyBot or not GameData.LobbyBot:IsValid() then return end
+
+	hook.Run("PlayerButtonDown", GameData.LobbyBot, KEY_F1)
+end)
+
+concommand.Add("slashco_debug_lobbybot_readyslasher", function(ply)
+	if not GameData.LobbyBot or not GameData.LobbyBot:IsValid() then return end
+
+	hook.Run("PlayerButtonDown", GameData.LobbyBot, KEY_F2)
+end)
+
+hook.Add("StartCommand", "LobbyBot", function(ply, cmd)
+	if ply != GameData.LobbyBot then return end
+
+	cmd:ClearMovement() 
+	cmd:ClearButtons()
+
+	if ply:Team() == TEAM_SURVIVOR then
+		if not ply._REACHED_ELEVATOR then
+			ply._REACHED_ELEVATOR = CurTime()
+			local elevator = ents.FindByClass("func_movelinear")[1]
+			if not IsValid(elevator) then return end
+
+			ply:SetPos(elevator:GetPos() + Vector(0, 0, 10))
+		end
+
+		if (CurTime() - (ply._REACHED_ELEVATOR or 0)) > 30 then
+			local helicopter = ents.FindByClass("sc_helicopter")[1]
+			if not IsValid(helicopter) then return end
+
+			helicopter:Use(ply, ply)
+		end
+	end
+end)

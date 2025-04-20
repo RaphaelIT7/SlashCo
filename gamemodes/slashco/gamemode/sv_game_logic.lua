@@ -192,7 +192,14 @@ function SlashCo.EndRound()
 	end
 	roundEnding = true
 
-	local SurvivorCount = team.NumPlayers(TEAM_SURVIVOR)
+	local survivors = team.GetPlayers(TEAM_SURVIVOR)
+	for _, ply in ipairs(survivors) do
+		if ply:GetNW2Bool("QuickEscape") then
+			ply:AddPoints("quickescape")
+		end
+	end
+
+	local SurvivorCount = #survivors
 	local heliCount = #SlashCo.CurRound.HelicopterRescuedPlayers
 	if SurvivorCount == 0 then
 		--All survivors are dead
