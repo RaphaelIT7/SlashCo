@@ -432,7 +432,7 @@ local function Think()
 		end
 
 		--//drainage//--
-		if SlashCo.CurRound.OfferingData.CurrentOffering == 3 then
+		if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Drainage then
 			local totalCansRemaining = 0
 			local gasPerGen = GetGlobal2Int("SlashCoGasCansPerGenerator", SlashCo.GasPerGen)
 			for _, v in ipairs(gens) do
@@ -466,7 +466,7 @@ local function Think()
 		end
 
 		--//duality condition//--
-		if SlashCo.CurRound.OfferingData.CurrentOffering == 4 and runningCount > 0 and not SlashCo.CurRound.EscapeHelicopterSummoned then
+		if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Duality and runningCount > 0 and not SlashCo.CurRound.EscapeHelicopterSummoned then
 			--(SPAWN HELICOPTER)
 
 			local failed = SlashCo.SummonEscapeHelicopter()

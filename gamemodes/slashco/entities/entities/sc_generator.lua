@@ -341,7 +341,7 @@ function ENT:Think()
 	self.FuelingCan:SetPos(self:LocalToWorld(Vector(-52.65, 33.475, 51.035 + fuelprog * 10)))
 
 	if CurTime() >= self.TimeUntilFueled then
-		if SlashCo.CurRound.OfferingData.CurrentOffering == 6 then
+		if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Nightmare then
 			self.CurrentPourer:AddPoints("working", 5 + (#team.GetPlayers(TEAM_SLASHER) * 15))
 		else
 			self.CurrentPourer:AddPoints("working")

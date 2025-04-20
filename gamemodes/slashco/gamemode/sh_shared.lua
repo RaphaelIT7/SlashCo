@@ -221,32 +221,43 @@ end
 
 SCInfo = {}
 
-SCInfo.Offering = {
+SCInfo.Offering = { // use ipairs to iterate, if you use pairs you will get errors as the enums -> Exposure and such will be included.
+	Exposure = 1,
 	{
 		Name = "Exposure",
 		Rarity = 1,
 		GasCanMod = 0
 	},
+
+	Satiation = 2,
 	{
 		Name = "Satiation",
 		Rarity = 1,
 		GasCanMod = 0
 	},
+
+	Drainage = 3,
 	{
 		Name = "Drainage",
 		Rarity = 2,
 		GasCanMod = 6
 	},
+
+	Duality = 4,
 	{
 		Name = "Duality",
 		Rarity = 3,
 		GasCanMod = 0
 	},
+
+	Singularity = 5,
 	{
 		Name = "Singularity",
 		Rarity = 3,
 		GasCanMod = 6
 	},
+
+	Nightmare = 6,
 	{
 		Name = "Nightmare",
 		Rarity = 3,

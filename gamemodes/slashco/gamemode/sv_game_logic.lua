@@ -42,7 +42,7 @@ function SlashCo.LoadCurRoundData()
 
 		--Nightmare offering >>>>>>>>>>>>>>>>>>>>>
 
-		if SlashCo.CurRound.OfferingData.CurrentOffering == 6 then
+		if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Nightmare then
 			--All survivors will become slashers.
 
 			local query = sql.Query("SELECT * FROM slashco_table_survivordata; ")
