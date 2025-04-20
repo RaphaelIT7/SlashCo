@@ -731,7 +731,7 @@ local function startRound(noSetup)
 		SlashCo.CurRound.roundOverToggle = true
 	end)
 
-	if SlashCo.CurRound.OfferingData.CurrentOffering == 6 then
+	if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Nightmare then
 		timer.Simple(240, function()
 			if not SlashCo.SummonEscapeHelicopter() then
 				SlashCo.CurRound.DistressBeaconUsed = false
