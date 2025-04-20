@@ -222,7 +222,7 @@ function SlashCo.SpawnGasCans()
 	gasCanCount = math.max(gasCanCount + offeringMod + headStartMod + survivorMod + diffMod, SlashCo.MapSize)
 
 	local gasCanSpawns
-	if SlashCo.CurRound.OfferingData.CurrentOffering == 1 then
+	if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Exposure then
 		gasCanCount = math.min(gasCanCount, baseCount)
 		gasCanSpawns = ents.FindByClass("info_sc_gascanexposed")
 	else
@@ -405,7 +405,7 @@ function SlashCo.SetupPlayers()
 
 		--Nightmare offering >>>>>>>>>>>>>>>>>>>>>
 
-		if SlashCo.CurRound.OfferingData.CurrentOffering == 6 then
+		if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Nightmare then
 			for i = 1, #slashers do
 				--Slasher becomes the sole survivor
 				if id == slashers[i].Slashers then
@@ -686,17 +686,17 @@ local function startRound(noSetup)
 		end
 	end)
 
-	if SlashCo.CurRound.OfferingData.CurrentOffering == 2 then
+	if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Satiation then
 		SlashCo.CurRound.OfferingData.ItemMod = -2
-	end
-	if SlashCo.CurRound.OfferingData.CurrentOffering == 2 then
 		SlashCo.CurRound.OfferingData.SatO = 1
 		SetGlobal2Int("SatO", 1)
 	end
-	if SlashCo.CurRound.OfferingData.CurrentOffering == 4 then
+
+	if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Duality then
 		SlashCo.CurRound.OfferingData.DO = true
 	end
-	if SlashCo.CurRound.OfferingData.CurrentOffering == 5 then
+	
+	if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Singularity then
 		SlashCo.CurRound.OfferingData.SO = 1
 	end
 
@@ -706,7 +706,7 @@ local function startRound(noSetup)
 
 	SlashCo.SpawnGenerators()
 
-	if SlashCo.CurRound.OfferingData.CurrentOffering ~= 6 then
+	if SlashCo.CurRound.OfferingData.CurrentOffering ~= SCInfo.Offering.Nightmare then
 		roundHeadstart()
 	end
 
