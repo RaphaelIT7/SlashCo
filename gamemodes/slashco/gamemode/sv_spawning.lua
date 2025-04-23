@@ -688,16 +688,16 @@ local function startRound(noSetup)
 
 	if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Satiation then
 		SlashCo.CurRound.OfferingData.ItemMod = -2
-		SlashCo.CurRound.OfferingData.SatO = 1
-		SetGlobal2Int("SatO", 1)
+		SlashCo.CurRound.OfferingData.Satiation = 1
+		SetGlobal2Int("Satiation", SlashCo.CurRound.OfferingData.Satiation)
 	end
 
 	if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Duality then
-		SlashCo.CurRound.OfferingData.DO = true
+		SlashCo.CurRound.OfferingData.Duality = true
 	end
 	
 	if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Singularity then
-		SlashCo.CurRound.OfferingData.SO = 1
+		SlashCo.CurRound.OfferingData.Singularity = 1
 	end
 
 	if not noSetup then

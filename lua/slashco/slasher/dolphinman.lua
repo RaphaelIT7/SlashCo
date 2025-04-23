@@ -39,7 +39,7 @@ function SLASHER.OnTickBehaviour(slasher)
 
 	local hunt_boost = 0
 
-	local SO = SlashCo.CurRound.OfferingData.SO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	if slasher:GetNWBool("DolphinInHiding") and not slasher:GetNWBool("DolphinFound") then
 		slasher:SetJumpPower(0)
