@@ -34,7 +34,11 @@ SlashCo.UnknownCol = Color(200, 0, 0) -- Text Color used for fields that are unk
 SlashCo.KnownCol = Color(255, 255, 255) -- Text Color used for fields which are known
 
 function SlashCo.GetDangerColor(danger)
-	return SlashCo.DangerLevel[SlashCo.DangerLevel[danger] .. "Col"]
+	return SlashCo.DangerLevel[SlashCo.DangerLevel[danger] .. "Col"] or SlashCo.DangerLevel.UnknownCol
+end
+
+function SlashCo.GetDangerSound(danger)
+	return SlashCo.DangerLevel[SlashCo.DangerLevel[danger] .. "Sound"] or SlashCo.DangerLevel.UnknownSound
 end
 
 function SlashCo.GetNameColor(name)
@@ -45,21 +49,25 @@ function SlashCo.GetClassColor(class)
 	return class == SlashCo.SlasherClass.Unknown and SlashCo.UnknownCol or SlashCo.KnownCol
 end
 
-SlashCo.DangerLevel = {
+SlashCo.DangerLevel = { -- ToDo: Check this out later as it might be easier if we use tables to store the data instead of having sepeate entries for everything
 	Unknown = 0,
 	UnknownCol = SlashCo.UnknownCol,
+	UnknownSound = "slashco/difficulty/unknown.mp3", -- This file was previously named "slashco/music/slashco_intro.mp3"
 	[0] = "Unknown",
 
 	Moderate = 1,
 	ModerateCol = Color(255, 255, 0),
+	ModerateSound = "slashco/difficulty/moderate.mp3",
 	[1] = "Moderate",
 
 	Considerable = 2,
 	ConsiderableCol = Color(255, 155, 155),
+	ConsiderableSound = "slashco/difficulty/considerable.mp3",
 	[2] = "Considerable",
 
 	Devastating = 3,
 	DevastatingCol = Color(255, 0, 0),
+	DevastatingSound = "slashco/difficulty/devastating.mp3",
 	[3] = "Devastating",
 }
 
