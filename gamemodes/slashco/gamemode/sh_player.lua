@@ -37,7 +37,6 @@ function PLAYER:SetImpervious(state)
 
 		self:SetCustomCollisionCheck(false)
 		self:SetNW2Bool("IsImpervious", false)
-		hook.Remove("ShouldCollide", "SlashCoImpervious_" .. self:UserID())
 	end
 end
 
