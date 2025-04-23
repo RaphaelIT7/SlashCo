@@ -167,6 +167,7 @@ end
 
 function SlashCo.StartGameIntro()
 	quietHeli()
+	SlashCo.AudioSystem.DisableBackgroundMusic()
 
 	local offering = "Regular"
 	if SlashCo.LobbyData.Offering > 0 then
