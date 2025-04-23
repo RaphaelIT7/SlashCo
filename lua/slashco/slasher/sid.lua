@@ -32,7 +32,7 @@ SLASHER.DiffRating = "★★★★☆"
 SLASHER.ItemToSpawn = "Cookie"
 
 function SLASHER.OnTickBehaviour(slasher)
-	local SO = SlashCo.CurRound.OfferingData.SO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	local v1 = math.Clamp(slasher.SlasherValue1, 0, 5) --Cookies Eaten
 	slasher.SlasherValue1 = v1
@@ -352,8 +352,8 @@ function SLASHER.OnSecondaryFire(slasher)
 end
 
 function SLASHER.OnMainAbilityFire(slasher, target)
-	local SO = SlashCo.CurRound.OfferingData.SO
-	local SatO = SlashCo.CurRound.OfferingData.SatO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
+	local Satiation = SlashCo.CurRound.OfferingData.Satiation
 
 	if not IsValid(target) or target:GetClass() ~= "sc_cookie" then
 		return
@@ -383,7 +383,7 @@ function SLASHER.OnMainAbilityFire(slasher, target)
 		slasher:Freeze(false)
 		slasher:SetNWBool("SidEating", false)
 		slasher:SetNWBool("DemonPacified", true)
-		slasher.SlasherValue1 = slasher.SlasherValue1 + 1 + SatO
+		slasher.SlasherValue1 = slasher.SlasherValue1 + 1 + Satiation
 		slasher.SlasherValue2 = math.random(15, 25)
 
 		if IsValid(target) then
@@ -397,7 +397,7 @@ function SLASHER.OnSpecialAbilityFire(slasher)
 		return
 	end
 
-	local SO = SlashCo.CurRound.OfferingData.SO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	if not slasher:GetNWBool("SidGun") and slasher.SlasherValue3 < 0.01 and slasher.SlasherValue1 > 0 then
 		--Equip the gun

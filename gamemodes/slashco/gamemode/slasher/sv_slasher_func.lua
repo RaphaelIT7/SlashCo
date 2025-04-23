@@ -66,7 +66,7 @@ hook.Add("Tick", "HandleSlasherAbilities", function()
 		return
 	end
 
-	local SO = SlashCo.CurRound.OfferingData.SO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	--Calculate the Game Progress Value
 	--The Game Progress Value - Amount of fuel poured into the Generator + amount of batteries inserted (0 - 10)

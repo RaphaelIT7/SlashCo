@@ -46,7 +46,7 @@ function SLASHER.DoSound(slasher)
 end
 
 function SLASHER.OnTickBehaviour(slasher)
-	local SO = SlashCo.CurRound.OfferingData.SO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	local v1 = slasher.SlasherValue1 --Cooldown for being able to trigger
 	local v2 = slasher.SlasherValue2 --Cooldown for being able to kill
@@ -90,7 +90,7 @@ function SLASHER.OnSecondaryFire(slasher)
 end
 
 function SLASHER.OnMainAbilityFire(slasher, target)
-	local SO = SlashCo.CurRound.OfferingData.SO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	local cooldown = slasher.SlasherValue1
 
@@ -169,7 +169,7 @@ function SLASHER.OnMainAbilityFire(slasher, target)
 end
 
 function SLASHER.OnSpecialAbilityFire(slasher)
-	local SO = SlashCo.CurRound.OfferingData.SO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	if #ents.FindByClass("sc_babaclone") > SO then
 		return
