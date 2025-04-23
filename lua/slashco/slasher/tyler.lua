@@ -19,6 +19,8 @@ SLASHER.Eyesight = 5
 SLASHER.KillDistance = 200
 SLASHER.ChaseRange = 0
 SLASHER.ChaseRadius = 1
+SLASHER.MinEffectRadius = 500 -- Mimimum distance for HUD effects
+SLASHER.MaxEffectRadius = 1500 -- Maximum distance for HUD effects
 SLASHER.ChaseDuration = 0.0
 SLASHER.ChaseCooldown = 3
 SLASHER.JumpscareDuration = 2
@@ -571,12 +573,31 @@ if CLIENT then
 			surface.DrawTexturedRect(ScrW() / 32, ScrW() / 32, ScrW() / 16, ScrW() / 16)
 		end
 
-		if GameData.LocalPlayer:GetNWBool("DisplayTylerTheDestroyerEffects") == true then
+		if GameData.LocalPlayer:GetNWBool("DisplayTylerTheDestroyerEffects") then
+			local effectScale = 0
+			local localPos = GameData.LocalPlayer:GetPos()
+			for _, slasher in ipairs(team.GetPlayers(TEAM_SLASHER)) do
+				if slasher:GetNWString("Slasher") == SLASHER.Name then
+					local pos = slasher:GetPos()
+					local dist = pos:Distance(localPos)
+					if dist > SLASHER.MaxEffectRadius then continue end
+
+					local scale = 1 - (dist - SLASHER.MinEffectRadius) / (SLASHER.MaxEffectRadius - SLASHER.MinEffectRadius)
+					if scale > effectScale then
+						effectScale = scale
+					end
+
+					if not slasher:IsDormant() then -- Play the shake every time he's visible.
+						util.ScreenShake(slasher:GetPos(), 15 * scale, 40, 1, SLASHER.MaxEffectRadius, true)
+					end
+				end
+			end
+
 			local Overlay = Material("slashco/ui/overlays/tyler_static")
 			local DestroyerFace = Material("slashco/ui/overlays/tyler_destroyer_face")
 
-			Overlay:SetFloat("$alpha", math.Rand(0.1, 0.12))
-			DestroyerFace:SetFloat("$alpha", math.Rand(0, 0.07))
+			Overlay:SetFloat("$alpha", math.Rand(0.1, 0.12) * effectScale)
+			DestroyerFace:SetFloat("$alpha", math.Rand(0, 0.07) * effectScale)
 
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.SetMaterial(Overlay)
