@@ -370,7 +370,7 @@ local function lobbyRoundSetup()
 			end
 		end
 
-		if #team.GetPlayers(TEAM_SPECTATOR) < 1 and SlashCo.LobbyData.Offering == 4 then
+		if #team.GetPlayers(TEAM_SPECTATOR) < 1 and SlashCo.LobbyData.Offering == SCInfo.Offering.Duality then
 			SlashCo.LobbyData.Offering = 0
 
 			for _, play in ipairs(player.GetAll()) do
@@ -378,7 +378,7 @@ local function lobbyRoundSetup()
 			end
 		end
 
-		if SlashCo.LobbyData.Offering == 4 then
+		if SlashCo.LobbyData.Offering == SCInfo.Offering.Duality then
 			--Duality Slasher
 
 			local dual_random = 0
