@@ -124,7 +124,7 @@ function SLASHER.OnSecondaryFire(slasher)
 end
 
 function SLASHER.OnMainAbilityFire(slasher)
-	local SO = SlashCo.CurRound.OfferingData.SO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	if not slasher:GetNWBool("AmogusDisguising") and slasher.SlasherValue2 < 0.01 and not slasher:GetNWBool("AmogusSurvivorDisguise") and not slasher:GetNWBool("AmogusDisguised") then
 		slasher:SetNWBool("AmogusDisguising", true)
@@ -161,7 +161,7 @@ function SLASHER.OnMainAbilityFire(slasher)
 		slasher:SetNWBool("AmogusFuelDisguise", false)
 		slasher:SetNWBool("AmogusDisguised", false)
 		slasher:EmitSound("slashco/slasher/amogus_reveal.mp3")
-		slasher:SetNWBool("DynamicFlashlight", false)
+		slasher:SetNW2Bool("DynamicFlashlight", false)
 
 		slasher:SlasherHudFunc("SetAvatar", "default")
 		slasher:SlasherHudFunc("SetTitle", "Amogus")

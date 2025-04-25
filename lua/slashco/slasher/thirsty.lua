@@ -37,8 +37,8 @@ function SLASHER.OnSpawn(slasher)
 end
 
 function SLASHER.OnTickBehaviour(slasher)
-	local SO = SlashCo.CurRound.OfferingData.SO
-	--local SatO = SlashCo.CurRound.OfferingData.SatO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
+	--local Satiation = SlashCo.CurRound.OfferingData.Satiation
 
 	local v1 = slasher.SlasherValue1 --Milk drank
 	local v2 = slasher.SlasherValue2 --Pacification
@@ -109,8 +109,8 @@ function SLASHER.OnSecondaryFire(slasher)
 end
 
 function SLASHER.OnMainAbilityFire(slasher, target)
-	local SO = SlashCo.CurRound.OfferingData.SO
-	local SatO = SlashCo.CurRound.OfferingData.SatO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
+	local Satiation = SlashCo.CurRound.OfferingData.Satiation
 
 	if not IsValid(target) or target:GetClass() ~= "sc_milkjug" then
 		return
@@ -193,8 +193,8 @@ function SLASHER.OnMainAbilityFire(slasher, target)
 		slasher:SetNWBool("ThirstyDrinking", false)
 		slasher:SetNWBool("DemonPacified", true)
 
-		if slasher.SlasherValue1 < (4 + SatO) then
-			slasher.SlasherValue1 = slasher.SlasherValue1 + 1 + SatO
+		if slasher.SlasherValue1 < (4 + Satiation) then
+			slasher.SlasherValue1 = slasher.SlasherValue1 + 1 + Satiation
 		end
 
 		slasher.SlasherValue2 = math.random(20, 35)
@@ -264,7 +264,7 @@ function SLASHER.InitHud(_, hud)
 	hud:AddControl("R", "drink milk", milkTable)
 	hud:ChaseAndKill()
 
-	hud:AddMeter("milkies", 4 + GetGlobalInt("SatO"), "", nil, true)
+	hud:AddMeter("milkies", 4 + GetGlobal2Int("Satiation"), "", nil, true)
 	hud:TieMeterInt("milkies", "ThirstyMilkDrank", true)
 
 	hud:AddMeter("thirst")

@@ -42,7 +42,7 @@ function SlashCo.LoadCurRoundData()
 
 		--Nightmare offering >>>>>>>>>>>>>>>>>>>>>
 
-		if SlashCo.CurRound.OfferingData.CurrentOffering == 6 then
+		if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Nightmare then
 			--All survivors will become slashers.
 
 			local query = sql.Query("SELECT * FROM slashco_table_survivordata; ")
@@ -192,7 +192,14 @@ function SlashCo.EndRound()
 	end
 	roundEnding = true
 
-	local SurvivorCount = team.NumPlayers(TEAM_SURVIVOR)
+	local survivors = team.GetPlayers(TEAM_SURVIVOR)
+	for _, ply in ipairs(survivors) do
+		if ply:GetNW2Bool("QuickEscape") then
+			ply:AddPoints("quickescape")
+		end
+	end
+
+	local SurvivorCount = #survivors
 	local heliCount = #SlashCo.CurRound.HelicopterRescuedPlayers
 	if SurvivorCount == 0 then
 		--All survivors are dead
@@ -299,7 +306,7 @@ hook.Add("Think", "LobbyFailSafe", function()
 		return
 	end
 
-	local timePassed = CurTime() - GetGlobalFloat("SCStartTime")
+	local timePassed = CurTime() - GetGlobal2Float("SCStartTime")
 	if timePassed > 90 and not SlashCo.FailSafeActivate then
 		local slashers = team.GetPlayers(TEAM_SLASHER)
 		if #slashers == 0 then

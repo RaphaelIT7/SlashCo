@@ -42,7 +42,7 @@ function SLASHER.Precache()
 end
 
 function SLASHER.OnTickBehaviour(slasher)
-	--local SO = SlashCo.CurRound.OfferingData.SO
+	--local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	local v1 = slasher.SlasherValue1 --Survey Length
 	local v2 = slasher.SlasherValue2 --Survey Cooldown
@@ -197,7 +197,7 @@ function SLASHER.OnSecondaryFire(slasher)
 end
 
 function SLASHER.OnMainAbilityFire(slasher)
-	local SO = SlashCo.CurRound.OfferingData.SO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	if slasher.SlasherValue2 > 0 then
 		return
@@ -224,7 +224,7 @@ function SLASHER.OnMainAbilityFire(slasher)
 end
 
 function SLASHER.OnSpecialAbilityFire(slasher)
-	--local SO = SlashCo.CurRound.OfferingData.SO
+	--local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	if SlashCo.CurRound.GameProgress < (10 - (slasher.SlasherValue4 / 25)) then
 		return

@@ -66,7 +66,7 @@ hook.Add("Tick", "HandleSlasherAbilities", function()
 		return
 	end
 
-	local SO = SlashCo.CurRound.OfferingData.SO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	--Calculate the Game Progress Value
 	--The Game Progress Value - Amount of fuel poured into the Generator + amount of batteries inserted (0 - 10)
@@ -138,6 +138,8 @@ hook.Add("Tick", "HandleSlasherAbilities", function()
 		end
 
 		slasher:SlasherFunction("OnTickBehaviour")
+
+		slasher:SetNW2Float("FogMult", 0.5 + (slasher:GetNWFloat("Slasher_Eyesight", 1) / 5))
 	end
 
 	if engine.TickCount() % math.floor(5 / engine.TickInterval()) ~= 0 then

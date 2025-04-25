@@ -135,7 +135,7 @@ hook.Add("HUDPaint", "Spectator_Vision", function()
 		return
 	end
 
-	if GetGlobalBool("SpectatorsCanPing") then
+	if GetGlobal2Bool("SpectatorsCanPing") then
 		draw.SimpleText(SlashCo.Language("surv_ping", "MMB"), "TVCD", ScrW() * 0.975, (ScrH() * 0.95) - 230, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
 	end
 

@@ -117,7 +117,6 @@ local skyBoxVec = Vector(0, 0, 100000)
 function GM:SetupWorldFog() -- A basic world fog that dynamicly changes depending on the environment
 	if GameData.IsLobby then return end
 	if GameData.LocalPlayer:Team() == TEAM_SPECTATOR then return end
-	if GameData.LocalPlayer:Team() == TEAM_SLASHER then return end
 
 	render.FogMode(MATERIAL_FOG_LINEAR)
 	render.FogColor(0, 0, 0)
@@ -160,8 +159,9 @@ function GM:SetupWorldFog() -- A basic world fog that dynamicly changes dependin
 		targetFogEnd = targetFogStart * 1.5
 	end
 
-	GameData.LastFogStart = Lerp(0.005, GameData.LastFogStart or 3000, targetFogStart)
-	GameData.LastFogEnd = Lerp(0.005, GameData.LastFogEnd or 3000, targetFogEnd)
+	local mult = GameData.LocalPlayer:GetNW2Float("FogMult", 1)
+	GameData.LastFogStart = Lerp(0.005, GameData.LastFogStart or 3000, targetFogStart * mult)
+	GameData.LastFogEnd = Lerp(0.005, GameData.LastFogEnd or 3000, targetFogEnd * mult)
 	--print(targetFogEnd, brighness, GameData.LastFogEnd)
 
 	render.FogStart(GameData.LastFogStart)
@@ -344,7 +344,7 @@ hook.Add("Think", "DynamicFlashlight.Rendering", function()
 	end
 
 	for _, target in ipairs(cache) do
-		if target:GetNWBool("DynamicFlashlight") and (target:CanBeSeen() or target == ply) then
+		if target:GetNW2Bool("DynamicFlashlight") and (target:CanBeSeen() or target == ply) then
 			if target.DynamicFlashlight then
 				local position = target:GetPos()
 				local newposition = Vector(position[1], position[2], position[3] + 40) + target:GetForward() * 20

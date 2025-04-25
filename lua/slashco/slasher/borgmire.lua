@@ -38,7 +38,7 @@ function SLASHER.OnSpawn(slasher)
 end
 
 function SLASHER.OnTickBehaviour(slasher)
-	local SO = SlashCo.CurRound.OfferingData.SO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	local v1 = slasher.SlasherValue1 --Time Spent chasing
 	local v2 = slasher.SlasherValue2 --Punch Cooldown
@@ -104,7 +104,7 @@ function SLASHER.OnPrimaryFire(slasher)
 		return
 	end
 
-	local SO = SlashCo.CurRound.OfferingData.SO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	if slasher.SlasherValue2 < 0.01 then
 		slasher:SetNWBool("BorgmirePunch", false)
@@ -173,7 +173,7 @@ function SLASHER.OnSpecialAbilityFire(slasher, target)
 		return
 	end
 
-	local SO = SlashCo.CurRound.OfferingData.SO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	if not IsValid(target) or not target:IsPlayer() or slasher:GetNWBool("BorgmireThrow") then
 		return

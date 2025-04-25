@@ -1,11 +1,3 @@
-if not GameData.IsLobby then
-	hook.Add("HUDDrawTargetID", "SlashCoLobbyNames", function()
-		return false
-	end)
-
-	return
-end
-
 local longest_name, plynum
 
 local grey = Color(128, 128, 128)
@@ -25,6 +17,8 @@ net.Receive("mantislashco_GiveLobbyInfo", function()
 end)
 
 hook.Add("HUDDrawTargetID", "SlashCoLobbyNames", function()
+	if not GameData.IsLobby then return false end
+
 	return GameData.StateOfLobby and GameData.StateOfLobby < 1
 end)
 
@@ -32,6 +26,8 @@ local ReadyCheck = Material("slashco/ui/lobby_ready")
 local UnReadyCheck = Material("slashco/ui/lobby_unready")
 
 hook.Add("HUDPaint", "LobbyInfoText", function()
+	if not GameData.IsLobby then return end
+
 	local localPly = GameData.LocalPlayer
 
 	local scrW, scrH = ScrW(), ScrH()

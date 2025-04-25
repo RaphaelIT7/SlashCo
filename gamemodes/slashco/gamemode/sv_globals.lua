@@ -66,11 +66,11 @@ function SlashCo.ResetCurRoundData()
 			CurrentOffering = 0,
 			OfferingName = "",
 			GasCanMod = 0,
-			SO = 0,
-			DO = false,
-			SatO = 0,
+			Singularity = 0, -- ToDo: rename this and the two below, what do they do, what are they? no idea :(
+			Duality = false,
+			Satiation = 0,
 			--DrainageTick = 0, --not used
-			ItemMod = 0
+			ItemMod = 0 -- Number of additional items to add/remove
 		},
 		SlasherData = {
 			AllSurvivors = {}, --This table holds all survivors loaded for this round, dead or alive, as well as their contribution value to the round. (TODO: game contribution)

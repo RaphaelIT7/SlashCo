@@ -34,7 +34,11 @@ SlashCo.UnknownCol = Color(200, 0, 0) -- Text Color used for fields that are unk
 SlashCo.KnownCol = Color(255, 255, 255) -- Text Color used for fields which are known
 
 function SlashCo.GetDangerColor(danger)
-	return SlashCo.DangerLevel[SlashCo.DangerLevel[danger] .. "Col"]
+	return SlashCo.DangerLevel[SlashCo.DangerLevel[danger] .. "Col"] or SlashCo.DangerLevel.UnknownCol
+end
+
+function SlashCo.GetDangerSound(danger)
+	return SlashCo.DangerLevel[SlashCo.DangerLevel[danger] .. "Sound"] or SlashCo.DangerLevel.UnknownSound
 end
 
 function SlashCo.GetNameColor(name)
@@ -45,21 +49,25 @@ function SlashCo.GetClassColor(class)
 	return class == SlashCo.SlasherClass.Unknown and SlashCo.UnknownCol or SlashCo.KnownCol
 end
 
-SlashCo.DangerLevel = {
+SlashCo.DangerLevel = { -- ToDo: Check this out later as it might be easier if we use tables to store the data instead of having sepeate entries for everything
 	Unknown = 0,
 	UnknownCol = SlashCo.UnknownCol,
+	UnknownSound = "slashco/difficulty/unknown.mp3", -- This file was previously named "slashco/music/slashco_intro.mp3"
 	[0] = "Unknown",
 
 	Moderate = 1,
 	ModerateCol = Color(255, 255, 0),
+	ModerateSound = "slashco/difficulty/moderate.mp3",
 	[1] = "Moderate",
 
 	Considerable = 2,
 	ConsiderableCol = Color(255, 155, 155),
+	ConsiderableSound = "slashco/difficulty/considerable.mp3",
 	[2] = "Considerable",
 
 	Devastating = 3,
 	DevastatingCol = Color(255, 0, 0),
+	DevastatingSound = "slashco/difficulty/devastating.mp3",
 	[3] = "Devastating",
 }
 
@@ -121,8 +129,8 @@ SlashCo.IsPlayable = SlashCo.IsPlayable or false -- false if were missing maps t
 
 GameData = GameData or {} -- A table containing data that is frequently used, also stores data across lua refreshs to not break when editing.
 GameData.Map = game.GetMap()
-GameData.Lobby = "sc_lobby" -- Map name of the lobby
-GameData.IsLobby = GameData.Map == GameData.Lobby
+GameData.Lobby = GameData.Lobby or "sc_lobby" -- Map name of the default lobby, might change after GM:InitPostEntity was called(if you use it before it was called you might experience issues so don't use it too early)
+GameData.IsLobby = GameData.Map == GameData.Lobby -- true if the current map is a lobby, same as above don't use it too early.
 GameData.MaxPlayers = game.MaxPlayers()
 GameData.IsSinglePlayer = game.SinglePlayer()
 
@@ -134,8 +142,13 @@ if CLIENT then
 	GameData.LobbyInfoTable = GameData.LobbyInfoTable or {}
 	GameData.TimeLeft = GameData.TimeLeft or nil
 	GameData.LocalIsSlasher = GameData.LocalIsSlasher or false
+	GameData.IsLobby = GetGlobal2Bool("SlashCo:IsLobby", GameData.IsLobby) -- For autorefresh
+	GameData.Lobby = GetGlobal2String("SlashCo:Lobby", GameData.Lobby) -- For autorefresh
 
 	function GM:InitPostEntity()
+		GameData.IsLobby = GetGlobal2Bool("SlashCo:IsLobby", GameData.IsLobby)
+		GameData.Lobby = GetGlobal2String("SlashCo:Lobby", GameData.Lobby)
+
 		GameData.LocalPlayer = LocalPlayer()
 		GameData.LocalSteamID = GameData.LocalPlayer:SteamID()
 		GameData.LocalSteamID64 = GameData.LocalPlayer:SteamID64()
@@ -143,10 +156,22 @@ if CLIENT then
 else
 	function GM:InitPostEntity()
 		if GameData.IsLobby then
+			GameData.Lobby = GameData.Map
+			cookie.Set("SlashCo:LastLobby", GameData.Lobby)
+
 			SlashCo.CreateHelicopter(Vector(644.594, -423.175, 40.004), Angle(0, 45, 0))
 			SlashCo.CreateItemStash(Vector(-483.500, -260.000, 88.000), Angle(90, 180, 180))
 			SlashCo.CreateOfferTable(Vector(940.838, 890.909, -191.853), Angle(0, -90, 0))
+		else
+			--[[
+				Restore the last lobby value, if you for example started on sc_lobby_v2 and play a round.
+				after the round it wouldn't know where to return to, so we restore the last lobby we've been on and use that.
+			]]
+			GameData.Lobby = cookie.GetString("SlashCo:LastLobby", GameData.Lobby)
 		end
+
+		SetGlobal2Bool("SlashCo:IsLobby", GameData.IsLobby) -- Network our state.
+		SetGlobal2String("SlashCo:Lobby", GameData.Lobby)
 	end
 end
 
@@ -204,32 +229,43 @@ end
 
 SCInfo = {}
 
-SCInfo.Offering = {
+SCInfo.Offering = { // use ipairs to iterate, if you use pairs you will get errors as the enums -> Exposure and such will be included.
+	Exposure = 1,
 	{
 		Name = "Exposure",
 		Rarity = 1,
 		GasCanMod = 0
 	},
+
+	Satiation = 2,
 	{
 		Name = "Satiation",
 		Rarity = 1,
 		GasCanMod = 0
 	},
+
+	Drainage = 3,
 	{
 		Name = "Drainage",
 		Rarity = 2,
 		GasCanMod = 6
 	},
+
+	Duality = 4,
 	{
 		Name = "Duality",
 		Rarity = 3,
 		GasCanMod = 0
 	},
+
+	Singularity = 5,
 	{
 		Name = "Singularity",
 		Rarity = 3,
 		GasCanMod = 6
 	},
+
+	Nightmare = 6,
 	{
 		Name = "Nightmare",
 		Rarity = 3,

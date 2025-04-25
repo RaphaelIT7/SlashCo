@@ -82,8 +82,12 @@ if CLIENT then
 		self:DrawModel()
 
 		-- Small fuel UI showing how full a generator is
-		local maximumFuel = 4 -- How many fuel canisters can go into a single generator, if this changes this code needs to be updated manually.
+		local gasPerGen = GetGlobal2Int("SlashCoGasCansPerGenerator", SlashCo.GasPerGen)
 		local remaining = self:GetCansRemaining()
+		if remaining < 0 then
+			remaining = 0
+		end
+
 		cam.Start3D2D(cacheData.screenPos, cacheData.screenAng, 0.05)
 			surface.SetDrawColor(0, 0, 0, 255)
 			surface.DrawRect(0, 0, 100, 190)
@@ -91,9 +95,11 @@ if CLIENT then
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.DrawOutlinedRect(5, 5, 90, 180, 2)
 
-			local xOffset = 37
-			for k=0, ((maximumFuel - 1) - remaining) do
-				surface.DrawRect(15, 180 - xOffset - (xOffset * k + (k * 5)), 70, 30)
+			local spaceSize = 15
+			local xOffset = (180 - spaceSize) / gasPerGen
+			local segmentSize = math.max(xOffset / 1.5, xOffset - 5)
+			for k=0, ((gasPerGen - 1) - remaining) do
+				surface.DrawRect(15, 180 - xOffset - (xOffset * k), 70, segmentSize)
 			end
 		cam.End3D2D()
 	end
@@ -335,7 +341,7 @@ function ENT:Think()
 	self.FuelingCan:SetPos(self:LocalToWorld(Vector(-52.65, 33.475, 51.035 + fuelprog * 10)))
 
 	if CurTime() >= self.TimeUntilFueled then
-		if SlashCo.CurRound.OfferingData.CurrentOffering == 6 then
+		if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Nightmare then
 			self.CurrentPourer:AddPoints("working", 5 + (#team.GetPlayers(TEAM_SLASHER) * 15))
 		else
 			self.CurrentPourer:AddPoints("working")

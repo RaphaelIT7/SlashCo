@@ -36,7 +36,7 @@ function SLASHER.OnSpawn(slasher)
 end
 
 function SLASHER.OnTickBehaviour(slasher)
-	--local SO = SlashCo.CurRound.OfferingData.SO
+	--local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	v1 = slasher.SlasherValue1 --Main Slash Cooldown
 	v2 = slasher.SlasherValue2 --Forward charge
@@ -172,7 +172,7 @@ function SLASHER.HandleDOT(slasher, target)
 end
 
 function SLASHER.OnPrimaryFire(slasher)
-	local SO = SlashCo.CurRound.OfferingData.SO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	if slasher:GetNWBool("AbomignatCrawling") then
 		return
@@ -270,7 +270,7 @@ function SLASHER.OnMainAbilityFire(slasher)
 end
 
 function SLASHER.OnSpecialAbilityFire(slasher)
-	local SO = SlashCo.CurRound.OfferingData.SO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	if slasher:GetNWBool("AbomignatCrawling") then
 		return

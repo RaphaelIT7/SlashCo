@@ -34,7 +34,7 @@ function SLASHER.OnSpawn(slasher)
 end
 
 function SLASHER.OnTickBehaviour(slasher)
-	local SO = SlashCo.CurRound.OfferingData.SO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	local v1 = slasher.SlasherValue1 --Target SteamID
 	local v2 = slasher.SlasherValue2 --Leap Cooldown
@@ -242,7 +242,7 @@ function SLASHER.OnMainAbilityFire(slasher)
 end
 
 function SLASHER.OnSpecialAbilityFire(slasher)
-	local SO = SlashCo.CurRound.OfferingData.SO
+	local SO = SlashCo.CurRound.OfferingData.Singularity
 
 	if slasher.SlasherValue2 > 0 then
 		return

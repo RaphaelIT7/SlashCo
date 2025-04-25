@@ -222,7 +222,7 @@ function SlashCo.SpawnGasCans()
 	gasCanCount = math.max(gasCanCount + offeringMod + headStartMod + survivorMod + diffMod, SlashCo.MapSize)
 
 	local gasCanSpawns
-	if SlashCo.CurRound.OfferingData.CurrentOffering == 1 then
+	if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Exposure then
 		gasCanCount = math.min(gasCanCount, baseCount)
 		gasCanSpawns = ents.FindByClass("info_sc_gascanexposed")
 	else
@@ -405,7 +405,7 @@ function SlashCo.SetupPlayers()
 
 		--Nightmare offering >>>>>>>>>>>>>>>>>>>>>
 
-		if SlashCo.CurRound.OfferingData.CurrentOffering == 6 then
+		if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Nightmare then
 			for i = 1, #slashers do
 				--Slasher becomes the sole survivor
 				if id == slashers[i].Slashers then
@@ -678,26 +678,26 @@ local function startRound(noSetup)
 	SlashCo.State = SlashCo.States.IN_GAME
 	SlashCo.CurRound.GameProgress = 0
 
-	SetGlobalFloat("SCStartTime", CurTime())
+	SetGlobal2Float("SCStartTime", CurTime())
 	timer.Simple(SlashCo.GhostPingDelay, function()
-		SetGlobalBool("SpectatorsCanPing", true)
+		SetGlobal2Bool("SpectatorsCanPing", true)
 		for _, v in ipairs(team.GetPlayers(TEAM_SPECTATOR)) do
 			v:ChatText("spectators_can_ping")
 		end
 	end)
 
-	if SlashCo.CurRound.OfferingData.CurrentOffering == 2 then
+	if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Satiation then
 		SlashCo.CurRound.OfferingData.ItemMod = -2
+		SlashCo.CurRound.OfferingData.Satiation = 1
+		SetGlobal2Int("Satiation", SlashCo.CurRound.OfferingData.Satiation)
 	end
-	if SlashCo.CurRound.OfferingData.CurrentOffering == 2 then
-		SlashCo.CurRound.OfferingData.SatO = 1
-		SetGlobalInt("SatO", 1)
+
+	if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Duality then
+		SlashCo.CurRound.OfferingData.Duality = true
 	end
-	if SlashCo.CurRound.OfferingData.CurrentOffering == 4 then
-		SlashCo.CurRound.OfferingData.DO = true
-	end
-	if SlashCo.CurRound.OfferingData.CurrentOffering == 5 then
-		SlashCo.CurRound.OfferingData.SO = 1
+	
+	if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Singularity then
+		SlashCo.CurRound.OfferingData.Singularity = 1
 	end
 
 	if not noSetup then
@@ -706,7 +706,7 @@ local function startRound(noSetup)
 
 	SlashCo.SpawnGenerators()
 
-	if SlashCo.CurRound.OfferingData.CurrentOffering ~= 6 then
+	if SlashCo.CurRound.OfferingData.CurrentOffering ~= SCInfo.Offering.Nightmare then
 		roundHeadstart()
 	end
 
@@ -731,7 +731,7 @@ local function startRound(noSetup)
 		SlashCo.CurRound.roundOverToggle = true
 	end)
 
-	if SlashCo.CurRound.OfferingData.CurrentOffering == 6 then
+	if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Nightmare then
 		timer.Simple(240, function()
 			if not SlashCo.SummonEscapeHelicopter() then
 				SlashCo.CurRound.DistressBeaconUsed = false

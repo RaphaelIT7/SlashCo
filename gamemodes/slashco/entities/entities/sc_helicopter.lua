@@ -95,8 +95,8 @@ if SERVER then
 		end
 		--The Player is sat down in the helicopter
 
-		if activator:GetNWBool("DynamicFlashlight") then
-			activator:SetNWBool("DynamicFlashlight", false)
+		if activator:GetNW2Bool("DynamicFlashlight") then
+			activator:SetNW2Bool("DynamicFlashlight", false)
 		end
 
 		activator.CantBuy = true
@@ -113,8 +113,8 @@ if SERVER then
 			table.insert(SlashCo.CurRound.HelicopterRescuedPlayers, activator)
 
 			-- To be a bit more generous, we stop the time as soon as they enter the helicopter instead of waiting until SlashCo.EndRound() is executed.
-			activator:SetNW2Bool("QuickEscape", (CurTime() - GetGlobalFloat("SCStartTime")) < SlashCo.QuickEscapeTime)
-			activator:SetNW2Float("EscapeTime", CurTime() - GetGlobalFloat("SCStartTime"))
+			activator:SetNW2Bool("QuickEscape", (CurTime() - GetGlobal2Float("SCStartTime")) < SlashCo.QuickEscapeTime)
+			activator:SetNW2Float("EscapeTime", CurTime() - GetGlobal2Float("SCStartTime"))
 		end
 
 		local vehicle = ents.Create("prop_vehicle_prisoner_pod")

@@ -201,7 +201,7 @@ function SLASHER.OnTickBehaviour(slasher)
 				target:EmitSound("slashco/slasher/trollge_hit.wav")
 
 				if slasher.SlasherValue1 == 0 then
-					slasher.SlasherValue3 = slasher.SlasherValue3 + 1 + SlashCo.CurRound.OfferingData.SO
+					slasher.SlasherValue3 = slasher.SlasherValue3 + 1 + SlashCo.CurRound.OfferingData.Singularity
 					slasher:SetNWInt("TrollgeBlood", slasher.SlasherValue3)
 				end
 			end
@@ -344,7 +344,7 @@ function SLASHER.OnPrimaryFire(slasher, target)
 					target1:EmitSound("slashco/slasher/trollge_hit.wav")
 
 					if slasher.SlasherValue1 == 0 then
-						slasher.SlasherValue3 = slasher.SlasherValue3 + 1 + SlashCo.CurRound.OfferingData.SO
+						slasher.SlasherValue3 = slasher.SlasherValue3 + 1 + SlashCo.CurRound.OfferingData.Singularity
 						slasher:SetNWInt("TrollgeBlood", slasher.SlasherValue3)
 					end
 				end
