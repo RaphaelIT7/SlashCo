@@ -104,6 +104,25 @@ local function IsPressing(mouse)
 	return not wasLeftMousePressed and input.IsButtonDown(mouse)
 end
 
+-- I really dont know how do it better please #fix
+-- the whole purpose of this is to make that [https://i.imgur.com/imP2JEg.png]
+local text_unlock = SlashCo.Language("documents_unlocky_entry")
+local buffer = {}
+local inserted_break = false
+
+for i = 1, #text_unlock do
+	local char = text_unlock:sub(i, i)
+
+	if not inserted_break and i >= 20 and char == " " then
+		table.insert(buffer, "\n")
+		inserted_break = true
+	else
+		table.insert(buffer, char)
+	end
+end
+
+local unlocky_text = table.concat(buffer)
+
 local selection = {
 	["Selection"] = function(w, h)
 		if DrawTextWithHitbox(SlashCo.Language("documents_slasher_ui"), "TVCDBig", w / 2, (h / 2) - (h / 6), color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER) then
@@ -180,14 +199,11 @@ local selection = {
 
 		draw.SimpleText("[" .. string.upper(slasher and slasher.Name or SlashCo.Language("documents_unknown_name")) .. "]", "TVCDMediumBig", h / 1.45, w / 1.3, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		if slasher then
-			-- :skull:
-			local danger_level_adj = SlashCo.Language(SlashCo.DangerLevel[slasher.DangerLevel]:gsub("^%l", string.upper))
-			local slasher_class_adj = SlashCo.Language(SlashCo.SlasherClass[slasher.Class]:gsub("^%l", string.upper))
-
-			draw.SimpleText(string.upper(danger_level_adj .. " " .. slasher_class_adj), "TVCDMedium", h / 1.45, w / 1.17, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText(string.upper(SlashCo.Language(SlashCo.DangerLevel[slasher.DangerLevel]) .. " " .. SlashCo.Language(SlashCo.SlasherClass[slasher.Class])), "TVCDMedium", h / 1.45, w / 1.17, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		else
 			-- ToDo: Make the text resize or line break when to long or else this happens: https://i.imgur.com/Ph31fVh.png
-			draw.SimpleText(SlashCo.Language("documents_unlocky_entry"), "TVCDSmall", h / 1.45, w / 1.17, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+
+			draw.DrawText(unlocky_text, "TVCDSmall", w / 1.45, h / 1.17, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end
 
 		if IsPressing(MOUSE_LEFT) and slasher then
@@ -253,7 +269,6 @@ for _, document in pairs(SlashCoDocumentTypes["Slasher"] or {}) do
 
 		for _, name in ipairs(slasher.Aliases or {}) do
 			row = row + 1
-			-- ToDo: locals for this
 			draw.SimpleText("\"" .. name .. "\"", "TVCD", h * 0.1, rowSize * row, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		end
 
