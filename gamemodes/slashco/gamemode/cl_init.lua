@@ -5,19 +5,33 @@ SlashCo = SlashCo or {}
 SlashCo.LangTable = {}
 include("slashco/lang/en.lua")
 SlashCo.LangTableFallback = table.Copy(SlashCo.LangTable)
+SlashCo.CurrentLang = SlashCo.CurrentLang or "en"
 
-local lang_files, _ = file.Find("slashco/lang/*.lua", "LUA")
-for _, v in ipairs(lang_files) do
-	if string.lower(language.GetPhrase("slashco.language")) == string.lower(string.Replace(v, ".lua", "")) then
-		include("slashco/lang/" .. v)
+function SlashCo.LoadLanguage()
+	local lang_files, _ = file.Find("slashco/lang/*.lua", "LUA")
+	for _, v in ipairs(lang_files) do
+		local lang = string.lower(language.GetPhrase("slashco.language"))
+		if lang == string.lower(string.Replace(v, ".lua", "")) then
+			include("slashco/lang/" .. v)
 
-		if file.Exists("slashco/patch/lang/" .. v, "LUA") then
-			include("slashco/patch/lang/" .. v)
+			if file.Exists("slashco/patch/lang/" .. v, "LUA") then
+				include("slashco/patch/lang/" .. v)
+			end
+
+			if SlashCo.CurrentLang != lang then
+				SlashCo.CurrentLang = lang
+				hook.Run("SlashCo:LanguageChanged") -- In case any system needs a hook, why doesn't gmod have a hook already :(
+			end
+
+			break
 		end
-
-		break
 	end
 end
+SlashCo.LoadLanguage()
+
+cvars.AddChangeCallback("gmod_language", function()
+	SlashCo.LoadLanguage()
+end, "SlashCo:LanguageChanged")
 
 function SlashCo.Language(key, ...)
 	local vars = {}
