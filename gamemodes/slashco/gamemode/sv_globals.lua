@@ -101,6 +101,42 @@ function SlashCo.ResetCurRoundData()
 		EscapeHelicopterSummoned = false,
 		DistressBeaconUsed = false,
 	}
+
+	local OfferingMeta = { -- Backwards compatiblity with any addons that use the old keys.
+		__index = function(self, key)
+			if key == "SO" then
+				key = "Singularity"
+			end
+
+			if key == "DO" then
+				key = "Duality"
+			end
+
+			if key == "SatO" then
+				key = "Satiation"
+			end
+
+			return rawget(self, key)
+		end,
+
+		__newindex = function(self, key, value)
+			if key == "SO" then
+				key = "Singularity"
+			end
+
+			if key == "DO" then
+				key = "Duality"
+			end
+
+			if key == "SatO" then
+				key = "Satiation"
+			end
+
+			rawset(self, key, value)
+		end,
+	}
+
+	debug.setmetatable(SlashCo.CurRound.OfferingData, OfferingMeta)
 end
 
 if not SlashCo.CurRound then
