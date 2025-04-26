@@ -1,6 +1,7 @@
 SlashCo.AudioSystem.Channels = SlashCo.AudioSystem.Channels or {} -- All IGModAudioChannel instances
 SlashCo.AudioSystem.ParentedChannels = SlashCo.AudioSystem.ParentedChannels or {}
 SlashCo.AudioSystem.BackgroundChannel = SlashCo.AudioSystem.BackgroundChannel or nil
+SlashCo.AudioSystem.ChannelIDs = SlashCo.AudioSystem.ChannelIDs or 0 -- Incremental number to assign channel id's
 
 --[[local slashco_enable_backgroundmusic = CreateClientConVar("slashco_enable_backgroundmusic", "1", true, false)
 
@@ -29,37 +30,62 @@ end
 
 -- Removes any invalid channels in case stop sound was executed.
 function SlashCo.AudioSystem.CheckChannels()
-	for channel, _ in pairs(SlashCo.AudioSystem.Channels) do
+	for channel, channelData in pairs(SlashCo.AudioSystem.Channels) do
 		if not IsValid(channel) then
 			SlashCo.AudioSystem.Channels[channel] = nil
 		end
 	end
 end
 
+function SlashCo.AudioSystem.GetChannelID(channel)
+	return SlashCo.AudioSystem.Channels[channel].ID
+end
+
+-- NOTE: The callback is not called if the channel wasn't created.
 function SlashCo.AudioSystem.CreateChannel(soundFile, mode, callback)
-	sound.PlayFile(ToSound(soundFile), mode, function(channel, errCode, errStr)
+	soundFile = ToSound(soundFile)
+	sound.PlayFile(soundFile, mode, function(channel, errCode, errStr)
 		if not IsValid(channel) then
-			Error("[SlashCo] Failed to create audio channel! (" .. errCode .. ", " .. errStr .. ")")
+			Error("[SlashCo] Failed to create audio channel! (" .. errCode .. ", " .. errStr .. "," .. soundFile .. ")")
 			return
 		end
 
 		SlashCo.AudioSystem.CheckChannels()
-		SlashCo.AudioSystem.Channels[channel] = true
+		SlashCo.AudioSystem.ChannelIDs = SlashCo.AudioSystem.ChannelIDs + 1
+		SlashCo.AudioSystem.Channels[channel] = { -- ToDo: Actually implement this logic
+			deleteWhenFinished = false,
+			ID = SlashCo.AudioSystem.ChannelIDs,
+		}
 		callback(channel)
 	end)
 end
 
 -- This causes the channel to follow the entities position, BUT the channel WONT be removed if the entity is removed.
 function SlashCo.AudioSystem.ParentChannelToEntity(channel, entity)
-	SlashCo.AudioSystem.ParentedChannels[channel] = entity
+	local entityIndex = 0
+	if isnumber(entity) then
+		entityIndex = entity
+		entity = nil
+	else
+		entityIndex = entity:EntIndex()
+		if not IsValid(entity) then
+			entity = nil
+		end
+	end
+
+	SlashCo.AudioSystem.ParentedChannels[channel] = {
+		ent = entity,
+		entIndex = entityIndex,
+	}
 end
 
 function SlashCo.AudioSystem.DestroyChannel(channel, fadeOutTime)
 	if IsValid(channel) and channel:GetState() == GMOD_CHANNEL_PLAYING then
 		local vol = channel:GetVolume()
 		if vol > 0 then
-			timer.Remove("SlashCo:FadeInAudioChannel" .. channel:GetFileName()) -- Remove any fadeIn timer that might exist
-			local timerName = "SlashCo:ShutdownAudioChannel" .. channel:GetFileName()
+			local id = SlashCo.AudioSystem.GetChannelID(channel)
+			timer.Remove("SlashCo:FadeInAudioChannel" .. id) -- Remove any fadeIn timer that might exist
+			local timerName = "SlashCo:ShutdownAudioChannel" .. id
 			local updateFreq = 0.05
 			local volumeDecrement = vol / math.ceil(fadeOutTime / updateFreq)
 			timer.Create(timerName, updateFreq, 0, function() -- Let the sound fade away
@@ -91,7 +117,8 @@ function SlashCo.AudioSystem.FadeTo(channel, fadeInTime, targetVol)
 
 	local vol = channel:GetVolume()
 	local lowerVol = targetVol < vol
-	local timerName = "SlashCo:FadeInAudioChannel" .. channel:GetFileName()
+	local id = SlashCo.AudioSystem.GetChannelID(channel)
+	local timerName = "SlashCo:FadeInAudioChannel" .. id
 	local updateFreq = 0.05
 	local volumeIncrement = math.abs(targetVol - vol) / math.ceil(fadeInTime / updateFreq)
 	timer.Create(timerName, updateFreq, 0, function() -- Let the sound fade away
@@ -217,13 +244,15 @@ local function UpdateBackgroundMusic()
 end
 
 local function UpdateChannelPositions()
-	for channel, ent in pairs(SlashCo.AudioSystem.ParentedChannels) do
+	for channel, entTbl in pairs(SlashCo.AudioSystem.ParentedChannels) do
 		--[[
 			Why don't we remove the channel if the parent is gone?
 			Because on full updates, the parent might disappear and then reappear.
 		]]
+		local ent = entTbl.ent or Entity(entTbl.entIndex)
 		if not IsValid(ent) then continue end
 
+		entTbl.ent = ent -- In case for some reason the entity didn't exist yet, could happen on full updates?
 		channel:SetPos(ent:GetPos())
 	end
 end
@@ -234,3 +263,38 @@ function SlashCo.AudioSystem.Think()
 end
 
 hook.Add("Think", "SlashCo:AudioSystem", SlashCo.AudioSystem.Think)
+
+net.Receive("slashCo_AudioSystem_PlaySound", function()
+	local soundPath = net.ReadString()
+	local entIndex = net.ReadUInt(13)
+	local soundLevel = net.ReadUInt(14)
+	local volume = net.ReadFloat()
+	local looping = net.ReadBool()
+	local fadeIn = net.ReadFloat()
+	local tickCount = net.ReadUInt(32)
+
+	SlashCo.AudioSystem.CreateChannel(soundPath, entIndex == 0 and "mono" or "3d", function(channel)
+		if fadeIn != 0 then
+			channel:SetVolume(0)
+		else
+			channel:SetVolume(volume)
+		end
+
+		channel:Play()
+		channel:EnableLooping(looping)
+		channel:SetTime(SlashCo.AudioSystem.CalculateTime(channel, tickCount))
+
+		if fadeIn != 0 then
+			SlashCo.AudioSystem.FadeTo(channel, fadeIn, volume)
+		end
+
+		if entIndex != 0 then
+			SlashCo.AudioSystem.ParentChannelToEntity(channel, entIndex)
+		end
+
+		if soundLevel != 0 then
+			channel:Set3DFadeDistance(100, 500)
+			print(soundLevel ^ 1.75)
+		end
+	end)
+end)
