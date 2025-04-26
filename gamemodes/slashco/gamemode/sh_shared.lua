@@ -34,11 +34,11 @@ SlashCo.UnknownCol = Color(200, 0, 0) -- Text Color used for fields that are unk
 SlashCo.KnownCol = Color(255, 255, 255) -- Text Color used for fields which are known
 
 function SlashCo.GetDangerColor(danger)
-	return SlashCo.DangerLevel[SlashCo.DangerLevel[danger] .. "Col"] or SlashCo.DangerLevel.UnknownCol
+	return (SlashCo.DangerLevel[SlashCo.DangerLevel[danger] .. "Tbl"] or {}).Color or SlashCo.DangerLevel.UnknownCol
 end
 
 function SlashCo.GetDangerSound(danger)
-	return SlashCo.DangerLevel[SlashCo.DangerLevel[danger] .. "Sound"] or SlashCo.DangerLevel.UnknownSound
+	return (SlashCo.DangerLevel[SlashCo.DangerLevel[danger] .. "Tbl"] or {}).Sound or SlashCo.DangerLevel.UnknownSound
 end
 
 function SlashCo.GetNameColor(name)
@@ -49,41 +49,78 @@ function SlashCo.GetClassColor(class)
 	return class == SlashCo.SlasherClass.Unknown and SlashCo.UnknownCol or SlashCo.KnownCol
 end
 
-SlashCo.DangerLevel = { -- ToDo: Check this out later as it might be easier if we use tables to store the data instead of having sepeate entries for everything
-	Unknown = 0,
-	UnknownCol = SlashCo.UnknownCol,
-	UnknownSound = "slashco/difficulty/unknown.mp3", -- This file was previously named "slashco/music/slashco_intro.mp3"
-	[0] = "Unknown",
+--[[
+	DangerLevel's
+	Use the SlashCo.AddDangerLevel and NEVER manually add stuff to SlashCo.DangerLevel
+	This was done to have easier compatibility in the future
 
-	Moderate = 1,
-	ModerateCol = Color(255, 255, 0),
-	ModerateSound = "slashco/difficulty/moderate.mp3",
-	[1] = "Moderate",
+	idx option is only used for "Unknown" as it has to be at 0 but table.insert starts at 1
+]]
 
-	Considerable = 2,
-	ConsiderableCol = Color(255, 155, 155),
-	ConsiderableSound = "slashco/difficulty/considerable.mp3",
-	[2] = "Considerable",
+SlashCo.DangerLevel = {} -- ToDo: Check this out later as it might be easier if we use tables to store the data instead of having sepeate entries for everything
+function SlashCo.AddDangerLevel(dangerLevelTbl, idx)
+	idx = idx or table.insert(SlashCo.DangerLevel, dangerLevelTbl.Name)
 
-	Devastating = 3,
-	DevastatingCol = Color(255, 0, 0),
-	DevastatingSound = "slashco/difficulty/devastating.mp3",
-	[3] = "Devastating",
-}
+	SlashCo.DangerLevel[idx] = dangerLevelTbl.Name
+	SlashCo.DangerLevel[dangerLevelTbl.Name] = idx
+	SlashCo.DangerLevel[dangerLevelTbl.Name .. "Tbl"] = dangerLevelTbl
+end
 
-SlashCo.SlasherClass = {
-	Unknown = 0,
-	[0] = "Unknown",
+SlashCo.AddDangerLevel({
+	Name = "Unknown",
+	Color = SlashCo.UnknownCol,
+	Sound = "slashco/difficulty/unknown.mp3", -- This file was previously named "slashco/music/slashco_intro.mp3"
+}, 0)
 
-	Cryptid = 1,
-	[1] = "Cryptid",
+SlashCo.AddDangerLevel({
+	Name = "Moderate",
+	Color = Color(255, 255, 0),
+	Sound = "slashco/difficulty/moderate.mp3",
+})
 
-	Demon = 2,
-	[2] = "Demon",
+SlashCo.AddDangerLevel({
+	Name = "Considerable",
+	Color = Color(255, 155, 155),
+	Sound = "slashco/difficulty/considerable.mp3",
+})
 
-	Umbra = 3,
-	[3] = "Umbra",
-}
+SlashCo.AddDangerLevel({
+	Name = "Devastating",
+	Color = Color(255, 0, 0),
+	Sound = "slashco/difficulty/devastating.mp3",
+})
+
+--[[
+	Slasher Classes
+]]
+
+SlashCo.SlasherClass = {}
+function SlashCo.AddSlasherClass(slasherClassTbl, idx)
+	idx = idx or table.insert(SlashCo.SlasherClass, slasherClassTbl.Name)
+
+	SlashCo.SlasherClass[idx] = slasherClassTbl.Name
+	SlashCo.SlasherClass[slasherClassTbl.Name] = idx
+end
+
+SlashCo.AddSlasherClass({
+	Name = "Unknown",
+}, 0)
+
+SlashCo.AddSlasherClass({
+	Name = "Cryptid",
+})
+
+SlashCo.AddSlasherClass({
+	Name = "Demon",
+})
+
+SlashCo.AddSlasherClass({
+	Name = "Umbra",
+})
+
+--[[
+	DifficultyLevel's
+]]
 
 SlashCo.DifficultyLevel = {
 	EASY = 0,
@@ -98,6 +135,10 @@ SlashCo.DifficultyLevel = {
 	HARD = 3,
 	[3] = "HARD",
 }
+
+--[[
+	Round States
+]]
 
 SlashCo.RoundState = {
 	[0] = WON_ALL_ALIVE,
@@ -229,49 +270,46 @@ end
 
 SCInfo = {}
 
-SCInfo.Offering = { // use ipairs to iterate, if you use pairs you will get errors as the enums -> Exposure and such will be included.
-	Exposure = 1,
-	{
-		Name = "Exposure",
-		Rarity = 1,
-		GasCanMod = 0
-	},
+SCInfo.Offering = {} // use ipairs to iterate, if you use pairs you will get errors as the enums -> Exposure and such will be included.
+function SlashCo.AddOffering(offeringTbl)
+	SCInfo.Offering[offeringTbl.Name] = table.insert(SCInfo.Offering, offeringTbl)
+end
 
-	Satiation = 2,
-	{
-		Name = "Satiation",
-		Rarity = 1,
-		GasCanMod = 0
-	},
+SlashCo.AddOffering({
+	Name = "Exposure",
+	Rarity = 1,
+	GasCanMod = 0
+})
 
-	Drainage = 3,
-	{
-		Name = "Drainage",
-		Rarity = 2,
-		GasCanMod = 6
-	},
+SlashCo.AddOffering({
+	Name = "Satiation",
+	Rarity = 1,
+	GasCanMod = 0
+})
 
-	Duality = 4,
-	{
-		Name = "Duality",
-		Rarity = 3,
-		GasCanMod = 0
-	},
+SlashCo.AddOffering({
+	Name = "Drainage",
+	Rarity = 2,
+	GasCanMod = 6
+})
 
-	Singularity = 5,
-	{
-		Name = "Singularity",
-		Rarity = 3,
-		GasCanMod = 6
-	},
+SlashCo.AddOffering({
+	Name = "Duality",
+	Rarity = 3,
+	GasCanMod = 0
+})
 
-	Nightmare = 6,
-	{
-		Name = "Nightmare",
-		Rarity = 3,
-		GasCanMod = 0
-	}
-}
+SlashCo.AddOffering({
+	Name = "Singularity",
+	Rarity = 3,
+	GasCanMod = 6
+})
+
+SlashCo.AddOffering({
+	Name = "Nightmare",
+	Rarity = 3,
+	GasCanMod = 0
+})
 
 SCInfo.Maps = {
 	["error"] = {
