@@ -51,6 +51,8 @@ function SlashCo.PlayGlobalSound(soundPath, soundLevel, ent, vol, permanent)
 		net.WriteFloat(vol)
 		net.WriteBool(permanent)
 	net.Broadcast()
+
+	--SlashCo.AudioSystem.PlaySound(soundPath, soundLevel, ent, vol, permanent)
 end
 
 -- possibly easier-to-use version of above
