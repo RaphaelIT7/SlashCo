@@ -102,37 +102,18 @@ function SlashCo.ResetCurRoundData()
 		DistressBeaconUsed = false,
 	}
 
+	local OldOfferingKeys = {
+		["SO"] = "Singularity",
+		["DO"] = "Duality",
+		["SatO"] = "Satiation",
+	}
 	local OfferingMeta = { -- Backwards compatiblity with any addons that use the old keys.
 		__index = function(self, key)
-			if key == "SO" then
-				key = "Singularity"
-			end
-
-			if key == "DO" then
-				key = "Duality"
-			end
-
-			if key == "SatO" then
-				key = "Satiation"
-			end
-
-			return rawget(self, key)
+			return rawget(self, OldOfferingKeys[key] or key)
 		end,
 
 		__newindex = function(self, key, value)
-			if key == "SO" then
-				key = "Singularity"
-			end
-
-			if key == "DO" then
-				key = "Duality"
-			end
-
-			if key == "SatO" then
-				key = "Satiation"
-			end
-
-			rawset(self, key, value)
+			rawset(self, OldOfferingKeys[key] or key, value)
 		end,
 	}
 
