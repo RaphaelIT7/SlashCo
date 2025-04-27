@@ -22,7 +22,7 @@ SLASHER.ChaseRadius = 0.82
 SLASHER.ChaseDuration = 5.0
 SLASHER.ChaseCooldown = 5
 SLASHER.JumpscareDuration = 2
-SLASHER.ChaseMusic = "slashco/slasher/abomignat_chase.wav"
+SLASHER.ChaseMusic = "slashco/slasher/abomignat_chase.mp3"
 SLASHER.KillSound = ""
 SLASHER.Description = "Abomignat_desc"
 SLASHER.ProTip = "Abomignat_tip"
@@ -31,7 +31,7 @@ SLASHER.EyeRating = "★★★★☆"
 SLASHER.DiffRating = "★☆☆☆☆"
 
 function SLASHER.OnSpawn(slasher)
-	slasher:PlayGlobalSound("slashco/slasher/abomignat_breathing.wav", 65, nil, true)
+	slasher:PlayGlobalSound("slashco/slasher/abomignat_breathing.mp3", 65, nil, true)
 	slasher.AbomignatKills = 0
 end
 
@@ -192,7 +192,7 @@ function SLASHER.OnPrimaryFire(slasher)
 	slasher:SlasherHudFunc("ShakeControl", "LMB")
 
 	local function SlashFinish()
-		slasher:EmitSound("slashco/slasher/trollge_swing.wav")
+		slasher:EmitSound("slashco/slasher/trollge_swing.mp3")
 		slasher:Freeze(true)
 		slasher.SlasherValue2 = 0
 
@@ -222,7 +222,7 @@ function SLASHER.OnPrimaryFire(slasher)
 			bloodfx:SetOrigin(vPoint)
 			util.Effect("BloodImpact", bloodfx)
 
-			target:EmitSound("slashco/slasher/trollge_hit.wav")
+			target:EmitSound("slashco/slasher/trollge_hit.mp3")
 		end
 	end
 

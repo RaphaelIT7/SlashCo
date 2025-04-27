@@ -22,7 +22,7 @@ SLASHER.ChaseRadius = 0.96
 SLASHER.ChaseDuration = 2.0
 SLASHER.ChaseCooldown = 2
 SLASHER.JumpscareDuration = 2
-SLASHER.ChaseMusic = "slashco/slasher/watcher_chase.wav"
+SLASHER.ChaseMusic = "slashco/slasher/watcher_chase.mp3"
 SLASHER.KillSound = "slashco/slasher/watcher_kill.mp3"
 SLASHER.Description = "Watcher_desc"
 SLASHER.ProTip = "Watcher_tip"
@@ -38,7 +38,7 @@ function SLASHER.OnSpawn(slasher)
 end
 
 function SLASHER.Precache()
-	SlashCo.PrecacheSound("slashco/slasher/watcher_rage.wav")
+	SlashCo.PrecacheSound("slashco/slasher/watcher_rage.mp3")
 end
 
 function SLASHER.OnTickBehaviour(slasher)
@@ -237,7 +237,7 @@ function SLASHER.OnSpecialAbilityFire(slasher)
 	end
 
 	slasher:SetNWBool("WatcherRage", true)
-	slasher:PlayGlobalSound("slashco/slasher/watcher_rage.wav", 100)
+	slasher:PlayGlobalSound("slashco/slasher/watcher_rage.mp3", 100)
 end
 
 function SLASHER.Animator(ply)

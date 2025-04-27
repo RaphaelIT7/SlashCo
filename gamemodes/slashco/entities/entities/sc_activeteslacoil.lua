@@ -20,8 +20,8 @@ end
 
 if SERVER then
 	hook.Add("SlashCo:Precache", "PrecacheBeacon", function()
-		SlashCo.PrecacheSound("slashco/survivor/teslacoil_chargeup.wav")
-		SlashCo.PrecacheSound("slashco/survivor/teslacoil_stun.wav")
+		SlashCo.PrecacheSound("slashco/survivor/teslacoil_chargeup.mp3")
+		SlashCo.PrecacheSound("slashco/survivor/teslacoil_stun.mp3")
 		SlashCo.PrecacheModel("models/props_c17/utilityconnecter006c.mdl")
 	end)
 
@@ -45,7 +45,7 @@ if SERVER then
 		local startTime = self:GetNW2Float("ChargeBeginning")
 		local state = self:GetNW2Int("ChargeState")
 		if state == 0 then
-			self:PlayGlobalSound("slashco/survivor/teslacoil_chargeup.wav", 100)
+			self:PlayGlobalSound("slashco/survivor/teslacoil_chargeup.mp3", 100)
 			self:SetChargeState(1)
 		end
 
@@ -74,7 +74,7 @@ if SERVER then
 			self:SetBrightnessTime(curTime + 3)
 			SetGlobal2Bool("DisableWorldFog", false)
 			for _, ply in ipairs(team.GetPlayers(TEAM_SLASHER)) do
-				ply:PlayGlobalSound("slashco/survivor/teslacoil_stun.wav", 100, 5)
+				ply:PlayGlobalSound("slashco/survivor/teslacoil_stun.mp3", 100, 5)
 			end
 		end
 

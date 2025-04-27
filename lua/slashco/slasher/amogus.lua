@@ -18,7 +18,7 @@ SLASHER.ChaseRadius = 0.90
 SLASHER.ChaseDuration = 15.0
 SLASHER.ChaseCooldown = 3
 SLASHER.JumpscareDuration = 2
-SLASHER.ChaseMusic = "slashco/slasher/amogus_chase.wav"
+SLASHER.ChaseMusic = "slashco/slasher/amogus_chase.mp3"
 SLASHER.KillSound = "slashco/slasher/amogus_kill.mp3"
 SLASHER.Description = "Amogus_desc"
 SLASHER.ProTip = "Amogus_tip"
@@ -255,7 +255,7 @@ function SLASHER.Footstep(ply)
 			return false
 		end
 
-		ply:EmitSound("slashco/slasher/amogus_step" .. math.random(1, 3) .. ".wav")
+		ply:EmitSound("slashco/slasher/amogus_step" .. math.random(1, 3) .. ".mp3")
 		return true
 	end
 

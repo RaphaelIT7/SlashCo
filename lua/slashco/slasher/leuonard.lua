@@ -91,7 +91,7 @@ function SLASHER.OnTickBehaviour(slasher)
 						if not IsValid(slasher) or not slasher:GetNWBool("LeuonardRoiding", false) then
 							return
 						end
-						slasher:EmitSound("slashco/slasher/leuonard_grunt_loop.wav")
+						slasher:EmitSound("slashco/slasher/leuonard_grunt_loop.mp3")
 					end)
 				end
 			end
@@ -107,7 +107,7 @@ function SLASHER.OnTickBehaviour(slasher)
 
 				SlashCo.CreateItem("sc_dogg", SlashCo.RandomPosLocator(), Angle(0, 0, 0))
 
-				slasher:StopSound("slashco/slasher/leuonard_grunt_loop.wav")
+				slasher:StopSound("slashco/slasher/leuonard_grunt_loop.mp3")
 				slasher:EmitSound("slashco/slasher/leuonard_grunt_finish.mp3")
 			end
 		end
@@ -135,7 +135,7 @@ function SLASHER.OnTickBehaviour(slasher)
 				--I FOUND YOU........
 				ent:Remove()
 				slasher:SetNWBool("LeuonardRoiding", true)
-				slasher:EmitSound("slashco/slasher/leuonard_grunt_loop.wav")
+				slasher:EmitSound("slashco/slasher/leuonard_grunt_loop.mp3")
 				slasher:Freeze(true)
 				slasher:SetBodygroup(1, 1)
 
@@ -144,7 +144,7 @@ function SLASHER.OnTickBehaviour(slasher)
 						return
 					end
 
-					slasher:StopSound("slashco/slasher/leuonard_grunt_loop.wav")
+					slasher:StopSound("slashco/slasher/leuonard_grunt_loop.mp3")
 					slasher:Freeze(false)
 					slasher:SetNWBool("LeuonardRoiding", false)
 					slasher:SetBodygroup(1, 0)
@@ -154,8 +154,8 @@ function SLASHER.OnTickBehaviour(slasher)
 
 		if slasher.soundon > 0 then
 			slasher:PlayGlobalSound("slashco/slasher/leuonard_yell7.mp3", 100)
-			slasher:PlayGlobalSound("slashco/slasher/leuonard_full_close.wav", 80)
-			slasher:PlayGlobalSound("slashco/slasher/leuonard_full_far.wav", 125)
+			slasher:PlayGlobalSound("slashco/slasher/leuonard_full_close.mp3", 80)
+			slasher:PlayGlobalSound("slashco/slasher/leuonard_full_far.mp3", 125)
 			slasher.soundon = 0
 		end
 
@@ -187,7 +187,7 @@ function SLASHER.OnTickBehaviour(slasher)
 				if ent:IsPlayer() and ent ~= slasher and ent:Team() == TEAM_SURVIVOR and ent.Devastate ~= true then
 					ent:SetVelocity(slasher:GetForward() * 500)
 					ent.Devastate = true
-					ent:EmitSound("slashco/body_medium_impact_hard" .. math.random(1, 5) .. ".wav")
+					ent:EmitSound("slashco/body_medium_impact_hard" .. math.random(1, 5) .. ".mp3")
 					for a = 1, 10 do
 						timer.Simple(a * 0.005, function()
 							local vPoint = ent:GetPos() + Vector(math.random(-25, 25), math.random(-25, 25),

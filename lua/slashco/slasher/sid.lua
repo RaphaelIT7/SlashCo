@@ -22,7 +22,7 @@ SLASHER.ChaseRadius = 0.96
 SLASHER.ChaseDuration = 6.0
 SLASHER.ChaseCooldown = 3
 SLASHER.JumpscareDuration = 1
-SLASHER.ChaseMusic = "slashco/slasher/sid_chase.wav"
+SLASHER.ChaseMusic = "slashco/slasher/sid_chase.mp3"
 SLASHER.KillSound = "slashco/slasher/sid_kill.mp3"
 SLASHER.Description = "Sid_desc"
 SLASHER.ProTip = "Sid_tip"
@@ -103,7 +103,7 @@ function SLASHER.OnTickBehaviour(slasher)
 
 	if slasher:GetNWBool("SidGunRage") and not slasher:GetNWBool("SidGunLetterC") and slasher:GetNWBool("SidGunEquipped") then
 		slasher:SetNWBool("SidGunLetterC", true)
-		slasher:PlayGlobalSound("slashco/slasher/sid_THE_LETTER_C.wav", 95, 0.5)
+		slasher:PlayGlobalSound("slashco/slasher/sid_THE_LETTER_C.mp3", 95, 0.5)
 	end
 
 	if slasher:GetNWInt("SidGunUses") ~= v1 then
@@ -324,7 +324,7 @@ function SLASHER.OnSecondaryFire(slasher)
 		slasher:SetSlowWalkSpeed(1)
 		slasher:SetWalkSpeed(1)
 		slasher:SetRunSpeed(1)
-		slasher:EmitSound("slashco/slasher/sid_draw.wav", 75, 110)
+		slasher:EmitSound("slashco/slasher/sid_draw.mp3", 75, 110)
 
 		timer.Simple(1, function()
 			if not IsValid(slasher) then
@@ -333,7 +333,7 @@ function SLASHER.OnSecondaryFire(slasher)
 
 			slasher:SetNWBool("SidGunAiming", false)
 			slasher:SetNWBool("SidGunAimed", true)
-			slasher:EmitSound("slashco/slasher/sid_clipout.wav")
+			slasher:EmitSound("slashco/slasher/sid_clipout.mp3")
 			slasher.SlasherValue4 = 2
 		end)
 	elseif slasher:GetNWBool("SidGunAimed") and slasher.SlasherValue3 < 0.01 then
@@ -413,11 +413,11 @@ function SLASHER.OnSpecialAbilityFire(slasher)
 			--Show the gun model
 
 			slasher:SetBodygroup(1, 1)
-			slasher:EmitSound("slashco/slasher/sid_draw.wav")
+			slasher:EmitSound("slashco/slasher/sid_draw.mp3")
 		end)
 		timer.Simple(2.25, function()
 			--sound
-			slasher:EmitSound("slashco/slasher/sid_slideback.wav", 75, 75)
+			slasher:EmitSound("slashco/slasher/sid_slideback.mp3", 75, 75)
 			slasher:SlasherHudFunc("SetCrosshairProngs", 4)
 		end)
 
@@ -439,7 +439,7 @@ function SLASHER.OnSpecialAbilityFire(slasher)
 		slasher:SetNWBool("SidGun", false)
 		slasher:SetBodygroup(1, 0)
 		slasher:SetNWBool("SidGunLetterC", false)
-		slasher:StopSound("slashco/slasher/sid_THE_LETTER_C.wav")
+		slasher:StopSound("slashco/slasher/sid_THE_LETTER_C.mp3")
 		slasher.SlasherValue2 = math.random(5, 15)
 	end
 end

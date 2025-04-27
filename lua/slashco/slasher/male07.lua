@@ -18,7 +18,7 @@ SLASHER.ChaseRadius = 0.9
 SLASHER.ChaseDuration = 5.0
 SLASHER.ChaseCooldown = 3
 SLASHER.JumpscareDuration = 2
-SLASHER.ChaseMusic = "slashco/slasher/male07_chase.wav"
+SLASHER.ChaseMusic = "slashco/slasher/male07_chase.mp3"
 SLASHER.KillSound = "slashco/slasher/male07_kill.mp3"
 SLASHER.Description = "Male07_desc"
 SLASHER.ProTip = "Male07_tip"
@@ -163,7 +163,7 @@ function SLASHER.OnPrimaryFire(slasher, target)
 		slasher.SlasherValue4 = 2
 
 		timer.Simple(0.5, function()
-			slasher:EmitSound("slashco/slasher/trollge_swing.wav")
+			slasher:EmitSound("slashco/slasher/trollge_swing.mp3")
 
 			if SERVER then
 				local target1 = slasher:TraceHullAttack(slasher:EyePos(), slasher:LocalToWorld(Vector(45, 0, 60)),
@@ -183,7 +183,7 @@ function SLASHER.OnPrimaryFire(slasher, target)
 					bloodfx:SetOrigin(vPoint)
 					util.Effect("BloodImpact", bloodfx)
 
-					target1:EmitSound("slashco/slasher/trollge_hit.wav")
+					target1:EmitSound("slashco/slasher/trollge_hit.mp3")
 				end
 
 				SlashCo.BustDoor(slasher, target, 30000)
