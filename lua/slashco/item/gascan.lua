@@ -27,7 +27,7 @@ function ITEM.OnPickUp(ply)
 	ply:AddSpeedEffect("gas", 200, 10)
 end
 function ITEM.EquipSound()
-	return "slashco/survivor/gascan_pickup" .. math.random(1, 3) .. ".wav"
+	return "slashco/survivor/gascan_pickup" .. math.random(1, 3) .. ".mp3"
 end
 ITEM.ViewModel = {
 	model = "models/props_junk/metalgascan.mdl",

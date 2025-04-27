@@ -18,7 +18,7 @@ local function ArmBeacon(ent)
 	if ent:GetBeaconBroken() then return end
 
 	timer.Remove(ent:EntIndex() .. "_BeaconBlipSound")
-	ent:PlayGlobalSound("slashco/survivor/distress_siren.wav", 100)
+	ent:PlayGlobalSound("slashco/survivor/distress_siren.mp3", 100)
 	ent:SetArmingBeacon(false)
 	SlashCo.BeaconArming = nil
 	SlashCo.SummonEscapeHelicopter(true)
@@ -27,7 +27,7 @@ end
 
 if SERVER then
 	hook.Add("SlashCo:Precache", "PrecacheBeacon", function()
-		SlashCo.PrecacheSound("slashco/survivor/distress_siren.wav")
+		SlashCo.PrecacheSound("slashco/survivor/distress_siren.mp3")
 		SlashCo.PrecacheSound("slashco/beacon_connect.mp3")
 		SlashCo.PrecacheSound("slashco/beacon_break.mp3")
 		SlashCo.PrecacheModel("models/props_c17/light_cagelight02_off.mdl")

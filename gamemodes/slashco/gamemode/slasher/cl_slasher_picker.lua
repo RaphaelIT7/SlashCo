@@ -233,7 +233,7 @@ hook.Add("PlayerButtonDown", "TheCoder", function(ply, key)
 	if IsValid(SlasherSelectFrame) then
 		if key == Fun.Sequence[Fun.CurInput] then
 			Fun.CurInput = Fun.CurInput + 1
-			ply:EmitSound("slashco/blip.wav")
+			ply:EmitSound("slashco/blip.mp3")
 			if Fun.CurInput > 11 then
 				ply:ChatPrint("You unleashed the Beast.")
 				ply:EmitSound("slashco/slasher/leuonard_yell1.mp3")

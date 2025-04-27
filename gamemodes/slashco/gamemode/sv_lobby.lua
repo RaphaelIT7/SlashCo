@@ -708,10 +708,10 @@ function lobbyFinish()
 
 		local heli = table.Random(ents.FindByClass("sc_helicopter"))
 
-		heli:StopSound("slashco/helicopter_engine_distant.wav")
-		heli:StopSound("slashco/helicopter_rotors_distant.wav")
-		heli:StopSound("slashco/helicopter_engine_close.wav")
-		heli:StopSound("slashco/helicopter_rotors_close.wav")
+		heli:StopSound("slashco/helicopter_engine_distant.mp3")
+		heli:StopSound("slashco/helicopter_rotors_distant.mp3")
+		heli:StopSound("slashco/helicopter_engine_close.mp3")
+		heli:StopSound("slashco/helicopter_rotors_close.mp3")
 	end)
 end
 

@@ -406,17 +406,17 @@ function SlashCo.HelicopterLeaveForIntro()
 			return
 		end
 
-		heli:StopSound("slashco/helicopter_engine_distant.wav")
-		heli:StopSound("slashco/helicopter_rotors_distant.wav")
-		heli:StopSound("slashco/helicopter_engine_close.wav")
-		heli:StopSound("slashco/helicopter_rotors_close.wav")
+		heli:StopSound("slashco/helicopter_engine_distant.mp3")
+		heli:StopSound("slashco/helicopter_rotors_distant.mp3")
+		heli:StopSound("slashco/helicopter_engine_close.mp3")
+		heli:StopSound("slashco/helicopter_rotors_close.mp3")
 
 		timer.Simple(0.05, function()
 			if IsValid(heli) then
-				heli:StopSound("slashco/helicopter_engine_distant.wav")
-				heli:StopSound("slashco/helicopter_rotors_distant.wav")
-				heli:StopSound("slashco/helicopter_engine_close.wav")
-				heli:StopSound("slashco/helicopter_rotors_close.wav")
+				heli:StopSound("slashco/helicopter_engine_distant.mp3")
+				heli:StopSound("slashco/helicopter_rotors_distant.mp3")
+				heli:StopSound("slashco/helicopter_engine_close.mp3")
+				heli:StopSound("slashco/helicopter_rotors_close.mp3")
 			end
 
 			SlashCo.RemoveHelicopter()

@@ -18,10 +18,10 @@ ENT.PingType = "HELICOPTER"
 --local self.switch = false
 
 hook.Add("SlashCo:Precache", "PrecacheHelicopter", function()
-	SlashCo.PrecacheSound("slashco/helicopter_engine_distant.wav")
-	SlashCo.PrecacheSound("slashco/helicopter_rotors_distant.wav")
-	SlashCo.PrecacheSound("slashco/helicopter_engine_close.wav")
-	SlashCo.PrecacheSound("slashco/helicopter_rotors_close.wav")
+	SlashCo.PrecacheSound("slashco/helicopter_engine_distant.mp3")
+	SlashCo.PrecacheSound("slashco/helicopter_rotors_distant.mp3")
+	SlashCo.PrecacheSound("slashco/helicopter_engine_close.mp3")
+	SlashCo.PrecacheSound("slashco/helicopter_rotors_close.mp3")
 end)
 
 function ENT:SetupDataTables()
@@ -62,10 +62,10 @@ function ENT:Initialize()
 		self.pixvis = util.GetPixelVisibleHandle()
 	end
 
-	self:EmitSound("slashco/helicopter_engine_distant.wav", 90, 150, 1, CHAN_STATIC)
-	self:EmitSound("slashco/helicopter_rotors_distant.wav", 150, 100, 1, CHAN_STATIC)
-	self:EmitSound("slashco/helicopter_engine_close.wav", 75, 150, 1, CHAN_STATIC)
-	self:EmitSound("slashco/helicopter_rotors_close.wav", 100, 100, 1, CHAN_STATIC)
+	self:EmitSound("slashco/helicopter_engine_distant.mp3", 90, 150, 1, CHAN_STATIC)
+	self:EmitSound("slashco/helicopter_rotors_distant.mp3", 150, 100, 1, CHAN_STATIC)
+	self:EmitSound("slashco/helicopter_engine_close.mp3", 75, 150, 1, CHAN_STATIC)
+	self:EmitSound("slashco/helicopter_rotors_close.mp3", 100, 100, 1, CHAN_STATIC)
 end
 
 function sign(number)

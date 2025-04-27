@@ -147,7 +147,7 @@ local function lobbyButtons(ply, button)
 				lobbyPlayerReadying(ply, 0)
 				broadcastLobbyInfo()
 			end
-			local Sndd = CreateSound(ply, Sound("slashco/blip.wav"))
+			local Sndd = CreateSound(ply, Sound("slashco/blip.mp3"))
 			Sndd:Play()
 			Sndd:ChangeVolume(0.5, 0)
 			Sndd:ChangePitch(100, 0)
@@ -158,7 +158,7 @@ local function lobbyButtons(ply, button)
 				--Check if the player has made an offering or agreed to one
 				if isPlyOfferer(ply) then
 					ply:ChatPrint("Cannot ready as Slasher as you have either made or agreed to an Offering.")
-					local Sndd = CreateSound(ply, Sound("slashco/blip.wav"))
+					local Sndd = CreateSound(ply, Sound("slashco/blip.mp3"))
 					Sndd:Play()
 					Sndd:ChangeVolume(0.5, 0)
 					Sndd:ChangePitch(65, 0)
@@ -167,14 +167,14 @@ local function lobbyButtons(ply, button)
 
 				lobbyPlayerReadying(ply, 2)
 				broadcastLobbyInfo()
-				local Sndd = CreateSound(ply, Sound("slashco/blip.wav"))
+				local Sndd = CreateSound(ply, Sound("slashco/blip.mp3"))
 				Sndd:Play()
 				Sndd:ChangeVolume(0.5, 0)
 				Sndd:ChangePitch(100, 0)
 			else
 				lobbyPlayerReadying(ply, 0)
 				broadcastLobbyInfo()
-				local Sndd = CreateSound(ply, Sound("slashco/blip.wav"))
+				local Sndd = CreateSound(ply, Sound("slashco/blip.mp3"))
 				Sndd:Play()
 				Sndd:ChangeVolume(0.5, 0)
 				Sndd:ChangePitch(100, 0)
@@ -193,13 +193,13 @@ local function lobbyButtons(ply, button)
 			if (#team.GetPlayers(TEAM_LOBBY) < GameData.MaxPlayers) then
 				ply:SetTeam(TEAM_LOBBY)
 				ply:Spawn()
-				local Sndd = CreateSound(ply, Sound("slashco/blip.wav"))
+				local Sndd = CreateSound(ply, Sound("slashco/blip.mp3"))
 				Sndd:Play()
 				Sndd:ChangeVolume(0.5, 0)
 				Sndd:ChangePitch(80, 0)
 			else
 				ply:ChatPrint("The Lobby is currently full.")
-				local Sndd = CreateSound(ply, Sound("slashco/blip.wav"))
+				local Sndd = CreateSound(ply, Sound("slashco/blip.mp3"))
 				Sndd:Play()
 				Sndd:ChangeVolume(0.5, 0)
 				Sndd:ChangePitch(65, 0)
@@ -207,7 +207,7 @@ local function lobbyButtons(ply, button)
 		elseif plyTeam == TEAM_LOBBY then
 			ply:SetTeam(TEAM_SPECTATOR)
 			ply:Spawn()
-			local Sndd = CreateSound(ply, Sound("slashco/blip.wav"))
+			local Sndd = CreateSound(ply, Sound("slashco/blip.mp3"))
 			Sndd:Play()
 			Sndd:ChangeVolume(0.5, 0)
 			Sndd:ChangePitch(80, 0)
@@ -711,11 +711,11 @@ hook.Add("PlayerSwitchFlashlight", "DynamicFlashlight.Switch", function(ply, sta
 
 	ply:SetNW2Bool("DynamicFlashlight", not ply:GetNW2Bool("DynamicFlashlight"))
 	if ply:GetNW2Bool("DynamicFlashlight") then
-		ply:EmitSound("slashco/survivor/flashlight-switchoff.wav", 60, 100)
+		ply:EmitSound("slashco/survivor/flashlight-switchoff.mp3", 60, 100)
 	end
 
 	if not ply:GetNW2Bool("DynamicFlashlight") then
-		ply:EmitSound("slashco/survivor/flashlight-switchon.wav", 60, 100)
+		ply:EmitSound("slashco/survivor/flashlight-switchon.mp3", 60, 100)
 	end
 
 	return false

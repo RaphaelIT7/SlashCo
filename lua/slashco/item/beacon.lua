@@ -65,7 +65,7 @@ function ITEM.OnUse(ply)
 		SlashCo.SummonEscapeHelicopter(true)
 		local ent = SlashCo.CreateItem("sc_activebeacon", ply:WorldSpaceCenter(), Angle(0, 0, 0))
 		ent:DropToFloor()
-		ent:PlayGlobalSound("slashco/survivor/distress_siren.wav", 100)
+		ent:PlayGlobalSound("slashco/survivor/distress_siren.mp3", 100)
 	end
 end
 ITEM.ViewModel = {

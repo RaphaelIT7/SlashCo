@@ -181,7 +181,7 @@ hook.Add("KeyPress", "ToggleLight", function(ply, key)
 
 	if key == IN_RELOAD then
 		vision = not vision
-		local Sndd = CreateSound(ply, Sound("slashco/blip.wav"))
+		local Sndd = CreateSound(ply, Sound("slashco/blip.mp3"))
 		Sndd:Play()
 		Sndd:ChangeVolume(0.5, 0)
 		Sndd:ChangePitch(100, 0)
@@ -189,7 +189,7 @@ hook.Add("KeyPress", "ToggleLight", function(ply, key)
 
 	if key == IN_WALK then
 		showHalos = not showHalos
-		local Sndd = CreateSound(ply, Sound("slashco/blip.wav"))
+		local Sndd = CreateSound(ply, Sound("slashco/blip.mp3"))
 		Sndd:Play()
 		Sndd:ChangeVolume(0.5, 0)
 		Sndd:ChangePitch(100, 0)
@@ -197,7 +197,7 @@ hook.Add("KeyPress", "ToggleLight", function(ply, key)
 
 	if key == IN_USE then
 		showGasCanHalos = not showGasCanHalos
-		local Sndd = CreateSound(ply, Sound("slashco/blip.wav"))
+		local Sndd = CreateSound(ply, Sound("slashco/blip.mp3"))
 		Sndd:Play()
 		Sndd:ChangeVolume(0.5, 0)
 		Sndd:ChangePitch(100, 0)
