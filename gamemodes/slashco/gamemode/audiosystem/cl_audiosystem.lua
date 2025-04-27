@@ -161,6 +161,7 @@ function SlashCo.AudioSystem.GetBackgroundMusicTime()
 	return SlashCo.AudioSystem.CalculateTime(SlashCo.AudioSystem.BackgroundChannel, GetGlobal2Int("SlashCo:StartTimeBackgroundMusic"))
 end
 
+local lastCreation = 0 -- Doesn't need autorefresh so were fine.
 function SlashCo.AudioSystem.PlayBackgroundMusic(fileName)
 	if not SlashCo.AudioSystem.ShouldPlayBackgroundMusic() then return end
 
@@ -170,6 +171,10 @@ function SlashCo.AudioSystem.PlayBackgroundMusic(fileName)
 
 		SlashCo.AudioSystem.StopBackgroundMusic()
 	end
+
+	-- Delay creations so that it won't try to create a channel while it already tried and is waiting for the callback.
+	if (lastCreation + 5) > CurTime() then return end
+	lastCreation = CurTime()
 
 	SlashCo.AudioSystem.CreateChannel(backgroundMusic, "mono noplay", function(channel)
 		SlashCo.AudioSystem.BackgroundChannel = channel
