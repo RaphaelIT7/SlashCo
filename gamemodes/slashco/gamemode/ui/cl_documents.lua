@@ -163,7 +163,7 @@ local selection = {
 		local documents = {}
 		for _, document in SortedPairs(SlashCoDocumentTypes["Slasher"] or {}) do
 			local hasDocument = SlashCo.HasDocument(document.Name)
-			if DrawTextWithHitbox("[" .. string.upper(hasDocument and document.Name or " ??? ") .. "]", "TVCDMedium", w / 5 + (row * w / 2.1), (h / 18) * count, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER) then
+			if DrawTextWithHitbox("[" .. string.upper(hasDocument and document.Name or SlashCo.Language("documents_missing_name")) .. "]", "TVCDMedium", w / 5 + (row * w / 2.1), (h / 18) * count, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER) then
 				pointer = count + (row * rowSplit) -- if we changed rows, we need to 
 			end
 
