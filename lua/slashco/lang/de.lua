@@ -607,6 +607,8 @@ SlashCo.LangTable["documents_slasher_ui"] = "[SLASHERS]"
 SlashCo.LangTable["documents_locations_ui"] = "[EINSATZORTE]"
 SlashCo.LangTable["documents_archive_ui"] = "[ARCHIV]"
 
+SlashCo.LangTable["documents_missing_name"] = " ??? "
+
 SlashCo.LangTable["documents_ui_left_click"] = "[Links Klick] = Seite öffnen"
 SlashCo.LangTable["documents_ui_right_click"] = "[Rechts Klick] = Seite schließen"
 
