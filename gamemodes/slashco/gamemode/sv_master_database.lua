@@ -67,8 +67,11 @@ end
 function SlashCoDatabase.OnPlayerJoined(id)
 	local database = sql.Query("SELECT * FROM slashco_master_database; ")
 
+	local ply = player.GetBySteamID64(id)
+	if not ply then return end -- The SteamID is not valid...
+
 	if database == nil or database == false then
-		sql.Query("INSERT INTO slashco_master_database(PlayerID, PlayerName, SurvivorRoundsWon, SlasherRoundsWon, Points) VALUES('" .. id .. "', '" .. player.GetBySteamID64(id):GetName() .. "', 0, 0, 0);")
+		sql.Query("INSERT INTO slashco_master_database(PlayerID, PlayerName, SurvivorRoundsWon, SlasherRoundsWon, Points) VALUES('" .. id .. "', '" .. ply:GetName() .. "', 0, 0, 0);")
 
 		print("[SlashCo] Master Database has no entries. This Player will be the first entry.")
 		return
@@ -85,13 +88,13 @@ function SlashCoDatabase.OnPlayerJoined(id)
 	end
 
 	if is_in == false then
-		sql.Query("INSERT INTO slashco_master_database(PlayerID, PlayerName, SurvivorRoundsWon, SlasherRoundsWon, Points) VALUES('" .. id .. "', '" .. player.GetBySteamID64(id):GetName() .. "', 0, 0, 0);")
+		sql.Query("INSERT INTO slashco_master_database(PlayerID, PlayerName, SurvivorRoundsWon, SlasherRoundsWon, Points) VALUES('" .. id .. "', '" .. ply:GetName() .. "', 0, 0, 0);")
 
 		print("[SlashCo] This Player is not in the Database, and has been inserted.")
 	elseif is_in == true then
 		--Check if the player has changed their name
-		if database[index].PlayerName ~= player.GetBySteamID64(id):GetName() then
-			sql.Query("UPDATE slashco_master_database SET PlayerName = " .. player.GetBySteamID64(id):GetName() .. " WHERE PlayerID = '" .. id .. "';")
+		if database[index].PlayerName ~= ply:GetName() then
+			sql.Query("UPDATE slashco_master_database SET PlayerName = " .. ply:GetName() .. " WHERE PlayerID = '" .. id .. "';")
 		end
 	end
 end

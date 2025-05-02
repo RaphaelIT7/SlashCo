@@ -584,7 +584,10 @@ hook.Add("Tick", "LobbyTickEvent", function()
 		end
 
 		for p = 1, num do
-			local rdy = getReadyState(player.GetBySteamID64(SlashCo.LobbyData.Players[p].steamid))
+			local ply = player.GetBySteamID64(SlashCo.LobbyData.Players[p].steamid)
+			if not ply then continue end -- It can return false.
+
+			local rdy = getReadyState(ply)
 			if rdy > 0 then
 				seek = seek + 1
 			end
@@ -610,7 +613,7 @@ hook.Add("Tick", "LobbyTickEvent", function()
 			SlashCo.LobbyData.ReadyTimerStarted = false
 
 			net.Start("mantislashco_LobbyTimerTime")
-			net.WriteUInt(62, 6)
+				net.WriteUInt(62, 6)
 			net.Broadcast()
 		end
 
