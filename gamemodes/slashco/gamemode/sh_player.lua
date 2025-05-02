@@ -125,3 +125,56 @@ function PLAYER:IsStuck(worldOnly)
 	local tr = util.TraceEntityHull(settings, self)
 	return tr.Hit
 end
+
+--[[
+	Using sv_lan we can use -multirun and join the game with multiple gmod instances,
+	but now we have to ensure that they won't use the same steamid's.
+
+	This should probably be made into a gmod request.
+
+	Right now we change these function and we add the userid to allow for multiple multirun instances to work without colliding with each other.
+	- PLAYER:SteamID()
+	- PLAYER:SteamID64()
+	- PLAYER:OwnerSteamID64()
+	- PLAYER:UniqueID()
+]]
+function SlashCo.SetupLanOverrides() -- Called from sh_shared.lua -> GM:InitPostEntity
+	PLAYER.OrigSteamID = PLAYER.OrigSteamID or PLAYER.SteamID
+	function PLAYER:SteamID()
+		local steamID = self:OrigSteamID()
+		if steamID == "STEAM_ID_LAN" then
+			return "STEAM_ID_LAN_" .. self:UserID()
+		end
+
+		return steamID
+	end
+
+	PLAYER.OrigSteamID64 = PLAYER.OrigSteamID64 or PLAYER.SteamID64
+	function PLAYER:SteamID64()
+		local steamID = self:OrigSteamID64()
+		if steamID == "0" then
+			return tostring(self:UserID())
+		end
+
+		return steamID
+	end
+
+	PLAYER.OrigOwnerSteamID64 = PLAYER.OrigOwnerSteamID64 or PLAYER.OwnerSteamID64
+	function PLAYER:OwnerSteamID64()
+		local steamID = self:OrigOwnerSteamID64()
+		if steamID == "0" then
+			return tostring(self:UserID())
+		end
+
+		return steamID
+	end
+
+	PLAYER.OrigUniqueID = PLAYER.OrigUniqueID or PLAYER.UniqueID
+	function PLAYER:UniqueID()
+		if self:OrigSteamID64() == 0 then
+			return util.CRC("gm_" .. self:UserID() .. "_gm") -- This is how gmod does it internally.
+		end
+
+		return self:OrigUniqueID()
+	end
+end

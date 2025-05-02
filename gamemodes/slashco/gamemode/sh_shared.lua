@@ -174,6 +174,7 @@ GameData.Lobby = GameData.Lobby or "sc_lobby" -- Map name of the default lobby, 
 GameData.IsLobby = GameData.Map == GameData.Lobby -- true if the current map is a lobby, same as above don't use it too early.
 GameData.MaxPlayers = game.MaxPlayers()
 GameData.IsSinglePlayer = game.SinglePlayer()
+GameData.IsLan = GetConVar("sv_lan"):GetBool()
 
 if CLIENT then
 	--GameData.LocalPlayer = nil
@@ -185,10 +186,16 @@ if CLIENT then
 	GameData.LocalIsSlasher = GameData.LocalIsSlasher or false
 	GameData.IsLobby = GetGlobal2Bool("SlashCo:IsLobby", GameData.IsLobby) -- For autorefresh
 	GameData.Lobby = GetGlobal2String("SlashCo:Lobby", GameData.Lobby) -- For autorefresh
+	GameData.IsLan = GetGlobal2Bool("SlashCo:IsLan", GameData.IsLan)
 
 	function GM:InitPostEntity()
 		GameData.IsLobby = GetGlobal2Bool("SlashCo:IsLobby", GameData.IsLobby)
 		GameData.Lobby = GetGlobal2String("SlashCo:Lobby", GameData.Lobby)
+		GameData.IsLan = GetGlobal2Bool("SlashCo:IsLan", GameData.IsLan)
+
+		if GameData.IsLan then -- We require this for multirun clients.
+			SlashCo.SetupLanOverrides()
+		end
 
 		GameData.LocalPlayer = LocalPlayer()
 		GameData.LocalSteamID = GameData.LocalPlayer:SteamID()
@@ -213,6 +220,11 @@ else
 
 		SetGlobal2Bool("SlashCo:IsLobby", GameData.IsLobby) -- Network our state.
 		SetGlobal2String("SlashCo:Lobby", GameData.Lobby)
+		SetGlobal2Bool("SlashCo:IsLan", GameData.IsLan)
+
+		if GameData.IsLan then
+			SlashCo.SetupLanOverrides()
+		end
 	end
 end
 
