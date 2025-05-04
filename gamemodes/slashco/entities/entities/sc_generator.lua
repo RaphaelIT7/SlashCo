@@ -13,12 +13,12 @@ ENT.Instructions = ""
 ENT.PingType = "GENERATOR"
 
 hook.Add("SlashCo:Precache", "PrecacheGenerator", function()
-	SlashCo.PrecacheSound("slashco/generator_fill.wav")
-	SlashCo.PrecacheSound("slashco/generator_start.wav")
-	SlashCo.PrecacheSound("slashco/generator_loop.wav")
-	SlashCo.PrecacheSound("slashco/generator_failstart.wav")
-	SlashCo.PrecacheSound("ambient/machines/zap1.wav")
-	SlashCo.PrecacheSound("slashco/battery_insert.wav")
+	SlashCo.PrecacheSound("slashco/generator_fill.mp3")
+	SlashCo.PrecacheSound("slashco/generator_start.mp3")
+	SlashCo.PrecacheSound("slashco/generator_loop.mp3")
+	SlashCo.PrecacheSound("slashco/generator_failstart.mp3")
+	SlashCo.PrecacheSound("ambient/machines/zap1.mp3")
+	SlashCo.PrecacheSound("slashco/battery_insert.mp3")
 	SlashCo.PrecacheModel("models/props_c17/light_cagelight01_on.mdl")
 end)
 
@@ -184,7 +184,7 @@ function ENT:MakeBattery(model)
 	battery:SetAngles(self:LocalToWorldAngles(Angle(0, 90, 0)))
 	battery:SetParent(self)
 	battery:EmitSound("ambient/machines/zap1.wav", 125, 100, 0.5)
-	battery:EmitSound("slashco/battery_insert.wav", 125, 100, 1)
+	battery:EmitSound("slashco/battery_insert.mp3", 125, 100, 1)
 
 	SlashCo.SpawnSlasher()
 end
@@ -219,13 +219,13 @@ function ENT:CheckProgress(dontFailStart)
 		self.IsRunning = true
 		self.Progress = 5
 		self:SetRunning(true)
-		self:EmitSound("slashco/generator_start.wav", 85, 100, 1)
+		self:EmitSound("slashco/generator_start.mp3", 85, 100, 1)
 
 		timer.Simple(6.4, function()
-			self:PlayGlobalSound("slashco/generator_loop.wav", 85, nil, true)
+			self:PlayGlobalSound("slashco/generator_loop.mp3", 85, nil, true)
 		end)
 	elseif not dontFailStart and self.HasBattery and (self.CansRemaining or gasPerGen) > 0 then
-		self:EmitSound("slashco/generator_failstart.wav", 85, 100, 1)
+		self:EmitSound("slashco/generator_failstart.mp3", 85, 100, 1)
 	end
 end
 
@@ -251,7 +251,7 @@ function ENT:Use(activator)
 		self.CurrentPourer = activator
 		self.TimeUntilFueled = CurTime() + (self.FuelProgress or TimeToFuel)
 		self:SendData(activator)
-		self:EmitSound("slashco/generator_fill.wav")
+		self:EmitSound("slashco/generator_fill.mp3")
 	elseif not self.MakingItem then
 		self:SlasherHint()
 		local gasPerGen = GetGlobal2Int("SlashCoGasCansPerGenerator", SlashCo.GasPerGen)
@@ -321,7 +321,7 @@ function ENT:Think()
 	end
 
 	if not IsValid(self.CurrentPourer) or not IsValid(self.FuelingCan) then
-		self:StopSound("slashco/generator_fill.wav")
+		self:StopSound("slashco/generator_fill.mp3")
 		self.IsFueling = false
 		return
 	end
@@ -333,7 +333,7 @@ function ENT:Think()
 		self:SendData(self.CurrentPourer)
 		self.TimeUntilFueled = nil
 		self.CurrentPourer = nil
-		self:StopSound("slashco/generator_fill.wav")
+		self:StopSound("slashco/generator_fill.mp3")
 		return
 	end
 	local fuelprog = math.Clamp(TimeToFuel - (self.TimeUntilFueled - CurTime()), 0, TimeToFuel) / TimeToFuel
@@ -357,7 +357,7 @@ function ENT:Think()
 		self:SendData(self.CurrentPourer)
 		self.TimeUntilFueled = nil
 		self.CurrentPourer = nil
-		self:StopSound("slashco/generator_fill.wav")
+		self:StopSound("slashco/generator_fill.mp3")
 		self:ChangeCanProgress(1)
 
 		--//discard gas can//--

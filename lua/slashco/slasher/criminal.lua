@@ -110,8 +110,8 @@ function SLASHER.OnSecondaryFire(slasher)
 			if cln.IsMain ~= true then
 				cln:Remove()
 			end
-			cln:StopSound("slashco/slasher/criminal_loop.wav")
-			cln:StopSound("slashco/slasher/criminal_rage.wav")
+			cln:StopSound("slashco/slasher/criminal_loop.mp3")
+			cln:StopSound("slashco/slasher/criminal_rage.mp3")
 		end
 
 		slasher:SetNWBool("CriminalCloning", false)

@@ -22,7 +22,7 @@ SLASHER.ChaseRadius = 0.88
 SLASHER.ChaseDuration = 120.0
 SLASHER.ChaseCooldown = 8
 SLASHER.JumpscareDuration = 0
-SLASHER.ChaseMusic = "slashco/slasher/borgmire_chase.wav"
+SLASHER.ChaseMusic = "slashco/slasher/borgmire_chase.mp3"
 SLASHER.KillSound = ""
 SLASHER.Description = "Borgmire_desc"
 SLASHER.ProTip = "Borgmire_tip"
@@ -33,7 +33,7 @@ SLASHER.DiffRating = "★☆☆☆☆"
 function SLASHER.OnSpawn(slasher)
 	slasher:SetViewOffset(Vector(0, 0, 85))
 	slasher:SetCurrentViewOffset(Vector(0, 0, 85))
-	slasher:PlayGlobalSound("slashco/slasher/borgmire_heartbeat.wav", 50, nil, true)
+	slasher:PlayGlobalSound("slashco/slasher/borgmire_heartbeat.mp3", 50, nil, true)
 	slasher:SetNWBool("CanChase", true)
 end
 
@@ -64,11 +64,11 @@ function SLASHER.OnTickBehaviour(slasher)
 		slasher.ChaseSound = nil
 
 		if slasher.IdleSound == nil then
-			slasher:PlayGlobalSound("slashco/slasher/borgmire_breath_base.wav", 60, nil, true)
+			slasher:PlayGlobalSound("slashco/slasher/borgmire_breath_base.mp3", 60, nil, true)
 
-			slasher:StopSound("slashco/slasher/borgmire_breath_chase.wav")
+			slasher:StopSound("slashco/slasher/borgmire_breath_chase.mp3")
 			timer.Simple(0.1, function()
-				slasher:StopSound("slashco/slasher/borgmire_breath_chase.wav")
+				slasher:StopSound("slashco/slasher/borgmire_breath_chase.mp3")
 			end)
 
 			slasher.IdleSound = true
@@ -82,13 +82,13 @@ function SLASHER.OnTickBehaviour(slasher)
 		slasher:SetWalkSpeed(math.floor((SLASHER.ChaseSpeed - math.sqrt(v1 * (14 - (SO * 7)))) / v3))
 
 		if slasher.ChaseSound == nil then
-			slasher:PlayGlobalSound("slashco/slasher/borgmire_breath_chase.wav", 70, nil, true)
+			slasher:PlayGlobalSound("slashco/slasher/borgmire_breath_chase.mp3", 70, nil, true)
 			slasher:PlayGlobalSound("slashco/slasher/borgmire_anger.mp3", 75)
 			slasher:PlayGlobalSound("slashco/slasher/borgmire_anger_far.mp3", 110)
 
-			slasher:StopSound("slashco/slasher/borgmire_breath_base.wav")
+			slasher:StopSound("slashco/slasher/borgmire_breath_base.mp3")
 			timer.Simple(0.1, function()
-				slasher:StopSound("slashco/slasher/borgmire_breath_base.wav")
+				slasher:StopSound("slashco/slasher/borgmire_breath_base.mp3")
 			end)
 
 			slasher.ChaseSound = true

@@ -21,8 +21,9 @@ function DrawThePlayermodelSelectorBox()
 	for c = 0, 2 do
 		for i = 0, 2 do
 			local item = vgui.Create("SpawnIcon", pmSelectFrame)
+			local modelID = val -- Copy the var as else we'll reference val which will always be 10 / a invalid id because its counted up.
 			function item.DoClick()
-				PlayerModelChosen("models/slashco/survivor/male_0" .. val .. ".mdl")
+				PlayerModelChosen("models/slashco/survivor/male_0" .. modelID .. ".mdl")
 				HidePlayermodelSelection()
 			end
 

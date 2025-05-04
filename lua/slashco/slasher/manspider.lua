@@ -18,7 +18,7 @@ SLASHER.ChaseRadius = 0.9
 SLASHER.ChaseDuration = 9.0
 SLASHER.ChaseCooldown = 2
 SLASHER.JumpscareDuration = 2
-SLASHER.ChaseMusic = "slashco/slasher/manspider_chase.wav"
+SLASHER.ChaseMusic = "slashco/slasher/manspider_chase.mp3"
 SLASHER.KillSound = "slashco/slasher/manspider_kill.mp3"
 SLASHER.Description = "Manspider_desc"
 SLASHER.ProTip = "Manspider_tip"
@@ -78,7 +78,7 @@ function SLASHER.OnTickBehaviour(slasher)
 		slasher.SlasherValue3 = v3 + FrameTime()
 
 		if slasher.NestSound ~= slasher:GetNWBool("ManspiderNested") then
-			slasher:StopSound("slashco/slasher/manspider_idle.wav")
+			slasher:StopSound("slashco/slasher/manspider_idle.mp3")
 			slasher:SetJumpPower(0)
 			slasher.NestSound = slasher:GetNWBool("ManspiderNested")
 		end
@@ -117,7 +117,7 @@ function SLASHER.OnTickBehaviour(slasher)
 		slasher.SlasherValue3 = 0
 
 		if slasher.NestSound ~= slasher:GetNWBool("ManspiderNested") then
-			slasher:PlayGlobalSound("slashco/slasher/manspider_idle.wav", 50, nil, true)
+			slasher:PlayGlobalSound("slashco/slasher/manspider_idle.mp3", 50, nil, true)
 			slasher:SetJumpPower(slasher.Jump)
 			slasher.NestSound = slasher:GetNWBool("ManspiderNested")
 		end

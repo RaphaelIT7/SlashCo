@@ -22,7 +22,7 @@ SLASHER.ChaseRadius = 0.91
 SLASHER.ChaseDuration = 10.0
 SLASHER.ChaseCooldown = 3
 SLASHER.JumpscareDuration = 1.5
-SLASHER.ChaseMusic = "slashco/slasher/princess_chase.wav"
+SLASHER.ChaseMusic = "slashco/slasher/princess_chase.mp3"
 SLASHER.KillSound = ""
 SLASHER.Description = "Princess_desc"
 SLASHER.ProTip = "Princess_tip"
@@ -261,7 +261,7 @@ function SLASHER.Maul(slasher, target)
 			util.Effect("BloodImpact", bloodfx1)
 
 			slasher.victimragdoll:EmitSound("physics/flesh/flesh_squishy_impact_hard" .. math.random(2, 4) .. ".wav")
-			slasher.victimragdoll:EmitSound("slashco/body_medium_impact_hard" .. math.random(1, 5) .. ".wav")
+			slasher.victimragdoll:EmitSound("slashco/body_medium_impact_hard" .. math.random(1, 5) .. ".mp3")
 		end)
 	end
 

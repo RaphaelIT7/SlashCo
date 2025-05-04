@@ -43,9 +43,9 @@ function SLASHER.Precache()
 		SlashCo.PrecacheSound("slashco/slasher/tyler_song_" .. k .. ".mp3")
 	end
 	
-	SlashCo.PrecacheSound("slashco/slasher/tyler_destroyer_theme.wav")
-	SlashCo.PrecacheSound("slashco/slasher/tyler_destroyer_whisper.wav")
-	SlashCo.PrecacheSound("slashco/slasher/tyler_alarm.wav")
+	SlashCo.PrecacheSound("slashco/slasher/tyler_destroyer_theme.mp3")
+	SlashCo.PrecacheSound("slashco/slasher/tyler_destroyer_whisper.mp3")
+	SlashCo.PrecacheSound("slashco/slasher/tyler_alarm.mp3")
 end
 
 function SLASHER.HideTime(slasher)
@@ -171,7 +171,7 @@ function SLASHER.OnTickBehaviour(slasher)
 		slasher:Freeze(true)
 
 		if slasher.tyler_destroyer_entrance_antispam == nil then
-			SlashCo.SendValue(nil, "tylSong", slasher, "slashco/slasher/tyler_alarm.wav", false, 0.8)
+			SlashCo.SendValue(nil, "tylSong", slasher, "slashco/slasher/tyler_alarm.mp3", false, 0.8)
 			slasher.tyler_destroyer_entrance_antispam = 0
 		end
 
@@ -184,10 +184,10 @@ function SLASHER.OnTickBehaviour(slasher)
 		if slasher.tyler_destroyer_entrance_antispam < (12 - decay) then
 			slasher.tyler_destroyer_entrance_antispam = slasher.tyler_destroyer_entrance_antispam + FrameTime()
 		else
-			SlashCo.SendValue(nil, "tylSong", slasher, "slashco/slasher/tyler_alarm.wav", true)
+			SlashCo.SendValue(nil, "tylSong", slasher, "slashco/slasher/tyler_alarm.mp3", true)
 
-			slasher:PlayGlobalSound("slashco/slasher/tyler_destroyer_theme.wav", 140, nil, true)
-			slasher:PlayGlobalSound("slashco/slasher/tyler_destroyer_whisper.wav", 140, nil, true)
+			slasher:PlayGlobalSound("slashco/slasher/tyler_destroyer_theme.mp3", 140, nil, true)
+			slasher:PlayGlobalSound("slashco/slasher/tyler_destroyer_whisper.mp3", 140, nil, true)
 
 			slasher:Freeze(false)
 			slasher.SlasherValue1 = 3
@@ -221,11 +221,11 @@ function SLASHER.OnTickBehaviour(slasher)
 		if v2 > ((ms * 15) + 60 + (v4 * 10)) then
 			slasher.SlasherValue1 = 0
 
-			slasher:StopSound("slashco/slasher/tyler_destroyer_theme.wav")
-			slasher:StopSound("slashco/slasher/tyler_destroyer_whisper.wav")
+			slasher:StopSound("slashco/slasher/tyler_destroyer_theme.mp3")
+			slasher:StopSound("slashco/slasher/tyler_destroyer_whisper.mp3")
 			timer.Simple(0.1, function()
-				slasher:StopSound("slashco/slasher/tyler_destroyer_theme.wav")
-				slasher:StopSound("slashco/slasher/tyler_destroyer_whisper.wav")
+				slasher:StopSound("slashco/slasher/tyler_destroyer_theme.mp3")
+				slasher:StopSound("slashco/slasher/tyler_destroyer_whisper.mp3")
 			end)
 
 			slasher:SetVisible(false)
@@ -315,15 +315,15 @@ function SLASHER.OnPrimaryFire(slasher, target)
 			slasher.SlasherValue1 = 0
 			slasher:SetVisible(false)
 
-			slasher:StopSound("slashco/slasher/tyler_destroyer_theme.wav")
-			slasher:StopSound("slashco/slasher/tyler_destroyer_whisper.wav")
+			slasher:StopSound("slashco/slasher/tyler_destroyer_theme.mp3")
+			slasher:StopSound("slashco/slasher/tyler_destroyer_whisper.mp3")
 			timer.Simple(0.1, function()
 				if not IsValid(slasher) then
 					return
 				end
 
-				slasher:StopSound("slashco/slasher/tyler_destroyer_theme.wav")
-				slasher:StopSound("slashco/slasher/tyler_destroyer_whisper.wav")
+				slasher:StopSound("slashco/slasher/tyler_destroyer_theme.mp3")
+				slasher:StopSound("slashco/slasher/tyler_destroyer_whisper.mp3")
 			end)
 
 			slasher:SetNWBool("TylerFlash", false)

@@ -576,7 +576,7 @@ SlashCo.LangTable["points_left_behind"] = "[%s] ABANDONÉ"
 SlashCo.LangTable["points_survive"] = "[%s] SURVÉCU"
 
 SlashCo.LangTable["points_item"] = "[%s] OBJET ACHETER-RETOUR" --misc points
-SlashCo.LangTable["points_fast"] = "[%s] SUCCÉS RAPIDE"
+SlashCo.LangTable["points_quickescape"] = "[%s] SUCCÉS RAPIDE"
 SlashCo.LangTable["points_benadryl"] = "[%s] BENADRYL"
 SlashCo.LangTable["points_working"] = "[%s] FAIRE TON TRAVAIL"
 

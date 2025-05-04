@@ -57,8 +57,8 @@ function SLASHER.OnTickBehaviour(slasher)
 		if SlashCo.CurRound.EscapeHelicopterSummoned then
 			slasher:SetNWBool("DolphinFound", true)
 
-			slasher:PlayGlobalSound("slashco/slasher/dolfin_call.wav", 85, nil, true)
-			slasher:PlayGlobalSound("slashco/slasher/dolfin_call_far.wav", 140, nil, true)
+			slasher:PlayGlobalSound("slashco/slasher/dolfin_call.mp3", 85, nil, true)
+			slasher:PlayGlobalSound("slashco/slasher/dolfin_call_far.mp3", 140, nil, true)
 
 			timer.Simple(10, function()
 				slasher:SetNWBool("DolphinFound", false)
@@ -88,8 +88,8 @@ function SLASHER.OnTickBehaviour(slasher)
 
 			slasher:SetNWBool("DolphinFound", true)
 
-			slasher:PlayGlobalSound("slashco/slasher/dolfin_call.wav", 85, nil, true)
-			slasher:PlayGlobalSound("slashco/slasher/dolfin_call_far.wav", 140, nil, true)
+			slasher:PlayGlobalSound("slashco/slasher/dolfin_call.mp3", 85, nil, true)
+			slasher:PlayGlobalSound("slashco/slasher/dolfin_call_far.mp3", 140, nil, true)
 
 			timer.Simple(10, function()
 				slasher:SetNWBool("DolphinFound", false)
@@ -132,13 +132,13 @@ function SLASHER.OnTickBehaviour(slasher)
 			if v1 <= 0 then
 				slasher:SetNWBool("DolphinHunting", false)
 
-				slasher:StopSound("slashco/slasher/dolfin_call.wav")
-				slasher:StopSound("slashco/slasher/dolfin_call_far.wav")
+				slasher:StopSound("slashco/slasher/dolfin_call.mp3")
+				slasher:StopSound("slashco/slasher/dolfin_call_far.mp3")
 				for i = 1, 8 do
 					--WHY THE FUCK DO I HAVE TO DO THIS HOLY SHIT
 					timer.Simple(i / 10, function()
-						slasher:StopSound("slashco/slasher/dolfin_call.wav")
-						slasher:StopSound("slashco/slasher/dolfin_call_far.wav")
+						slasher:StopSound("slashco/slasher/dolfin_call.mp3")
+						slasher:StopSound("slashco/slasher/dolfin_call_far.mp3")
 					end)
 				end
 			end
@@ -228,7 +228,7 @@ end
 
 function SLASHER.Footstep(ply)
 	if SERVER then
-		ply:EmitSound("slashco/slasher/amogus_step" .. math.random(1, 3) .. ".wav", 75, 130)
+		ply:EmitSound("slashco/slasher/amogus_step" .. math.random(1, 3) .. ".mp3", 75, 130)
 	end
 
 	return true

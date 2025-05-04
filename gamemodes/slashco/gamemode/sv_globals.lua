@@ -101,6 +101,23 @@ function SlashCo.ResetCurRoundData()
 		EscapeHelicopterSummoned = false,
 		DistressBeaconUsed = false,
 	}
+
+	local OldOfferingKeys = {
+		["SO"] = "Singularity",
+		["DO"] = "Duality",
+		["SatO"] = "Satiation",
+	}
+	local OfferingMeta = { -- Backwards compatiblity with any addons that use the old keys.
+		__index = function(self, key)
+			return rawget(self, OldOfferingKeys[key] or key)
+		end,
+
+		__newindex = function(self, key, value)
+			rawset(self, OldOfferingKeys[key] or key, value)
+		end,
+	}
+
+	debug.setmetatable(SlashCo.CurRound.OfferingData, OfferingMeta)
 end
 
 if not SlashCo.CurRound then
@@ -389,17 +406,17 @@ function SlashCo.HelicopterLeaveForIntro()
 			return
 		end
 
-		heli:StopSound("slashco/helicopter_engine_distant.wav")
-		heli:StopSound("slashco/helicopter_rotors_distant.wav")
-		heli:StopSound("slashco/helicopter_engine_close.wav")
-		heli:StopSound("slashco/helicopter_rotors_close.wav")
+		heli:StopSound("slashco/helicopter_engine_distant.mp3")
+		heli:StopSound("slashco/helicopter_rotors_distant.mp3")
+		heli:StopSound("slashco/helicopter_engine_close.mp3")
+		heli:StopSound("slashco/helicopter_rotors_close.mp3")
 
 		timer.Simple(0.05, function()
 			if IsValid(heli) then
-				heli:StopSound("slashco/helicopter_engine_distant.wav")
-				heli:StopSound("slashco/helicopter_rotors_distant.wav")
-				heli:StopSound("slashco/helicopter_engine_close.wav")
-				heli:StopSound("slashco/helicopter_rotors_close.wav")
+				heli:StopSound("slashco/helicopter_engine_distant.mp3")
+				heli:StopSound("slashco/helicopter_rotors_distant.mp3")
+				heli:StopSound("slashco/helicopter_engine_close.mp3")
+				heli:StopSound("slashco/helicopter_rotors_close.mp3")
 			end
 
 			SlashCo.RemoveHelicopter()
