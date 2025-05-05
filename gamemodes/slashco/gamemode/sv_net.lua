@@ -213,7 +213,7 @@ local pointState = {
 	[SlashCo.RoundState.WON_DISTRESS] = function(ply)
 		ply:SetPoints("escape")
 	end,
-	[SlashCo.RoundState.TEST] = function() end,
+	[SlashCo.RoundState.CURSED] = function() end,
 }
 
 local pointStateSlasher = {
@@ -228,7 +228,7 @@ local pointStateSlasher = {
 	[SlashCo.RoundState.WON_DISTRESS] = function(ply)
 		ply:SetPoints("slasher_escape")
 	end,
-	[SlashCo.RoundState.TEST] = function() end,
+	[SlashCo.RoundState.CURSED] = function() end,
 }
 
 function SlashCo.RoundOverScreen(state)
