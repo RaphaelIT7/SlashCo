@@ -740,7 +740,7 @@ local function startRound(noSetup)
 		SlashCo.EnableSoundScapes()
 
 		if not g_SlashCoDebug then
-			--SlashCo.ClearDatabase()
+			SlashCo.ClearDatabase()
 		end --Everything was loaded, clear the database.
 	end)
 
