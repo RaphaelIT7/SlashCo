@@ -291,7 +291,7 @@ hook.Add("CalcView", "LobbySpecCam", function(pl, pos, ang, fov)
 	end
 
 	if GetGlobal2Bool("IsLobbyStarting") then
-		local helicopter = GetGlobal2Entity("LobbyHelicopter")
+		local helicopter = SlashCo.Helicopter
 		if not helicopter:IsValid() then return end
 
 		local helicopterPos = helicopter:GetPos()

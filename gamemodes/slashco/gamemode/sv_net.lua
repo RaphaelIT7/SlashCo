@@ -158,17 +158,8 @@ function SlashCo.LobbyPlayerBriefing()
 	net.Broadcast()
 end
 
-local function quietHeli()
-	for _, heli in ipairs(ents.FindByClass("sc_helicopter")) do
-		heli:StopSound("slashco/helicopter_engine_distant.mp3")
-		heli:StopSound("slashco/helicopter_rotors_distant.mp3")
-		heli:StopSound("slashco/helicopter_engine_close.mp3")
-		heli:StopSound("slashco/helicopter_rotors_close.mp3")
-	end
-end
-
 function SlashCo.StartGameIntro()
-	quietHeli()
+	SlashCo.QuietHeli()
 	SlashCo.AudioSystem.DisableBackgroundMusic()
 
 	local offering = "Regular"
@@ -232,7 +223,7 @@ local pointStateSlasher = {
 }
 
 function SlashCo.RoundOverScreen(state)
-	quietHeli()
+	SlashCo.QuietHeli()
 	SlashCo.AudioSystem.DisableBackgroundMusic()
 
 	--yucky yucky
