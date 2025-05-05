@@ -156,8 +156,11 @@ SlashCo.RoundState = {
 	[4] = WON_DISTRESS,
 	WON_DISTRESS = 4,
 
-	[5] = TEST,
-	TEST = 5,
+	[5] = CURSED,
+	CURSED = 5,
+
+	[6] = INTRO,
+	INTRO = 6,
 }
 
 SlashCo.States = {
