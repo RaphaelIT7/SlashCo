@@ -694,7 +694,6 @@ function lobbyFinish()
 
 	SlashCo.LobbyData.LOBBYSTATE = 4
 	SetGlobal2Bool("IsLobbyStarting", true)
-	SetGlobal2Entity("LobbyHelicopter", ents.FindByClass("sc_helicopter")[1])
 
 	SlashCo.CurRound.HelicopterTargetPosition = Vector(SlashCo.CurRound.HelicopterTargetPosition[1], SlashCo.CurRound.HelicopterTargetPosition[2], SlashCo.CurRound.HelicopterTargetPosition[3] + 500)
 
@@ -708,13 +707,7 @@ function lobbyFinish()
 		lobbyLeaveTimer()
 
 		SlashCo.AudioSystem.DisableBackgroundMusic()
-
-		local heli = table.Random(ents.FindByClass("sc_helicopter"))
-
-		heli:StopSound("slashco/helicopter_engine_distant.mp3")
-		heli:StopSound("slashco/helicopter_rotors_distant.mp3")
-		heli:StopSound("slashco/helicopter_engine_close.mp3")
-		heli:StopSound("slashco/helicopter_rotors_close.mp3")
+		SlashCo.QuietHeli()
 	end)
 end
 

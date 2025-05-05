@@ -555,10 +555,9 @@ hook.Add("StartCommand", "LobbyBot", function(ply, cmd)
 		end
 
 		if (CurTime() - (ply._REACHED_ELEVATOR or 0)) > 30 then
-			local helicopter = ents.FindByClass("sc_helicopter")[1]
-			if not IsValid(helicopter) then return end
+			if not IsValid(SlashCo.Helicopter) then return end
 
-			helicopter:Use(ply, ply)
+			SlashCo.Helicopter:Use(ply, ply)
 		end
 	end
 end)

@@ -66,6 +66,31 @@ function ENT:Initialize()
 	self:EmitSound("slashco/helicopter_rotors_distant.mp3", 150, 100, 1, CHAN_STATIC)
 	self:EmitSound("slashco/helicopter_engine_close.mp3", 75, 150, 1, CHAN_STATIC)
 	self:EmitSound("slashco/helicopter_rotors_close.mp3", 100, 100, 1, CHAN_STATIC)
+
+	if IsValid(SlashCo.Helicopter) then
+		SlashCo.Helicopter:Remove() -- Only allow a single helicopter to exist at once.
+	end
+
+	SlashCo.Helicopter = self
+end
+
+function ENT:OnRemove()
+	if CLIENT then
+		timer.Simple(0, function()
+			if IsValid(self) then return end
+
+			SlashCo.Helicopter = nil
+		end)
+	else
+		SlashCo.Helicopter = nil
+	end
+end
+
+function ENT:QuietHeli()
+	self:StopSound("slashco/helicopter_engine_distant.mp3")
+	self:StopSound("slashco/helicopter_rotors_distant.mp3")
+	self:StopSound("slashco/helicopter_engine_close.mp3")
+	self:StopSound("slashco/helicopter_rotors_close.mp3")
 end
 
 function sign(number)
