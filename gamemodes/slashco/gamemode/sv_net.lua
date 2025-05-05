@@ -284,5 +284,6 @@ end
 function SlashCo.HelicopterRadioVoice(type)
 	net.Start("mantislashco_HelicopterVoice")
 		net.WriteUInt(type, 4)
+		net.WriteUInt(math.random(1, type == SlashCo.HelicopterVoices.INTRO and 8 or 5), 4) -- Sound index
 	net.Broadcast()
 end
