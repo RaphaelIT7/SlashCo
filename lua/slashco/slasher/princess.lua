@@ -493,7 +493,7 @@ function SLASHER.InitHud(_, hud)
 		local inaccuracy = math.max(self.SniffPos:Distance(GameData.LocalPlayer:GetPos()) / 12, 50)
 		self.SniffRandom = VectorRand(-inaccuracy, inaccuracy)
 		hook.Add("HUDPaint", "SlashCoSniff", function()
-			if GameData.LocalPlayer:Team() ~= TEAM_SLASHER or self.SniffPos:Distance(GameData.LocalPlayer:GetPos()) < 150 then
+			if GameData.LocalPlayer:Team() ~= TEAM_SLASHER or not self.SniffPos or self.SniffPos:Distance(GameData.LocalPlayer:GetPos()) < 150 then
 				hook.Remove("HUDPaint", "SlashCoSniff")
 				return
 			end
