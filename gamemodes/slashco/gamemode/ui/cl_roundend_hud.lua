@@ -286,12 +286,17 @@ hook.Add("scValue_RoundEnd", "SlashCoRoundEnd", function(state, survivors, rescu
 		return
 	end
 
+	if IsValid(SlashCo.RoundEndPanel) then
+		SlashCo.RoundEndPanel:Remove()
+	end
+
 	local cur = CurTime()
 
 	local linesPlay = table.Reverse(lines)
 	local panel = vgui.Create("Panel")
 	panel:Dock(FILL)
 	fadeIn(panel)
+	SlashCo.RoundEndPanel = panel
 
 	function panel.Paint()
 		surface.SetDrawColor(0, 0, 0)

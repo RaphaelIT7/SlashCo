@@ -67,8 +67,10 @@ function ENT:Initialize()
 	self:EmitSound("slashco/helicopter_engine_close.mp3", 75, 150, 1, CHAN_STATIC)
 	self:EmitSound("slashco/helicopter_rotors_close.mp3", 100, 100, 1, CHAN_STATIC)
 
-	if IsValid(SlashCo.Helicopter) then
-		SlashCo.Helicopter:Remove() -- Only allow a single helicopter to exist at once.
+	for _, ent in ipairs(ents.FindByClass(self:GetClass())) do
+		if ent == self then continue end
+		
+		ent:Remove() -- Only allow a single helicopter to exist at once.
 	end
 
 	SlashCo.Helicopter = self
@@ -79,10 +81,14 @@ function ENT:OnRemove()
 		timer.Simple(0, function()
 			if IsValid(self) then return end
 
-			SlashCo.Helicopter = nil
+			if SlashCo.Helicopter == self then
+				SlashCo.Helicopter = nil
+			end
 		end)
 	else
-		SlashCo.Helicopter = nil
+		if SlashCo.Helicopter == self then
+			SlashCo.Helicopter = nil
+		end
 	end
 end
 
