@@ -287,6 +287,18 @@ function SlashCo.RemoveAllCurRoundEnts()
 	end
 end
 
+function SlashCo.DisableSoundScapes()
+	for _, ent in ipairs(ents.FindByClass("env_soundscape")) do
+		ent:Fire("Disable")
+	end
+end
+
+function SlashCo.EnableSoundScapes()
+	for _, ent in ipairs(ents.FindByClass("env_soundscape")) do
+		ent:Fire("Enable")
+	end
+end
+
 function SlashCo.ChangeMap(mapname)
 	RunConsoleCommand("changelevel", mapname)
 end

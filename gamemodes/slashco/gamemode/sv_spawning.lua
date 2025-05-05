@@ -381,7 +381,6 @@ function SlashCo.SetupPlayers()
 	local spawn_queue = 0
 	local survivors = sql.Query("SELECT * FROM slashco_table_survivordata; ") or singlePlayerTable()
 	local slashers = sql.Query("SELECT * FROM slashco_table_slasherdata; ") or {}
-
 	timer.Simple(0.5, function()
 		for _, v in ipairs(team.GetPlayers(TEAM_SURVIVOR)) do
 			for _, v1 in ipairs(survivors) do
@@ -395,36 +394,32 @@ function SlashCo.SetupPlayers()
 		end
 	end)
 
-	for play = 1, #player.GetAll() do
+	for _, ply in ipairs(player.GetAll()) do
 		--Assign the teams for the current round
-
-		local playercur = player.GetAll()[play]
-		local id = playercur:SteamID64()
-
-		print("name: " .. playercur:Name())
+		local id = ply:SteamID64()
+		print("name: " .. ply:Name())
 
 		--Nightmare offering >>>>>>>>>>>>>>>>>>>>>
-
 		if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Nightmare then
 			for i = 1, #slashers do
 				--Slasher becomes the sole survivor
 				if id == slashers[i].Slashers then
-					print(playercur:Name() .. " now Survivor for Nightmare.")
-					playercur:SetTeam(TEAM_SURVIVOR)
-					playercur:Spawn()
+					print(ply:Name() .. " now Survivor for Nightmare.")
+					ply:SetTeam(TEAM_SURVIVOR)
+					ply:Spawn()
 				end
 			end
 
 			for i = 1, #survivors do
 				if id == survivors[i].Survivors then
-					playercur:SetTeam(TEAM_SPECTATOR)
-					playercur:Spawn()
-					print(playercur:Name() .. " now Slasher for Nightmare")
-					table.insert(SlashCo.CurRound.SlashersToBeSpawned, playercur)
+					ply:SetTeam(TEAM_SPECTATOR)
+					ply:Spawn()
+
+					print(ply:Name() .. " now Slasher for Nightmare")
+					table.insert(SlashCo.CurRound.SlashersToBeSpawned, ply)
 
 					break
 				else
-
 					if slashers[1] ~= nil and id == slashers[1].Slashers then
 						goto CONT_NGHT
 					end
@@ -435,10 +430,11 @@ function SlashCo.SetupPlayers()
 						end
 					end
 
-					playercur:SetTeam(TEAM_SPECTATOR)
-					playercur:Spawn()
-					print(playercur:Name() .. " now Spectator (Nightmare)")
+					ply:SetTeam(TEAM_SPECTATOR)
+					ply:Spawn()
+					print(ply:Name() .. " now Spectator (Nightmare)")
 				end
+
 				:: CONT_NGHT ::
 			end
 
@@ -448,20 +444,20 @@ function SlashCo.SetupPlayers()
 				goto NIGHTMARE_SKIPPART
 			end
 		end
-
 		--Nightmare offering >>>>>>>>>>>>>>>>>>>>>
 
 		for i = 1, #survivors do
 			if id == survivors[i].Survivors then
-				playercur:SetTeam(TEAM_SURVIVOR)
-				playercur:Spawn()
-				print(playercur:Name() .. " now Survivor")
+				ply:SetTeam(TEAM_SURVIVOR)
+				ply:Spawn()
+				print(ply:Name() .. " now Survivor")
 
 				break
 			else
 				if slashers[1] ~= nil and id == slashers[1].Slashers then
 					continue
 				end
+
 				if slashers[2] ~= nil and id == slashers[2].Slashers then
 					continue
 				end
@@ -472,9 +468,9 @@ function SlashCo.SetupPlayers()
 					end
 				end
 
-				playercur:SetTeam(TEAM_SPECTATOR)
-				playercur:Spawn()
-				print(playercur:Name() .. " now Spectator")
+				ply:SetTeam(TEAM_SPECTATOR)
+				ply:Spawn()
+				print(ply:Name() .. " now Spectator")
 				spawn_queue = spawn_queue + 1
 
 				if SlashCo.PresentCovenant == nil and becameCovenant < 3 then
@@ -488,24 +484,29 @@ function SlashCo.SetupPlayers()
 			if id == slashers[i].Slashers then
 				for _, v in ipairs(SlashCoSlashers.Covenant.PlayersToBecomePartOfCovenant) do
 					if v.steamid == id then
-						print(playercur:Name() .. " will become part of the Covenant.")
-						playercur:SetTeam(TEAM_SPECTATOR)
-						playercur:Spawn()
+						print(ply:Name() .. " will become part of the Covenant.")
+						ply:SetTeam(TEAM_SPECTATOR)
+						ply:Spawn()
 						spawn_queue = spawn_queue + 1
+
 						goto covenant_member
 					end
 				end
-				print(playercur:Name() .. " now Slasher (Memorized)")
-				playercur:SetTeam(TEAM_SPECTATOR)
-				playercur:Spawn()
+
+				print(ply:Name() .. " now Slasher (Memorized)")
+				ply:SetTeam(TEAM_SPECTATOR)
+				ply:Spawn()
 				spawn_queue = spawn_queue + 1
 
-				table.insert(SlashCo.CurRound.SlashersToBeSpawned, playercur)
+				table.insert(SlashCo.CurRound.SlashersToBeSpawned, ply)
+
 				:: covenant_member ::
 			end
 		end
+
 		:: NIGHTMARE_SKIPPART ::
 	end
+
 	:: NIGHTMARE_SKIPALL ::
 end
 
@@ -715,14 +716,31 @@ local function startRound(noSetup)
 
 	SlashCo.SetHelicopterPositions()
 	SlashCo.UpdateHelicopterSeek(SlashCo.CurRound.HelicopterIntroPosition)
-	SlashCo.CreateHelicopter(SlashCo.CurRound.HelicopterIntroPosition, SlashCo.CurRound.HelicopterIntroAngle)
+	SlashCo.CreateHelicopter(SlashCo.CurRound.HelicopterTargetPosition, SlashCo.CurRound.HelicopterIntroAngle)
 	SlashCo.BroadcastCurrentRoundData(true)
+
+	for _, ply in ipairs(player.GetAll()) do
+		ply:ScreenFade(SCREENFADE.IN, color_black, 1, 0)
+		ply:SetHealth(ply:GetMaxHealth())
+	end
+
+	local slashers = sql.Query("SELECT * FROM slashco_table_slasherdata; ") or {}
+	local dangerLevel = SlashCo.DangerLevel.Unknown
+	for _, slasher in ipairs(SlashCo.CurRound.SlashersToBeSpawned) do
+		local slasherTbl = SlashCoSlashers[slasher:GetNWString("Slasher")]
+		if (slasherTbl.DangerLevel or 0) > dangerLevel then
+			dangerLevel = slasherTbl.DangerLevel
+		end
+	end
+
+	SlashCo.AudioSystem.PlaySound(SlashCo.GetDangerSound(dangerLevel), 100000000000000, Entity(0), 3, false, 0)
 
 	timer.Simple(8, function()
 		SlashCo.HelicopterTakeOffIntro()
+		SlashCo.EnableSoundScapes()
 
 		if not g_SlashCoDebug then
-			SlashCo.ClearDatabase()
+			--SlashCo.ClearDatabase()
 		end --Everything was loaded, clear the database.
 	end)
 
@@ -765,7 +783,13 @@ function SlashCo.StartRound(noSetup)
 		settingsEnt:TriggerOutput("OnPreRoundStarted", settingsEnt, settingsEnt, #SlashCo.CurRound.ExpectedPlayers)
 	end
 
-	timer.Simple(0.5, function()
+	SlashCo.DisableSoundScapes()
+	for _, ply in ipairs(player.GetAll()) do
+		ply:ScreenFade(SCREENFADE.OUT, color_black, 0.5, 2)
+		ply:ConCommand("soundfade 100 1 0.5 0.5")
+	end
+
+	timer.Simple(1, function()
 		startRound(noSetup)
 	end)
 end
