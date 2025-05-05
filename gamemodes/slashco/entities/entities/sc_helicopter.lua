@@ -222,11 +222,20 @@ if SERVER then
 
 	function ENT:Think()
 		self:NextThink(CurTime())
-		self:DrawShadow(false) -- Love to bug through the map.
+		self:DrawShadow(false) -- Loves to bug through the map.
 
 		local SatPlayers = SlashCo.CurRound.HelicopterRescuedPlayers
 		local plyCount = #SatPlayers
 		local TargetPosition = SlashCo.CurRound.HelicopterTargetPosition
+
+		local phys = self:GetPhysicsObject()
+		if phys:IsValid() then -- Since we have MOVETYPE_NONE the engine won't update the physics object so we need to do it ourself.
+			phys:SetPos(self:GetPos())
+			phys:SetAngles(self:GetAngles())
+			phys:EnableGravity(false)
+			phys:EnableMotion(false)
+			phys:EnableDrag(false)
+		end
 
 		if self.EnableMovement and TargetPosition ~= nil then
 			local IsAirborne = 1
