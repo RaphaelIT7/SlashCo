@@ -18,7 +18,7 @@ function SlashCo.Abort(reason)
 	end
 
 	if not SlashCo.Aborts then
-		SlashCo.RoundOverScreen(SlashCo.RoundState.TEST)
+		SlashCo.RoundOverScreen(SlashCo.RoundState.CURSED)
 		timer.Create("SlashCoAbort", 5, 1, function()
 			SlashCo.GoToLobby()
 		end)
