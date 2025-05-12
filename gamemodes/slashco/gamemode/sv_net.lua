@@ -158,17 +158,8 @@ function SlashCo.LobbyPlayerBriefing()
 	net.Broadcast()
 end
 
-local function quietHeli()
-	for _, heli in ipairs(ents.FindByClass("sc_helicopter")) do
-		heli:StopSound("slashco/helicopter_engine_distant.mp3")
-		heli:StopSound("slashco/helicopter_rotors_distant.mp3")
-		heli:StopSound("slashco/helicopter_engine_close.mp3")
-		heli:StopSound("slashco/helicopter_rotors_close.mp3")
-	end
-end
-
 function SlashCo.StartGameIntro()
-	quietHeli()
+	SlashCo.QuietHeli()
 	SlashCo.AudioSystem.DisableBackgroundMusic()
 
 	local offering = "Regular"
@@ -213,7 +204,7 @@ local pointState = {
 	[SlashCo.RoundState.WON_DISTRESS] = function(ply)
 		ply:SetPoints("escape")
 	end,
-	[SlashCo.RoundState.TEST] = function() end,
+	[SlashCo.RoundState.CURSED] = function() end,
 }
 
 local pointStateSlasher = {
@@ -228,11 +219,11 @@ local pointStateSlasher = {
 	[SlashCo.RoundState.WON_DISTRESS] = function(ply)
 		ply:SetPoints("slasher_escape")
 	end,
-	[SlashCo.RoundState.TEST] = function() end,
+	[SlashCo.RoundState.CURSED] = function() end,
 }
 
 function SlashCo.RoundOverScreen(state)
-	quietHeli()
+	SlashCo.QuietHeli()
 	SlashCo.AudioSystem.DisableBackgroundMusic()
 
 	--yucky yucky
@@ -284,5 +275,6 @@ end
 function SlashCo.HelicopterRadioVoice(type)
 	net.Start("mantislashco_HelicopterVoice")
 		net.WriteUInt(type, 4)
+		net.WriteUInt(math.random(1, type == SlashCo.HelicopterVoices.INTRO and 8 or 5), 4) -- Sound index
 	net.Broadcast()
 end

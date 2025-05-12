@@ -670,24 +670,25 @@ end)
 
 net.Receive("mantislashco_HelicopterVoice", function()
 	local t = net.ReadUInt(4)
+	local id = net.ReadUInt(4)
 
 	if t == SlashCo.HelicopterVoices.INTRO then
-		GameData.LocalPlayer:EmitSound("slashco/helipilot/helipilot_intro" .. math.random(1, 8) .. ".mp3", 100)
+		GameData.LocalPlayer:EmitSound("slashco/helipilot/helipilot_intro" .. id .. ".mp3", 100)
 		return
 	end
 
 	if t == SlashCo.HelicopterVoices.APPROACH then
-		GameData.LocalPlayer:EmitSound("slashco/helipilot/helipilot_approach" .. math.random(1, 5) .. ".mp3", 100)
+		GameData.LocalPlayer:EmitSound("slashco/helipilot/helipilot_approach" .. id .. ".mp3", 100)
 		return
 	end
 
 	if t == SlashCo.HelicopterVoices.LAND then
-		GameData.LocalPlayer:EmitSound("slashco/helipilot/helipilot_land" .. math.random(1, 5) .. ".mp3", 100)
+		GameData.LocalPlayer:EmitSound("slashco/helipilot/helipilot_land" .. id .. ".mp3", 100)
 		return
 	end
 
 	if t == SlashCo.HelicopterVoices.BEACON then
-		GameData.LocalPlayer:EmitSound("slashco/helipilot/helipilot_beacon" .. math.random(1, 5) .. ".mp3", 100)
+		GameData.LocalPlayer:EmitSound("slashco/helipilot/helipilot_beacon" .. id .. ".mp3", 100)
 		return
 	end
 end)

@@ -87,7 +87,6 @@ function SlashCo.ResetCurRoundData()
 		},
 		ExposureSpawns = {}, --This is only used in TestConfig()
 		Items = {},
-		Helicopter = 0,
 		SlashersToBeSpawned = {},
 		Slashers = {},
 		--GeneratorCount = 2,
@@ -118,6 +117,25 @@ function SlashCo.ResetCurRoundData()
 	}
 
 	debug.setmetatable(SlashCo.CurRound.OfferingData, OfferingMeta)
+
+	local CurRoundMeta = { -- Backwards compatiblity with any addons that use the old keys.
+		__index = function(self, key)
+			if key == "Helicopter" then
+				return IsValid(SlashCo.Helicopter) and SlashCo.Helicopter:EntIndex() or 0
+			end
+
+			return rawget(self, key)
+		end,
+
+		__newindex = function(self, key, value)
+			if key == "Helicopter" then
+				SlashCo.Helicopter = isnumber(value) and Entity(value) or nil
+			end
+
+			rawset(self, key, value)
+		end,
+	}
+	debug.setmetatable(SlashCo.CurRound, CurRoundMeta)
 end
 
 if not SlashCo.CurRound then
@@ -175,7 +193,6 @@ function SlashCo.CreateHelicopter(pos, ang)
 	Ent:SetAngles(ang)
 	Ent:Spawn()
 
-	SlashCo.CurRound.Helicopter = Ent:EntIndex()
 	return Ent
 end
 
@@ -267,6 +284,18 @@ function SlashCo.RemoveAllCurRoundEnts()
 		if IsValid(Entity(SlashCo.CurRound.ExposureSpawns[I])) then
 			Entity(SlashCo.CurRound.ExposureSpawns[I]):Remove()
 		end
+	end
+end
+
+function SlashCo.DisableSoundScapes()
+	for _, ent in ipairs(ents.FindByClass("env_soundscape")) do
+		ent:Fire("Disable")
+	end
+end
+
+function SlashCo.EnableSoundScapes()
+	for _, ent in ipairs(ents.FindByClass("env_soundscape")) do
+		ent:Fire("Enable")
 	end
 end
 
@@ -396,29 +425,22 @@ function SlashCo.HelicopterLeaveForIntro()
 	SlashCo.CurRound.HelicopterTargetPosition = Vector(SlashCo.CurRound.HelicopterSpawnPosition[1],
 			SlashCo.CurRound.HelicopterSpawnPosition[2], SlashCo.CurRound.HelicopterSpawnPosition[3])
 
-	local delay = math.sqrt(ents.GetByIndex(SlashCo.CurRound.Helicopter):GetPos():Distance(Vector(SlashCo.CurRound.HelicopterSpawnPosition[1],
+	local heli = SlashCo.Helicopter
+	if not IsValid(heli) then
+		return
+	end
+
+	local delay = math.sqrt(heli:GetPos():Distance(Vector(SlashCo.CurRound.HelicopterSpawnPosition[1],
 			SlashCo.CurRound.HelicopterSpawnPosition[2], SlashCo.CurRound.HelicopterSpawnPosition[3]))) / 5
 
 	timer.Simple(delay, function()
-		local heli = ents.GetByIndex(SlashCo.CurRound.Helicopter)
-
 		if not IsValid(heli) then
 			return
 		end
 
-		heli:StopSound("slashco/helicopter_engine_distant.mp3")
-		heli:StopSound("slashco/helicopter_rotors_distant.mp3")
-		heli:StopSound("slashco/helicopter_engine_close.mp3")
-		heli:StopSound("slashco/helicopter_rotors_close.mp3")
-
+		SlashCo.QuietHeli()
 		timer.Simple(0.05, function()
-			if IsValid(heli) then
-				heli:StopSound("slashco/helicopter_engine_distant.mp3")
-				heli:StopSound("slashco/helicopter_rotors_distant.mp3")
-				heli:StopSound("slashco/helicopter_engine_close.mp3")
-				heli:StopSound("slashco/helicopter_rotors_close.mp3")
-			end
-
+			SlashCo.QuietHeli()
 			SlashCo.RemoveHelicopter()
 
 			net.Start("mantislashco_MapAmbientPlay")
@@ -432,9 +454,15 @@ function SlashCo.UpdateHelicopterSeek(pos)
 end
 
 function SlashCo.RemoveHelicopter()
-	local ent = ents.GetByIndex(SlashCo.CurRound.Helicopter)
+	local ent = SlashCo.Helicopter
 	if IsValid(ent) then
 		ent:Remove()
+	end
+end
+
+function SlashCo.QuietHeli()
+	if IsValid(SlashCo.Helicopter) then
+		SlashCo.Helicopter:QuietHeli()
 	end
 end
 

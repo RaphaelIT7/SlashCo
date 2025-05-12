@@ -147,24 +147,15 @@ local function teamSummary(lines, survivors, rescued)
 	end
 end
 
-local stateTable = {
-	[0] = "wonAllSurvivors",
-	"wonSomeSurvivors",
-	"wonNoSurvivors",
-	"lost",
-	"wonBeacon",
-	"cursed",
-	"intro"
-}
 local stringTable = {
-	wonAllSurvivors = function()
+	[SlashCo.RoundState.WON_ALL_ALIVE] = function()
 		surface.PlaySound("slashco/music/slashco_win_full.mp3")
 		return {
 			SlashCo.Language("AssignmentSuccess"),
 			SlashCo.Language("AllRescued"),
 		}
 	end,
-	wonSomeSurvivors = function(survivors, rescued)
+	[SlashCo.RoundState.WON_SOME_DEAD] = function(survivors, rescued)
 		surface.PlaySound("slashco/music/slashco_win_2.mp3")
 		local lines = {
 			SlashCo.Language("AssignmentSuccess"),
@@ -174,21 +165,21 @@ local stringTable = {
 
 		return lines
 	end,
-	wonNoSurvivors = function()
+	[SlashCo.RoundState.WON_ALL_DEAD] = function()
 		surface.PlaySound("slashco/music/slashco_lost_active.mp3")
 		return {
 			SlashCo.Language("AssignmentSuccess"),
 			SlashCo.Language("NoneRescued"),
 		}
 	end,
-	lost = function()
+	[SlashCo.RoundState.LOST] = function()
 		surface.PlaySound("slashco/music/slashco_lost.mp3")
 		return {
 			SlashCo.Language("AssignmentFail"),
 			SlashCo.Language("NoneRescued"),
 		}
 	end,
-	wonBeacon = function(survivors, rescued)
+	[SlashCo.RoundState.WON_DISTRESS] = function(survivors, rescued)
 		surface.PlaySound("slashco/music/slashco_win_db.mp3")
 		local lines = {
 			SlashCo.Language("AssignmentAborted"),
@@ -197,7 +188,7 @@ local stringTable = {
 
 		return lines
 	end,
-	cursed = function()
+	[SlashCo.RoundState.CURSED] = function()
 		surface.PlaySound("slashco/music/slashco_lost.mp3")
 		local lines = {}
 		for i = 0, 19 do
@@ -210,7 +201,7 @@ local stringTable = {
 
 		return lines
 	end,
-	intro = function(info)
+	[SlashCo.RoundState.INTRO] = function(info)
 		surface.PlaySound(SlashCo.GetDangerSound(info[4]))
 		local lines = {
 			SlashCo.Language("cur_assignment", info[1]),
@@ -290,10 +281,13 @@ local function nextLine(panel, lines)
 end
 
 hook.Add("scValue_RoundEnd", "SlashCoRoundEnd", function(state, survivors, rescued)
-	local stateString = stateTable[state]
-	local lines = stringTable[stateString](survivors, rescued)
+	local lines = stringTable[state](survivors, rescued)
 	if table.IsEmpty(lines) then
 		return
+	end
+
+	if IsValid(SlashCo.RoundEndPanel) then
+		SlashCo.RoundEndPanel:Remove()
 	end
 
 	local cur = CurTime()
@@ -302,12 +296,13 @@ hook.Add("scValue_RoundEnd", "SlashCoRoundEnd", function(state, survivors, rescu
 	local panel = vgui.Create("Panel")
 	panel:Dock(FILL)
 	fadeIn(panel)
+	SlashCo.RoundEndPanel = panel
 
 	function panel.Paint()
 		surface.SetDrawColor(0, 0, 0)
 		panel:DrawFilledRect()
 
-		if stateTable[state] ~= "intro" and CurTime() - cur > 2 then
+		if state ~= SlashCo.RoundState.INTRO and CurTime() - cur > 2 then
 			showPointSummary(cur)
 		end
 	end

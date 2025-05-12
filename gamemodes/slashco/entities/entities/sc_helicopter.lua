@@ -66,6 +66,37 @@ function ENT:Initialize()
 	self:EmitSound("slashco/helicopter_rotors_distant.mp3", 150, 100, 1, CHAN_STATIC)
 	self:EmitSound("slashco/helicopter_engine_close.mp3", 75, 150, 1, CHAN_STATIC)
 	self:EmitSound("slashco/helicopter_rotors_close.mp3", 100, 100, 1, CHAN_STATIC)
+
+	for _, ent in ipairs(ents.FindByClass(self:GetClass())) do
+		if ent == self then continue end
+		
+		ent:Remove() -- Only allow a single helicopter to exist at once.
+	end
+
+	SlashCo.Helicopter = self
+end
+
+function ENT:OnRemove()
+	if CLIENT then
+		timer.Simple(0, function()
+			if IsValid(self) then return end
+
+			if SlashCo.Helicopter == self then
+				SlashCo.Helicopter = nil
+			end
+		end)
+	else
+		if SlashCo.Helicopter == self then
+			SlashCo.Helicopter = nil
+		end
+	end
+end
+
+function ENT:QuietHeli()
+	self:StopSound("slashco/helicopter_engine_distant.mp3")
+	self:StopSound("slashco/helicopter_rotors_distant.mp3")
+	self:StopSound("slashco/helicopter_engine_close.mp3")
+	self:StopSound("slashco/helicopter_rotors_close.mp3")
 end
 
 function sign(number)
@@ -197,11 +228,20 @@ if SERVER then
 
 	function ENT:Think()
 		self:NextThink(CurTime())
-		self:DrawShadow(false) -- Love to bug through the map.
+		self:DrawShadow(false) -- Loves to bug through the map.
 
 		local SatPlayers = SlashCo.CurRound.HelicopterRescuedPlayers
 		local plyCount = #SatPlayers
 		local TargetPosition = SlashCo.CurRound.HelicopterTargetPosition
+
+		local phys = self:GetPhysicsObject()
+		if phys:IsValid() then -- Since we have MOVETYPE_NONE the engine won't update the physics object so we need to do it ourself.
+			phys:SetPos(self:GetPos())
+			phys:SetAngles(self:GetAngles())
+			phys:EnableGravity(false)
+			phys:EnableMotion(false)
+			phys:EnableDrag(false)
+		end
 
 		if self.EnableMovement and TargetPosition ~= nil then
 			local IsAirborne = 1
