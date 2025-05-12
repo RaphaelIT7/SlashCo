@@ -82,7 +82,7 @@ hook.Add("Tick", "HandleSlasherAbilities", function()
 			slasher.CurrentChaseTick = 99
 		end
 
-		if slasher.ChaseActivationCooldown > 0 then
+		if (slasher.ChaseActivationCooldown or 0) > 0 then
 			slasher.ChaseActivationCooldown = slasher.ChaseActivationCooldown - FrameTime()
 		end
 
