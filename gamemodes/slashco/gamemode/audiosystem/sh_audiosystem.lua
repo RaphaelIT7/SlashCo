@@ -7,6 +7,16 @@ SlashCo.AudioSystem = SlashCo.AudioSystem or {}
 	This whole audio system is meant to efficiently syncronize and play sounds for players
 ]]
 
+
+-- Simple function. Adds sound/ to the given fileName to properly work with sound.PlayFile
+function SlashCo.AudioSystem.ToSound(fileName)
+	if fileName:StartsWith("sound/") then
+		return fileName
+	end
+	
+	return "sound/" .. fileName
+end
+
 function SlashCo.AudioSystem.ShouldPlayBackgroundMusic()
 	return GetGlobal2Bool("SlashCo:ShouldPlayBackgroundMusic", false)
 end
@@ -31,6 +41,10 @@ end
 
 function SlashCo.AudioSystem.GetBackgroundMusicVolume(fallBack)
 	return GetGlobal2Float("SlashCo:BackgroundMusicVolume", fallBack or 1)
+end
+
+function SlashCo.AudioSystem.PrecacheSound(soundFile)
+	-- ToDo
 end
 
 -- Server & client files are loaded at last

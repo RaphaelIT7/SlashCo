@@ -6,17 +6,19 @@
 SlashCo.AudioSystem.Sounds = SlashCo.AudioSystem.Sounds or {}
 
 util.AddNetworkString("slashCo_AudioSystem_PlaySound")
-function SlashCo.AudioSystem.PlaySound(soundPath, soundLevel, ent, vol, looping, fadeIn)
+function SlashCo.AudioSystem.PlaySound(soundPath, soundLevel, entity, volume, looping, fadeIn, identifier)
 	fadeIn = fadeIn or 0
+	identifier = identifier or soundPath
 
 	net.Start("slashCo_AudioSystem_PlaySound")
 		net.WriteString(soundPath)
-		net.WriteUInt(ent:EntIndex(), 13)
+		net.WriteUInt(entity:EntIndex(), 13)
 		net.WriteUInt(soundLevel, 14)
-		net.WriteFloat(vol)
+		net.WriteFloat(volume)
 		net.WriteBool(looping)
 		net.WriteFloat(fadeIn)
 		net.WriteUInt(engine.TickCount(), 32) -- To Sync
+		net.WriteString(identifier)
 	net.Broadcast()
 
 	--[[table.insert(SlashCo.AudioSystem.Sounds, {
@@ -27,4 +29,14 @@ function SlashCo.AudioSystem.PlaySound(soundPath, soundLevel, ent, vol, looping,
 		permanent = permanent,
 		startTime = CurTime()
 	})]]
+end
+
+util.AddNetworkString("slashCo_AudioSystem_StopSound")
+function SlashCo.AudioSystem.StopSound(identifier, fadeOut)
+	fadeOut = fadeOut or 0
+
+	net.Start("slashCo_AudioSystem_StopSound")
+		net.WriteString(identifier)
+		net.WriteFloat(fadeOut)
+	net.Broadcast()
 end

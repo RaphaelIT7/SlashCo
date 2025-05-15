@@ -12,15 +12,6 @@ function SlashCo.AudioSystem.ShouldPlayBackgroundMusic()
 	return GetGlobal2Bool("SlashCo:ShouldPlayBackgroundMusic", false)
 end]]
 
--- Simple function. Adds sound/ to the given fileName to properly work with sound.PlayFile
-local function ToSound(fileName)
-	if fileName:StartsWith("sound/") then
-		return fileName
-	end
-	
-	return "sound/" .. fileName
-end
-
 -- Strips away any spaces & adds the additional stuff.
 local function AppendMode(mode, addition)
 	return mode:Trim() .. " " .. addition
@@ -53,7 +44,7 @@ end
 
 -- NOTE: The callback is not called if the channel wasn't created.
 function SlashCo.AudioSystem.CreateChannel(soundFile, mode, callback)
-	soundFile = ToSound(soundFile)
+	soundFile = SlashCo.AudioSystem.ToSound(soundFile)
 	sound.PlayFile(soundFile, mode, function(channel, errCode, errStr)
 		if not IsValid(channel) then
 			Error("[SlashCo] Failed to create audio channel! (" .. errCode .. ", " .. errStr .. "," .. soundFile .. ")")
@@ -70,6 +61,20 @@ function SlashCo.AudioSystem.CreateChannel(soundFile, mode, callback)
 	end)
 end
 
+function SlashCo.AudioSystem.SetChannelIdentifier(channel, identifier)
+	SlashCo.AudioSystem.Channels[channel].identifier = identifier
+end
+
+function SlashCo.AudioSystem.GetChannelByIdentifier(identifier)
+	for channel, channelData in pairs(SlashCo.AudioSystem.Channels) do
+		if channelData.identifier == identifier then
+			return channel
+		end
+	end
+
+	return nil
+end
+
 -- Precaches a sound that can then be played using the given identifier
 function SlashCo.AudioSystem.PrecacheSound(soundFile, mode, identifier)
 	local existingPrecacheData = SlashCo.AudioSystem.PrecacheSounds[identifier]
@@ -79,7 +84,7 @@ function SlashCo.AudioSystem.PrecacheSound(soundFile, mode, identifier)
 
 	local precacheData = {
 		mode = AppendMode(mode, "noplay"),
-		soundFile = ToSound(soundFile),
+		soundFile = SlashCo.AudioSystem.ToSound(soundFile),
 		channel = nil,
 		creating = true, -- Were creating the channel.
 	}
@@ -223,7 +228,7 @@ local lastCreation = 0 -- Doesn't need autorefresh so were fine.
 function SlashCo.AudioSystem.PlayBackgroundMusic(fileName)
 	if not SlashCo.AudioSystem.ShouldPlayBackgroundMusic() then return end
 
-	local backgroundMusic = ToSound(fileName or SlashCo.AudioSystem.GetBackgroundMusic())
+	local backgroundMusic = SlashCo.AudioSystem.ToSound(fileName or SlashCo.AudioSystem.GetBackgroundMusic())
 	if IsValid(SlashCo.AudioSystem.BackgroundChannel) then
 		if SlashCo.AudioSystem.BackgroundChannel:GetFileName() == backgroundMusic then return end
 
@@ -327,15 +332,13 @@ end
 
 hook.Add("Think", "SlashCo:AudioSystem", SlashCo.AudioSystem.Think)
 
-net.Receive("slashCo_AudioSystem_PlaySound", function()
-	local soundPath = net.ReadString()
-	local entIndex = net.ReadUInt(13)
-	local soundLevel = net.ReadUInt(14)
-	local volume = net.ReadFloat()
-	local looping = net.ReadBool()
-	local fadeIn = net.ReadFloat()
-	local tickCount = net.ReadUInt(32)
+function SlashCo.AudioSystem.PlaySound(soundPath, soundLevel, entity, volume, looping, fadeIn, identifier, tickCount)
+	fadeIn = fadeIn or 0
+	tickCount = tickCount or engine.TickCount()
 
+	SlashCo.AudioSystem.StopSound(identifier, 0.5)
+
+	local entIndex = isnumber(entity) and entity or (IsValid(entity) and entity:EntIndex() or 0)
 	SlashCo.AudioSystem.CreateChannel(soundPath, entIndex == 0 and "mono" or "3d", function(channel)
 		if fadeIn != 0 then
 			channel:SetVolume(0)
@@ -347,6 +350,10 @@ net.Receive("slashCo_AudioSystem_PlaySound", function()
 		channel:EnableLooping(looping)
 		channel:SetTime(SlashCo.AudioSystem.CalculateTime(channel, tickCount))
 
+		if identifier then
+			SlashCo.AudioSystem.SetChannelIdentifier(channel, identifier)
+		end
+
 		if fadeIn != 0 then
 			SlashCo.AudioSystem.FadeTo(channel, fadeIn, volume)
 		end
@@ -356,8 +363,34 @@ net.Receive("slashCo_AudioSystem_PlaySound", function()
 		end
 
 		if soundLevel != 0 then
-			channel:Set3DFadeDistance(100, 500)
-			print(soundLevel ^ 1.75)
+			channel:Set3DFadeDistance(soundLevel ^ 1.25, soundLevel ^ 1.5)
 		end
 	end)
+end
+
+function SlashCo.AudioSystem.StopSound(identifier, fadeOut)
+	local channel = SlashCo.AudioSystem.GetChannelByIdentifier(identifier)
+	if not channel then return end
+
+	SlashCo.AudioSystem.DestroyChannel(channel, fadeOut)
+end
+
+net.Receive("slashCo_AudioSystem_PlaySound", function()
+	local soundPath = net.ReadString()
+	local entIndex = net.ReadUInt(13)
+	local soundLevel = net.ReadUInt(14)
+	local volume = net.ReadFloat()
+	local looping = net.ReadBool()
+	local fadeIn = net.ReadFloat()
+	local tickCount = net.ReadUInt(32)
+	local identifier = net.ReadString()
+
+	SlashCo.AudioSystem.PlaySound(soundPath, soundLevel, entIndex, volume, looping, fadeIn, identifier, tickCount)
+end)
+
+net.Receive("slashCo_AudioSystem_StopSound", function()
+	local identifier = net.ReadString()
+	local fadeOut = net.ReadFloat()
+
+	SlashCo.AudioSystem.StopSound(identifier, fadeOut)
 end)
