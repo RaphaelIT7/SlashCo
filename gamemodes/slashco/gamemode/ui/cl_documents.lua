@@ -83,7 +83,8 @@ local fallBackOption = "Selection"
 GameData.DocumentOption = GameData.DocumentOption or fallBackOption
 local wasLeftMousePressed = false
 local wasRightMousePressed = false
-
+SlashCo.AudioSystem.PrecacheSound("slashco/ui/terminalbutton_1.mp3", "mono", "DocumentRightClick")
+SlashCo.AudioSystem.PrecacheSound("slashco/ui/terminalbutton_2.mp3", "mono", "DocumentLeftClick")
 local function SwitchSelection(newSelection, isRightMouse)
 	GameData.DocumentOption = newSelection
 
@@ -93,7 +94,9 @@ local function SwitchSelection(newSelection, isRightMouse)
 		wasLeftMousePressed = true
 	end
 
-	surface.PlaySound("ui/buttonclick.wav")
+	SlashCo.AudioSystem.GetPrecachedChannel(isRightMouse and "DocumentRightClick" or "DocumentLeftClick", function(channel)
+		channel:Play()
+	end)
 end
 
 local function IsPressing(mouse)
