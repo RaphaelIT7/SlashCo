@@ -1,5 +1,6 @@
-SlashCo.AudioSystem.Channels = SlashCo.AudioSystem.Channels or {} -- All IGModAudioChannel instances
+SlashCo.AudioSystem.Channels = SlashCo.AudioSystem.Channels or {} -- All IGModAudioChannel instances, use pairs to iterate as it will have holes.
 SlashCo.AudioSystem.ParentedChannels = SlashCo.AudioSystem.ParentedChannels or {}
+SlashCo.AudioSystem.PrecacheSounds = SlashCo.AudioSystem.PrecacheSounds or {}
 SlashCo.AudioSystem.BackgroundChannel = SlashCo.AudioSystem.BackgroundChannel or nil
 SlashCo.AudioSystem.ChannelIDs = SlashCo.AudioSystem.ChannelIDs or 0 -- Incremental number to assign channel id's
 
@@ -20,9 +21,18 @@ local function ToSound(fileName)
 	return "sound/" .. fileName
 end
 
+-- Strips away any spaces & adds the additional stuff.
+local function AppendMode(mode, addition)
+	return mode:Trim() .. " " .. addition
+end
+
 function SlashCo.AudioSystem.NukeChannels()
 	for channel, _ in pairs(SlashCo.AudioSystem.Channels) do
 		SlashCo.AudioSystem.DestroyChannel(channel, 1)
+	end
+
+	for _, precacheData in pairs(SlashCo.AudioSystem.PrecacheSounds) do
+		precacheData.channel:__gc()
 	end
 
 	SlashCo.AudioSystem.BackgroundChannel = nil
@@ -60,6 +70,52 @@ function SlashCo.AudioSystem.CreateChannel(soundFile, mode, callback)
 	end)
 end
 
+-- Precaches a sound that can then be played using the given identifier
+function SlashCo.AudioSystem.PrecacheSound(soundFile, mode, identifier)
+	local existingPrecacheData = SlashCo.AudioSystem.PrecacheSounds[identifier]
+	if existingPrecacheData and IsValid(existingPrecacheData.channel) then
+		existingPrecacheData.channel:__gc()
+	end
+
+	local precacheData = {
+		mode = AppendMode(mode, "noplay"),
+		soundFile = ToSound(soundFile),
+		channel = nil,
+		creating = true, -- Were creating the channel.
+	}
+	SlashCo.AudioSystem.PrecacheSounds[identifier] = precacheData
+
+	SlashCo.AudioSystem.CreateChannel(precacheData.soundFile, precacheData.mode, function(channel)
+		precacheData.channel = channel
+		precacheData.creating = false
+	end)
+end
+
+-- Returns the given precached channel using the identifier, returns nil on failure. If given a callback, it will use that function which will be more reliable.
+function SlashCo.AudioSystem.GetPrecachedChannel(identifier, callback)
+	local precacheData = SlashCo.AudioSystem.PrecacheSounds[identifier]
+	if not precacheData then return end
+
+	if not IsValid(precacheData.channel) then -- The channel got invalidated somehow, lets recreate it.
+		precacheData.creating = true
+		SlashCo.AudioSystem.CreateChannel(precacheData.soundFile, precacheData.mode, function(channel)
+			precacheData.channel = channel
+			precacheData.creating = false
+
+			if callback then
+				callback(channel)
+			end
+		end)
+		return
+	end
+
+	if callback then
+		callback(precacheData.channel)
+	else
+		return precacheData.channel
+	end
+end
+
 -- This causes the channel to follow the entities position, BUT the channel WONT be removed if the entity is removed.
 function SlashCo.AudioSystem.ParentChannelToEntity(channel, entity)
 	local entityIndex = 0
@@ -79,6 +135,7 @@ function SlashCo.AudioSystem.ParentChannelToEntity(channel, entity)
 	}
 end
 
+-- Fades out and destroys the channel.
 function SlashCo.AudioSystem.DestroyChannel(channel, fadeOutTime)
 	if IsValid(channel) and channel:GetState() == GMOD_CHANNEL_PLAYING then
 		local vol = channel:GetVolume()
@@ -111,6 +168,7 @@ function SlashCo.AudioSystem.DestroyChannel(channel, fadeOutTime)
 	SlashCo.AudioSystem.ParentedChannels[channel] = nil
 end
 
+-- Fades the channel's volume to the target volume.
 function SlashCo.AudioSystem.FadeTo(channel, fadeInTime, targetVol)
 	targetVol = targetVol or 1
 	fadeInTime = fadeInTime or 1
