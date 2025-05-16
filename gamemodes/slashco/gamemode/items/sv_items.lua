@@ -40,7 +40,7 @@ function SlashCo.DropAllItems(ply, noEffect)
 	SlashCo.DropItem(ply)
 end
 
-function SlashCo.DropItem(ply)
+function SlashCo.DropItem(ply, dropCallback)
 	if CLIENT then
 		return
 	end
@@ -118,6 +118,10 @@ function SlashCo.DropItem(ply)
 		if not SlashCoItems[item].IsSecondary then
 			SlashCo.CurRound.Items[droppeditem:EntIndex()] = true
 		end
+		
+		if dropCallback then
+			dropCallback(ply, item, droppeditem, phys)
+		end
 	end)
 
 	ply.LastDroppedItemTime = CurTime()
@@ -179,6 +183,11 @@ function SlashCo.ItemPickUp(ply, itemindex, item)
 	if dontPickupHook then
 		return
 	end
+	
+	local itemEnt = Entity(itemindex)
+	if itemEnt.DONTPICKUP then
+		return
+	end
 
 	local dontPickup = ply:ItemFunction2("PrePickUp", item, itemindex)
 	if dontPickup then
@@ -196,8 +205,6 @@ function SlashCo.ItemPickUp(ply, itemindex, item)
 			return
 		end
 	end
-
-	local itemEnt = Entity(itemindex)
 
 	if IsValid(itemEnt.SpawnedAt) then
 		itemEnt.SpawnedAt:TriggerOutput("OnPickedUp", ply)

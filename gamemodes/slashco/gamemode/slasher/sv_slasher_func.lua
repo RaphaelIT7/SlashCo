@@ -388,7 +388,7 @@ function SlashCo.BustDoor(slasher, target, force)
 end
 
 function SlashCo.AddSlasherAnger(slasher, anger)
-	slasher:SetNW2Float("SlasherAnger", slasher:GetNW2Float("SlasherAnger", 0) + anger)
+	slasher:SetNW2Float("SlasherAnger", math.Clamp(slasher:GetNW2Float("SlasherAnger", 0) + anger, 0, 100))
 end
 
 function SlashCo.GetSlasherAnger(slasher)
@@ -408,11 +408,17 @@ function SlashCo.GetGlobalSlasherAnger()
 end
 
 timer.Create("SlashCo:SlasherAnger", 1, 0, function()
-	local addAnger = 0.05 -- Added base anger every second.
+	local hasCustomBackgroundMusic = false
+	for _, slasher in ipairs(team.GetPlayers(TEAM_SLASHER)) do
+		local addAnger = slasher:SlasherValue("AngerPassiveGain", 0)
+		SlashCo.AddSlasherAnger(slasher, addAnger)
 
-	for _, ply in ipairs(team.GetPlayers(TEAM_SLASHER)) do
-		SlashCo.AddSlasherAnger(ply, addAnger)
+		if slasher:SlasherValue("CustomBackgroundMusic", false) then
+			hasCustomBackgroundMusic = true -- One of the slashers has custom background music, so we shouldn't interfere with it.
+		end
 	end
+
+	if hasCustomBackgroundMusic then return end
 
 	--[[if SlashCo.GetGlobalSlasherAnger() > 20 and not SlashCo.AudioSystem.ShouldPlayBackgroundMusic() then
 		SlashCo.AudioSystem.SetBackgroundMusic("slashco/slasher/ambience/angry.mp3", 5)
