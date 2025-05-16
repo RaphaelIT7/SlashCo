@@ -18,6 +18,8 @@ SlashCo.GeneratorModel = "models/slashco/other/generator/generator.mdl" --Model 
 SlashCo.HelicopterModel = "models/slashco/other/helicopter/helicopter.mdl" --Model path for the helicopter
 SlashCo.GhostPingDelay = 480
 SlashCo.QuickEscapeTime = 600 -- Time in seconds to count as a quick escape
+SlashCo.SlowEscapeTime = 1200 -- Time in seconds to count as a slow escape
+SlashCo.WarningTime = SlashCo.SlowEscapeTime - 300 -- Time in seconds when the survivors should be warned that they got only 5 minutes left before its a slow run.
 
 SlashCo.HelicopterVoices = {
 	INTRO = 1,
@@ -28,6 +30,14 @@ SlashCo.HelicopterVoices = {
 
 function SlashCo.CopyColor(col)
 	return Color(col:Unpack())
+end
+
+function SlashCo.IsQuickEscape()
+	return SlashCo.QuickEscapeTime > (CurTime() - GetGlobal2Float("SCStartTime"))
+end
+
+function SlashCo.IsSlowEscape()
+	return SlashCo.SlowEscapeTime < (CurTime() - GetGlobal2Float("SCStartTime"))
 end
 
 SlashCo.UnknownCol = Color(200, 0, 0) -- Text Color used for fields that are unknown

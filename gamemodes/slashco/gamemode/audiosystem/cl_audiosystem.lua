@@ -47,7 +47,7 @@ function SlashCo.AudioSystem.CreateChannel(soundFile, mode, callback)
 	soundFile = SlashCo.AudioSystem.ToSound(soundFile)
 	sound.PlayFile(soundFile, mode, function(channel, errCode, errStr)
 		if not IsValid(channel) then
-			Error("[SlashCo] Failed to create audio channel! (" .. errCode .. ", " .. errStr .. "," .. soundFile .. ")")
+			Error("[SlashCo] Failed to create audio channel! (" .. errCode .. ", " .. errStr .. "," .. soundFile .. ")\n")
 			return
 		end
 
@@ -76,7 +76,7 @@ function SlashCo.AudioSystem.GetChannelByIdentifier(identifier)
 end
 
 -- Precaches a sound that can then be played using the given identifier
-function SlashCo.AudioSystem.PrecacheSound(soundFile, mode, identifier)
+function SlashCo.AudioSystem.PrecacheSound(soundFile, mode, identifier, callback)
 	local existingPrecacheData = SlashCo.AudioSystem.PrecacheSounds[identifier]
 	if existingPrecacheData and IsValid(existingPrecacheData.channel) then
 		existingPrecacheData.channel:__gc()
@@ -93,13 +93,27 @@ function SlashCo.AudioSystem.PrecacheSound(soundFile, mode, identifier)
 	SlashCo.AudioSystem.CreateChannel(precacheData.soundFile, precacheData.mode, function(channel)
 		precacheData.channel = channel
 		precacheData.creating = false
+
+		if callback then
+			callback(channel)
+		end
 	end)
 end
 
 -- Returns the given precached channel using the identifier, returns nil on failure. If given a callback, it will use that function which will be more reliable.
-function SlashCo.AudioSystem.GetPrecachedChannel(identifier, callback)
+function SlashCo.AudioSystem.GetPrecachedChannel(identifier, callback, precacheData)
 	local precacheData = SlashCo.AudioSystem.PrecacheSounds[identifier]
-	if not precacheData then return end
+	if not precacheData then
+		if precacheData then
+			SlashCo.AudioSystem.PrecacheSound(precacheData.soundFile, precacheData.mode, identifier, function(channel)
+				if callback then
+					callback(channel)
+				end
+			end)
+		end
+
+		return
+	end
 
 	if not IsValid(precacheData.channel) then -- The channel got invalidated somehow, lets recreate it.
 		precacheData.creating = true
