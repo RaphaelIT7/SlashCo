@@ -25,13 +25,20 @@ SLASHER.ChaseDuration = 0.0
 SLASHER.ChaseCooldown = 3
 SLASHER.JumpscareDuration = 2
 SLASHER.ChaseMusic = ""
-SLASHER.KillSound = "slashco/slasher/tyler_kill.mp3"
+SLASHER.KillSound = "slashco/slasher/igor/tyler_kill.mp3"
 SLASHER.Description = "Tyler_desc"
 SLASHER.ProTip = "Tyler_tip"
 SLASHER.SpeedRating = "★★★★★"
 SLASHER.EyeRating = "★☆☆☆☆"
 SLASHER.DiffRating = "★★★★☆"
 SLASHER.CannotBeSpectated = true
+SLASHER.AngerIncrease = 5 -- Anger increase of objectives being completed & every time he gives out a fuel can.
+SLASHER.AngerPassiveGain = 0
+SLASHER.AngerChaseGain = 0
+SLASHER.MinChase = 15 -- Number of seconds that are the minimum for a chase
+SLASHER.MinTylerTime = 5 -- Number of seconds he has to be at minimum as tyler the creator.
+SLASHER.AllowEndlessChase = false -- If true, tyler will enter a endless chase once a round has reached the slow escape mark.
+SLASHER.CustomBackgroundMusic = true -- Tyler has his own background music.
 
 function SLASHER.OnSpawn(slasher)
 	slasher.SlasherValue1 = 0
@@ -39,29 +46,42 @@ function SLASHER.OnSpawn(slasher)
 end
 
 function SLASHER.Precache()
-	for k=1, 6 do
-		SlashCo.PrecacheSound("slashco/slasher/tyler_song_" .. k .. ".mp3")
+	-- ToDo: Implement sound precaching for the new audiosystem.
+	--[[for k=1, 6 do
+		SlashCo.PrecacheSound("slashco/slasher/igor/tyler_song_" .. k .. ".mp3")
 	end
 	
-	SlashCo.PrecacheSound("slashco/slasher/tyler_destroyer_theme.mp3")
-	SlashCo.PrecacheSound("slashco/slasher/tyler_destroyer_whisper.mp3")
-	SlashCo.PrecacheSound("slashco/slasher/tyler_alarm.mp3")
+	SlashCo.PrecacheSound("slashco/slasher/igor/tyler_destroyer_theme.mp3")
+	SlashCo.PrecacheSound("slashco/slasher/igor/tyler_destroyer_whisper.mp3")
+	SlashCo.PrecacheSound("slashco/slasher/igor/tyler_alarm.mp3")]]
+	--SlashCo.PrecacheGeneric("slashco/ui/overlays/tyler_destroyer_face.vtf")
 end
 
 function SLASHER.HideTime(slasher)
-	slasher.TylerTime = 25 + SlashCo.MapSize * 25 - slasher.SlasherValue4 * 3 - team.NumPlayers(TEAM_SURVIVOR)
+	slasher.TylerTime = math.max((25 + SlashCo.MapSize * 25) - ((SlashCo.GetSlasherAnger(slasher) / 2) / SlashCo.MapSize) - team.NumPlayers(TEAM_SURVIVOR), SLASHER.MinTylerTime)
+end
+
+local function EndlessChase()
+	return (SLASHER.AllowEndlessChase and SlashCo.IsSlowEscape()) -- When the time for a slow escape is reached, we enter a endless chase
 end
 
 function SLASHER.OnTickBehaviour(slasher)
 	local v1 = slasher.SlasherValue1 --State
 	local v2 = slasher.SlasherValue2 --Time Spent as Creator or destroyer
-	local v4 = slasher.SlasherValue4 --Destruction power
 	local v5 = slasher.SlasherValue5 --Destoyer Blink
+	local anger = SlashCo.GetSlasherAnger(slasher)
+	local endlessChase = EndlessChase()
 
 	local final_eyesight = SLASHER.Eyesight
 	local final_perception = SLASHER.Perception
 
-	local ms = SlashCo.MapSize
+	if (v1 == 0 or v1 == 1) and endlessChase then
+		slasher.SlasherValue1 = 2
+		SlashCo.AudioSystem.StopSound("TylerSong", 0)
+		slasher.TylerSongPickedID = nil
+		SlashCo.AddSlasherAnger(slasher, 100) -- Max it out
+		anger = SlashCo.GetSlasherAnger(slasher)
+	end
 
 	if v1 == 0 then
 		--Specter
@@ -77,6 +97,8 @@ function SLASHER.OnTickBehaviour(slasher)
 		slasher:SetNWBool("CanKill", false)
 		slasher:SetImpervious(true)
 		final_perception = 6.0
+
+		slasher.tyler_destroyer_entrance_antispam = nil
 	elseif v1 == 1 then
 		--Creator
 
@@ -86,7 +108,7 @@ function SLASHER.OnTickBehaviour(slasher)
 			slasher.SlasherValue5 = 0
 			slasher:SetVisible(false)
 			if slasher.TylerSongPickedID then
-				SlashCo.SendValue(nil, "tylSong", slasher, slasher.TylerSongPickedID, true)
+				SlashCo.AudioSystem.StopSound("TylerSong", 0)
 				slasher.TylerSongPickedID = nil
 			end
 		end
@@ -104,9 +126,8 @@ function SLASHER.OnTickBehaviour(slasher)
 		final_perception = 0.0
 
 		if not slasher:GetNWBool("TylerCreating") and slasher.TylerSongPickedID == nil then
-			slasher.TylerSongPickedID = "slashco/slasher/tyler_song_" .. math.random(1, 6) .. ".mp3"
-			slasher:EmitSound(slasher.TylerSongPickedID, 1, 1, 0)
-			SlashCo.SendValue(nil, "tylSong", slasher, slasher.TylerSongPickedID, false, 0.8 - (slasher.SlasherValue3 * 0.12), true)
+			slasher.TylerSongPickedID = "slashco/slasher/igor/tyler_song_" .. math.random(1, 6) .. ".mp3"
+			SlashCo.AudioSystem.PlaySound(slasher.TylerSongPickedID, 50, slasher, math.max(0.8 - (slasher.SlasherValue3 * 0.12), 0.1), true, 1, "TylerSong")
 			SLASHER.HideTime(slasher)
 		end
 
@@ -116,9 +137,9 @@ function SLASHER.OnTickBehaviour(slasher)
 
 		--Time ran out
 		if (SlashCo.CurRound.EscapeHelicopterSummoned and v2 > slasher.TylerTime / 2.5) or v2 > slasher.TylerTime then
-			SlashCo.SendValue(nil, "tylSong", slasher, slasher.TylerSongPickedID, true)
 			slasher.TylerSongPickedID = nil
 			slasher.SlasherValue1 = 2
+			SlashCo.AudioSystem.StopSound("TylerSong", 0)
 		end
 
 		for i = 1, team.NumPlayers(TEAM_SURVIVOR) do
@@ -129,16 +150,17 @@ function SLASHER.OnTickBehaviour(slasher)
 			if not slasher:GetNWBool("TylerCreating") and surv:GetPos():Distance(slasher:GetPos()) < 400 and surv:GetEyeTrace().Entity == slasher then
 				slasher:SetNWBool("TylerCreating", true)
 				slasher.SlasherValue2 = 0
-				SlashCo.SendValue(nil, "tylSong", slasher, slasher.TylerSongPickedID, true)
+				SlashCo.AudioSystem.StopSound("TylerSong", 0)
 				slasher.TylerSongPickedID = nil
 			end
 		end
+		SlashCo.AudioSystem.StopSound("TylerSong", 0)
 
 		if slasher:GetNWBool("TylerCreating") and slasher.SlasherValue5 ~= 1.8 then
 			slasher.SlasherValue5 = 1.8
 			slasher.SlasherValue2 = 0
 
-			slasher:EmitSound("slashco/slasher/tyler_create.mp3")
+			slasher:EmitSound("slashco/slasher/igor/tyler_create.mp3")
 
 			timer.Simple(3, function()
 				if not IsValid(slasher) then
@@ -146,6 +168,7 @@ function SLASHER.OnTickBehaviour(slasher)
 				end
 
 				SlashCo.CreateGasCan(slasher:GetPos() + (slasher:GetForward() * 60) + Vector(0, 0, 18), Angle(0, 0, 0))
+				SlashCo.AddSlasherAnger(slasher, SLASHER.AngerIncrease)
 			end)
 
 			timer.Simple(4, function()
@@ -171,23 +194,28 @@ function SLASHER.OnTickBehaviour(slasher)
 		slasher:Freeze(true)
 
 		if slasher.tyler_destroyer_entrance_antispam == nil then
-			SlashCo.SendValue(nil, "tylSong", slasher, "slashco/slasher/tyler_alarm.mp3", false, 0.8)
+			SlashCo.AudioSystem.DisableBackgroundMusic()
+			SlashCo.AudioSystem.StopSound("TylerSong", 1)
+			SlashCo.AudioSystem.PlaySound(endlessChase and "slashco/slasher/igor/igor_whatsgood_intro.ogg" or "slashco/slasher/igor/tyler_alarm.ogg", 10000, slasher, 1, true, 1, "TylerAlarm")
 			slasher.tyler_destroyer_entrance_antispam = 0
 		end
 
-		local decay = v4 / 2
-
-		if v4 > 14 then
-			decay = 7
-		end
-
-		if slasher.tyler_destroyer_entrance_antispam < (12 - decay) then
+		local decay = anger / 8 -- At longest 12.5 sec
+		if slasher.tyler_destroyer_entrance_antispam < (endlessChase and 15.5 or (18 - decay)) then
 			slasher.tyler_destroyer_entrance_antispam = slasher.tyler_destroyer_entrance_antispam + FrameTime()
 		else
-			SlashCo.SendValue(nil, "tylSong", slasher, "slashco/slasher/tyler_alarm.mp3", true)
+			SlashCo.AudioSystem.StopSound("TylerAlarm", 0.5)
 
-			slasher:PlayGlobalSound("slashco/slasher/tyler_destroyer_theme.mp3", 140, nil, true)
-			slasher:PlayGlobalSound("slashco/slasher/tyler_destroyer_whisper.mp3", 140, nil, true)
+			if anger < 50 then -- switch up songs if his anger is below 50.
+				SlashCo.AudioSystem.PlaySound("slashco/slasher/igor/igor_nmw.ogg", 10000, slasher, 1, true, 1, "TylerTheme")
+			else
+				if endlessChase then
+					SlashCo.AudioSystem.PlaySound("slashco/slasher/igor/igor_whatsgood.ogg", 10000, slasher, 1, true, 1, "TylerTheme")
+				else
+					SlashCo.AudioSystem.PlaySound("slashco/slasher/igor/tyler_destroyer_theme.mp3", 10000, slasher, 1, true, 1, "TylerTheme")
+					SlashCo.AudioSystem.PlaySound("slashco/slasher/igor/tyler_destroyer_whisper.mp3", 10000, slasher, 1, true, 1, "TylerWhisper")
+				end
+			end
 
 			slasher:Freeze(false)
 			slasher.SlasherValue1 = 3
@@ -218,20 +246,21 @@ function SLASHER.OnTickBehaviour(slasher)
 		slasher:SetNWBool("CanKill", true)
 		final_perception = 2.0
 
-		if v2 > ((ms * 15) + 60 + (v4 * 10)) then
+		if v2 > math.max((((3 + SlashCo.MapSize) / 4) * anger), SLASHER.MinChase) and not endlessChase then
 			slasher.SlasherValue1 = 0
 
-			slasher:StopSound("slashco/slasher/tyler_destroyer_theme.mp3")
-			slasher:StopSound("slashco/slasher/tyler_destroyer_whisper.mp3")
+			SlashCo.AudioSystem.StopSound("TylerTheme", 1)
+			SlashCo.AudioSystem.StopSound("TylerWhisper", 1)
+			SlashCo.AudioSystem.EnableBackgroundMusic() -- We only play the background music now after the first time he chased.
+			SlashCo.AudioSystem.SetBackgroundMusic("slashco/slasher/igor/igors_theme.ogg", 1)
+
 			timer.Simple(0.1, function()
-				slasher:StopSound("slashco/slasher/tyler_destroyer_theme.mp3")
-				slasher:StopSound("slashco/slasher/tyler_destroyer_whisper.mp3")
+				SlashCo.AudioSystem.StopSound("TylerTheme", 1)
+				SlashCo.AudioSystem.StopSound("TylerWhisper", 1)
 			end)
 
 			slasher:SetVisible(false)
 			slasher:SetNWBool("TylerFlash", false)
-
-			slasher.SlasherValue4 = slasher.SlasherValue4 - 1
 
 			for i = 1, #player.GetAll() do
 				local ply = player.GetAll()[i]
@@ -303,6 +332,42 @@ function SLASHER.OnPrimaryFire(slasher, target)
 	slasher.KillDelayTick = SLASHER.KillDelay
 	slasher.SlasherValue2 = 0
 
+	local function DestroyItem(slasher, target)
+		SlashCo.AddSlasherAnger(slasher, SLASHER.AngerIncrease)
+		if not IsValid(target) then
+			return
+		end
+
+		local corpse
+		if target:IsPlayer() then
+			corpse = target.DeadBody
+		else
+			corpse = target
+		end
+
+		if not IsValid(corpse) then
+			return
+		end
+
+		local dissolver = ents.Create("env_entity_dissolver")
+		timer.Simple(2, function()
+			if IsValid(dissolver) then
+				dissolver:Remove() -- backup edict save on error
+			end
+		end)
+
+		dissolver.Target = "dissolve" .. corpse:EntIndex()
+		dissolver:SetKeyValue("dissolvetype", 0)
+		dissolver:SetKeyValue("magnitude", 1)
+		dissolver:SetPos(corpse:GetPos())
+		dissolver:SetPhysicsAttacker(slasher)
+		dissolver:Spawn()
+
+		corpse:SetName(dissolver.Target)
+		dissolver:Fire("Dissolve", dissolver.Target, 0)
+		dissolver:Fire("Kill", "", 1)
+	end
+
 	timer.Simple(SlashCoSlashers[slasher:GetNWString("Slasher")].JumpscareDuration, function()
 		for i = 1, #player.GetAll() do
 			local ply = player.GetAll()[i]
@@ -311,22 +376,27 @@ function SLASHER.OnPrimaryFire(slasher, target)
 
 		if IsValid(slasher) then
 			slasher:Freeze(false)
-			slasher.SlasherValue4 = slasher.SlasherValue4 + 1
+			if EndlessChase() then goto skip end
+
 			slasher.SlasherValue1 = 0
 			slasher:SetVisible(false)
 
-			slasher:StopSound("slashco/slasher/tyler_destroyer_theme.mp3")
-			slasher:StopSound("slashco/slasher/tyler_destroyer_whisper.mp3")
+			SlashCo.AudioSystem.StopSound("TylerTheme", 0.5)
+			SlashCo.AudioSystem.StopSound("TylerWhisper", 0.5)
+			SlashCo.AudioSystem.EnableBackgroundMusic()
+			SlashCo.AudioSystem.SetBackgroundMusic("slashco/slasher/igor/igors_theme.ogg", 1)
+
 			timer.Simple(0.1, function()
 				if not IsValid(slasher) then
 					return
 				end
 
-				slasher:StopSound("slashco/slasher/tyler_destroyer_theme.mp3")
-				slasher:StopSound("slashco/slasher/tyler_destroyer_whisper.mp3")
+				SlashCo.AudioSystem.StopSound("TylerTheme", 0.5)
+				SlashCo.AudioSystem.StopSound("TylerWhisper", 0.5)
 			end)
 
 			slasher:SetNWBool("TylerFlash", false)
+			::skip::
 		end
 
 		if IsValid(target) then
@@ -335,45 +405,19 @@ function SLASHER.OnPrimaryFire(slasher, target)
 
 			if target:IsPlayer() then
 				target:Freeze(false)
-				target:TakeDamage(99999, slasher, slasher)
+				if target:ItemValue("IsFuel", false, true) then
+					SlashCo.DropItem(target, function(_, _, droppedItem)
+						droppedItem.DONTPICKUP = true
+						DestroyItem(slasher, droppedItem)
+					end)
+					return
+				else
+					target:TakeDamage(99999, slasher, slasher)
+				end
 			end
 
 			timer.Simple(FrameTime(), function()
-				if not IsValid(target) then
-					return
-				end
-
-				local corpse
-				if target:IsPlayer() then
-					corpse = target.DeadBody
-				else
-					corpse = target
-					if IsValid(slasher) then
-						slasher.SlasherValue4 = slasher.SlasherValue4 + 0.5
-					end
-				end
-
-				if not IsValid(corpse) then
-					return
-				end
-
-				local dissolver = ents.Create("env_entity_dissolver")
-				timer.Simple(2, function()
-					if IsValid(dissolver) then
-						dissolver:Remove() -- backup edict save on error
-					end
-				end)
-
-				dissolver.Target = "dissolve" .. corpse:EntIndex()
-				dissolver:SetKeyValue("dissolvetype", 0)
-				dissolver:SetKeyValue("magnitude", 1)
-				dissolver:SetPos(corpse:GetPos())
-				dissolver:SetPhysicsAttacker(slasher)
-				dissolver:Spawn()
-
-				corpse:SetName(dissolver.Target)
-				dissolver:Fire("Dissolve", dissolver.Target, 0)
-				dissolver:Fire("Kill", "", 1)
+				DestroyItem(slasher, target)
 			end)
 		end
 	end)
@@ -606,77 +650,6 @@ if CLIENT then
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.SetMaterial(DestroyerFace)
 			surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
-		end
-	end)
-
-	SlashCo.TylerSongs = SlashCo.TylerSongs or {}
-	hook.Add("scValue_tylSong", "SlashCoTylerSong", function(slasher, song, stop, maxVol, shouldDrawIcon)
-		if stop then
-			if shouldDrawIcon or drawIcon == song then
-				drawIcon = nil
-				iconT = 0
-				iconTL = 0
-			end
-
-			if not SlashCo.TylerSongs[song] then
-				return
-			end
-
-			SlashCo.TylerSongs[song].snd:Stop()
-			SlashCo.TylerSongs[song].shouldBePlaying = nil
-			return
-		end
-
-		local snd
-		if SlashCo.TylerSongs[song] then
-			snd = SlashCo.TylerSongs[song].snd
-		else
-			snd = CreateSound(GameData.LocalPlayer, song)
-		end
-
-		if shouldDrawIcon then
-			drawIcon = song
-			iconT = 0
-			iconTL = 0
-		end
-
-		snd:Stop()
-		snd:Play()
-		snd:ChangeVolume(0.02)
-
-		SlashCo.TylerSongs[song] = { ent = slasher, snd = snd, shouldBePlaying = true, maxVol = maxVol or 1 }
-	end)
-
-	timer.Create("TylerSongs", 0.5, 0, function()
-		for k, v in pairs(SlashCo.TylerSongs) do
-			if not IsValid(v.ent) then
-				if drawIcon == k then
-					drawIcon = nil
-					iconT = 0
-					iconTL = 0
-				end
-
-				v.snd:Stop()
-				v.shouldBePlaying = false
-				continue
-			end
-
-			if not v.snd:IsPlaying() then
-				if not v.shouldBePlaying then
-					continue
-				end
-
-				v.snd:Stop()
-				v.snd:Play()
-			end
-
-			local vol = math.max(v.maxVol - EyePos():Distance(v.ent:GetPos()) * 0.0002 * (0.5 + 0.5 / GetGlobal2Int("SlashCoMapSize", 1)), 0.02)
-
-			if drawIcon == k then
-				iconT = vol * 255
-			end
-
-			v.snd:ChangeVolume(vol, 0.4)
 		end
 	end)
 end

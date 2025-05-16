@@ -33,6 +33,10 @@ function SlashCo.AudioSystem.SetBackgroundMusic(soundFile, volume)
 	SetGlobal2String("SlashCo:BackgroundMusic", soundFile)
 	SetGlobal2Float("SlashCo:BackgroundMusicVolume", volume or 1)
 	SetGlobal2Int("SlashCo:StartTimeBackgroundMusic", engine.TickCount()) -- Timestamp to syncronize the music for everyone
+
+	if SlashCo.DisableSoundScapes then
+		--SlashCo.DisableSoundScapes() -- disable sound scapes.
+	end
 end
 
 function SlashCo.AudioSystem.GetBackgroundMusic(fallBack)
