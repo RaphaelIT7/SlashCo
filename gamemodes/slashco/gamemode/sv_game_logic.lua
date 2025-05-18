@@ -301,21 +301,23 @@ function SlashCo.SurvivorWinFinish()
 	end)
 end
 
-hook.Add("Think", "LobbyFailSafe", function()
+hook.Remove("Think", "LobbyFailSafe", function()
 	if SlashCo.State ~= SlashCo.States.IN_GAME then
 		return
 	end
 
 	local timePassed = CurTime() - GetGlobal2Float("SCStartTime")
-	if timePassed > 90 and not SlashCo.FailSafeActivate then
+	if timePassed > 300 and not SlashCo.FailSafeActivate then
 		local slashers = team.GetPlayers(TEAM_SLASHER)
 		if #slashers == 0 then
+			print("[SlashCo] Lobby failsafe was triggered!")
 			SlashCo.EndRound()
 			return
 		end
 
 		local survivors = team.GetPlayers(TEAM_SURVIVOR)
 		if #survivors == 0 then
+			print("[SlashCo] Lobby failsafe was triggered!")
 			SlashCo.EndRound()
 			return
 		end

@@ -227,6 +227,7 @@ function SlashCo.Jumpscare(slasher, target)
 			slasher:Freeze(false)
 			slasher.CurrentChaseTick = 0
 			slasher:SetNWBool("CanChase", true)
+			slasher:SlasherFunction("OnKillPlayer", target)
 		end
 	end)
 
@@ -408,6 +409,8 @@ function SlashCo.GetGlobalSlasherAnger()
 end
 
 timer.Create("SlashCo:SlasherAnger", 1, 0, function()
+	if GameData.IsLobby then return end
+
 	local hasCustomBackgroundMusic = false
 	local backgroundMusic = "" -- change the file later.
 	for _, slasher in ipairs(team.GetPlayers(TEAM_SLASHER)) do

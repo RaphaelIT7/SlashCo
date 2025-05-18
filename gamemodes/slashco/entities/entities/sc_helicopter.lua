@@ -62,10 +62,7 @@ function ENT:Initialize()
 		self.pixvis = util.GetPixelVisibleHandle()
 	end
 
-	self:EmitSound("slashco/helicopter_engine_distant.mp3", 90, 150, 1, CHAN_STATIC)
-	self:EmitSound("slashco/helicopter_rotors_distant.mp3", 150, 100, 1, CHAN_STATIC)
-	self:EmitSound("slashco/helicopter_engine_close.mp3", 75, 150, 1, CHAN_STATIC)
-	self:EmitSound("slashco/helicopter_rotors_close.mp3", 100, 100, 1, CHAN_STATIC)
+	self:PlayHeliSounds()
 
 	for _, ent in ipairs(ents.FindByClass(self:GetClass())) do
 		if ent == self then continue end
@@ -92,11 +89,19 @@ function ENT:OnRemove()
 	end
 end
 
+function ENT:PlayHeliSounds()
+	SlashCo.AudioSystem.PlaySound("slashco/helicopter_engine_distant.mp3", 90, self, 2, true, 1, "HelicopterEngineDistant")
+	SlashCo.AudioSystem.PlaySound("slashco/helicopter_rotors_distant.mp3", 100, self, 2, true, 1, "HelicopterRotorsDistant")
+
+	SlashCo.AudioSystem.PlaySound("slashco/helicopter_engine_close.mp3", 50, self, 2, true, 1, "HelicopterEngineClose")
+	SlashCo.AudioSystem.PlaySound("slashco/helicopter_rotors_close.mp3", 60, self, 2, true, 1, "HelicopterRotorsClose")
+end
+
 function ENT:QuietHeli()
-	self:StopSound("slashco/helicopter_engine_distant.mp3")
-	self:StopSound("slashco/helicopter_rotors_distant.mp3")
-	self:StopSound("slashco/helicopter_engine_close.mp3")
-	self:StopSound("slashco/helicopter_rotors_close.mp3")
+	SlashCo.AudioSystem.StopSound("HelicopterEngineDistant", 0.5)
+	SlashCo.AudioSystem.StopSound("HelicopterRotorsDistant", 0.5)
+	SlashCo.AudioSystem.StopSound("HelicopterEngineClose", 0.5)
+	SlashCo.AudioSystem.StopSound("HelicopterRotorsClose", 0.5)
 end
 
 function sign(number)
