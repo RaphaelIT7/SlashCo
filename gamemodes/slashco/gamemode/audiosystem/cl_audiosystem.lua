@@ -44,10 +44,12 @@ end
 
 -- NOTE: The callback is not called if the channel wasn't created.
 function SlashCo.AudioSystem.CreateChannel(soundFile, mode, callback)
+	if not soundFile or soundFile == "" then return end
+
 	soundFile = SlashCo.AudioSystem.ToSound(soundFile)
 	sound.PlayFile(soundFile, mode, function(channel, errCode, errStr)
 		if not IsValid(channel) then
-			Error("[SlashCo] Failed to create audio channel! (" .. errCode .. ", " .. errStr .. "," .. soundFile .. ")\n")
+			--ErrorNoHaltWithStack("[SlashCo] Failed to create audio channel! (" .. errCode .. ", " .. errStr .. "," .. soundFile .. ")\n")
 			return
 		end
 
@@ -241,7 +243,9 @@ end
 local lastCreation = 0 -- Doesn't need autorefresh so were fine.
 function SlashCo.AudioSystem.PlayBackgroundMusic(fileName)
 	if not SlashCo.AudioSystem.ShouldPlayBackgroundMusic() then return end
-	if not fileName or fileName == "" then return end
+	if fileName == "" then
+		fileName = nil
+	end
 
 	local backgroundMusic = SlashCo.AudioSystem.ToSound(fileName or SlashCo.AudioSystem.GetBackgroundMusic())
 	if IsValid(SlashCo.AudioSystem.BackgroundChannel) then

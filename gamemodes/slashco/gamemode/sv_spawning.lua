@@ -211,8 +211,11 @@ function SlashCo.SpawnGasCans()
 		gasCanCount = baseCount + SlashCo.MapSize
 	end
 
+	local forceGasCanCount = -1
 	for _, p in ipairs(SlashCo.CurRound.SlashersToBeSpawned) do
 		gasCanCount = gasCanCount + p:SlasherValue("GasCanMod", 0)
+		
+		forceGasCanCount = forceGasCanCount + p:SlasherValue("ForceGasCanCount", 0)
 	end
 
 	local diffMod = 3 - SlashCo.CurRound.Difficulty
@@ -220,6 +223,10 @@ function SlashCo.SpawnGasCans()
 	local headStartMod = -(SlashCo.HeadStartCans or 0)
 	local survivorMod = -SlashCo.CurRound.SurvivorData.GasCanMod
 	gasCanCount = math.max(gasCanCount + offeringMod + headStartMod + survivorMod + diffMod, SlashCo.MapSize)
+
+	if forceGasCanCount >= 0 then
+		gasCanCount = forceGasCanCount
+	end
 
 	local gasCanSpawns
 	if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Exposure then
