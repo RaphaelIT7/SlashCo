@@ -241,6 +241,7 @@ end
 local lastCreation = 0 -- Doesn't need autorefresh so were fine.
 function SlashCo.AudioSystem.PlayBackgroundMusic(fileName)
 	if not SlashCo.AudioSystem.ShouldPlayBackgroundMusic() then return end
+	if not fileName or fileName == "" then return end
 
 	local backgroundMusic = SlashCo.AudioSystem.ToSound(fileName or SlashCo.AudioSystem.GetBackgroundMusic())
 	if IsValid(SlashCo.AudioSystem.BackgroundChannel) then
