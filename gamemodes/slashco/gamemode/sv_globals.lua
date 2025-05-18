@@ -17,6 +17,11 @@ function GetRandomMap(ply_count)
 		end
 	end
 
+	--[[local key, val = next( SCInfo.Maps )
+	if val then
+		return val
+	end]]
+
 	print("[SlashCo] Ran out of tries to select map to stop a game crash, this should usualy never happen.")
 	return "error"
 end
