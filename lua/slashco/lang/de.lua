@@ -111,10 +111,10 @@ SlashCo.LangTable["SelectPlayermodel"] = "SPIELERMODELL WÄHLEN"
 SlashCo.LangTable["NotReady"] = "NICHT BEREIT"
 SlashCo.LangTable["ReadyAs"] = "BEREIT ALS %s"
 
-SlashCo.LangTable["MapSelect"] = "WÄHLEN SIE EINE KARTE"
+SlashCo.LangTable["MapSelect"] = "WÄHLE EINE KARTE"
 
-SlashCo.LangTable["Item"] = "Item"
-SlashCo.LangTable["ItemSelection"] = "GEGENSTAND AUSWAHL"
+SlashCo.LangTable["Item"] = "Gegenstand"
+SlashCo.LangTable["ItemSelection"] = "GEGENSTANDS AUSWAHL"
 SlashCo.LangTable["ItemSelectionTitle"] = "WÄHLE EINEN GEGENSTAND AUS"
 
 SlashCo.LangTable["MapGuarantee"] = "KARTENGARANTIE"
