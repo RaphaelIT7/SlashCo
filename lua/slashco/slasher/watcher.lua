@@ -22,13 +22,19 @@ SLASHER.ChaseRadius = 0.96
 SLASHER.ChaseDuration = 2.0
 SLASHER.ChaseCooldown = 2
 SLASHER.JumpscareDuration = 2
-SLASHER.ChaseMusic = "slashco/slasher/watcher_chase.mp3"
-SLASHER.KillSound = "slashco/slasher/watcher_kill.mp3"
+SLASHER.ChaseMusic = "slashco/slasher/watcher/watchertheme_high.ogg"
+SLASHER.KillSound = "slashco/slasher/watcher/watcher_kill.mp3"
 SLASHER.Description = "Watcher_desc"
 SLASHER.ProTip = "Watcher_tip"
 SLASHER.SpeedRating = "★★★★☆"
 SLASHER.EyeRating = "★★★★☆"
 SLASHER.DiffRating = "★★☆☆☆"
+SLASHER.AngerIncrease = 10 -- Anger increase of objectives being completed
+SLASHER.AngerPassiveGain = 0.05
+SLASHER.AngerChaseGain = 0
+SLASHER.AngerWatchingGain = 0.15 -- Anger thats gained per second when hes watching someone.
+SLASHER.MediumAngerBackgroundMusic = "slashco/slasher/watcher/watchertheme_med.ogg"
+SLASHER.HighAngerBackgroundMusic = "slashco/slasher/watcher/watchertheme_med.ogg"
 
 function SLASHER.OnSpawn(slasher)
 	slasher:SetViewOffset(Vector(0, 0, 100))
@@ -38,7 +44,13 @@ function SLASHER.OnSpawn(slasher)
 end
 
 function SLASHER.Precache()
-	SlashCo.PrecacheSound("slashco/slasher/watcher_rage.mp3")
+	--SlashCo.PrecacheSound("slashco/slasher/watcher/watcher_rage.mp3")
+end
+
+function SLASHER.OnAngerTick(slasher)
+	if slasher:GetNWBool("WatcherStalking") then
+		SlashCo.AddSlasherAnger(slasher, SLASHER.AngerWatchingGain)
+	end
 end
 
 function SLASHER.OnTickBehaviour(slasher)
@@ -209,11 +221,11 @@ function SLASHER.OnMainAbilityFire(slasher)
 	slasher.SlasherValue1 = 10 + (SO * 10)
 	slasher.SlasherValue2 = 100 - (SO * 35)
 
-	slasher:PlayGlobalSound("slashco/slasher/watcher_locate.mp3", 100)
+	slasher:PlayGlobalSound("slashco/slasher/watcher/watcher_locate.mp3", 100)
 
 	for _, p in ipairs(team.GetPlayers(TEAM_SURVIVOR)) do
 		p:SetNWBool("WatcherSurveyed", true)
-		p:EmitSound("slashco/slasher/watcher_see.mp3")
+		p:EmitSound("slashco/slasher/watcher/watcher_see.mp3")
 	end
 
 	timer.Simple(5 + (SO * 5), function()
@@ -237,7 +249,7 @@ function SLASHER.OnSpecialAbilityFire(slasher)
 	end
 
 	slasher:SetNWBool("WatcherRage", true)
-	slasher:PlayGlobalSound("slashco/slasher/watcher_rage.mp3", 100)
+	slasher:PlayGlobalSound("slashco/slasher/watcher/watcher_rage.mp3", 100)
 end
 
 function SLASHER.Animator(ply)
@@ -260,7 +272,8 @@ end
 
 function SLASHER.Footstep(ply)
 	if SERVER then
-		ply:EmitSound("npc/footsteps/hardboot_generic" .. math.random(1, 6) .. ".wav", 50, 90, 0.75)
+		local idx = math.random(1, 4)
+		SlashCo.AudioSystem.PlaySound("slashco/slasher/watcher/watcher_boot" .. idx .. ".mp3", 100, ply, 1, false, 1, "WatcherFootstep" .. idx)
 		return false
 	end
 

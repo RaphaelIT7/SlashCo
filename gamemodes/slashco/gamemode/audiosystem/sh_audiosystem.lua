@@ -25,8 +25,18 @@ function SlashCo.AudioSystem.EnableBackgroundMusic()
 	SetGlobal2Bool("SlashCo:ShouldPlayBackgroundMusic", true)
 end
 
-function SlashCo.AudioSystem.DisableBackgroundMusic()
+function SlashCo.AudioSystem.EnableBackgroundMusic(forced)
+	if forced then
+		SlashCo.AudioSystem.ForcedDisable = false
+	end
+
+	if SlashCo.AudioSystem.ForcedDisable then return end
+	SetGlobal2Bool("SlashCo:ShouldPlayBackgroundMusic", true)
+end
+
+function SlashCo.AudioSystem.DisableBackgroundMusic(forced)
 	SetGlobal2Bool("SlashCo:ShouldPlayBackgroundMusic", false)
+	SlashCo.AudioSystem.ForcedDisable = forced or false
 end
 
 function SlashCo.AudioSystem.SetBackgroundMusic(soundFile, volume)
@@ -37,6 +47,10 @@ function SlashCo.AudioSystem.SetBackgroundMusic(soundFile, volume)
 	if SlashCo.DisableSoundScapes then
 		--SlashCo.DisableSoundScapes() -- disable sound scapes.
 	end
+end
+
+function SlashCo.AudioSystem.SetBackgroundMusicVolume(volume)
+	SetGlobal2Float("SlashCo:BackgroundMusicVolume", volume or 1)
 end
 
 function SlashCo.AudioSystem.GetBackgroundMusic(fallBack)

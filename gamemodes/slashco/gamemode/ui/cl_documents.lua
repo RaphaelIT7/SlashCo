@@ -375,9 +375,7 @@ hook.Add("PostDrawOpaqueRenderables", "LobbyDocumentScreen", function(bDrawingDe
 		-- Debug to check screen Mins/Maxs values
 		-- debugoverlay.BoxAngles( screenPos, screenMins, screenMaxs, screenAngle, 0.02, hitPos != nil and Color(0,255,0) or Color( 255,0, 0, 10) )
 
-		if GameData.LocalPlayer:EyePos():DistToSqr(screenPos) < 100000 then
-			draw_documents_screen_marker(true)
-
+		if GameData.LocalPlayer:EyePos():DistToSqr(screenPos) < 50000 then
 			if wasLeftMousePressed and not input.IsButtonDown(MOUSE_LEFT) then
 				wasLeftMousePressed = false
 			end

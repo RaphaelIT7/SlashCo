@@ -174,6 +174,14 @@ function SLASHER.OnTickBehaviour(slasher)
 	slasher:SetNWInt("Slasher_Perception", SLASHER.Perception)
 end
 
+function SLASHER.OnHitByTeslaCoil(slasher)
+	slasher.SlasherValue1 = "" -- Reset prey when we got hit by a tesla coil.
+end
+
+function SLASHER.OnKillPlayer(slasher, target)
+	slasher.SlasherValue1 = "" -- We killed our prey, so reset it or else he might persist in case he had multiple lives
+end
+
 function SLASHER.OnPrimaryFire(slasher, target)
 	if not IsValid(target) or not target:IsPlayer() then
 		return

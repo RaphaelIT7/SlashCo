@@ -227,6 +227,7 @@ function SlashCo.Jumpscare(slasher, target)
 			slasher:Freeze(false)
 			slasher.CurrentChaseTick = 0
 			slasher:SetNWBool("CanChase", true)
+			slasher:SlasherFunction("OnKillPlayer", target)
 		end
 	end)
 
@@ -238,7 +239,7 @@ function SlashCo.StopChase(slasher)
 	slasher:SetNWFloat("SlasherChaseBegin", 0)
 	slasher:SetRunSpeed(slasher:SlasherValue("ProwlSpeed", 150))
 	slasher:SetWalkSpeed(slasher:SlasherValue("ProwlSpeed", 150))
-	slasher:StopSound(slasher:SlasherValue("ChaseMusic"))
+	SlashCo.AudioSystem.StopSound("ChaseMusic", 5)
 	slasher.ChaseActivationCooldown = slasher:SlasherValue("ChaseCooldown", 3)
 
 	timer.Remove("SlashCoEndChase_" .. slasher:UserID())
@@ -247,7 +248,7 @@ function SlashCo.StopChase(slasher)
 		if not IsValid(slasher) then
 			return
 		end
-		slasher:StopSound(slasher:SlasherValue("ChaseMusic"))
+		SlashCo.AudioSystem.StopSound("ChaseMusic", 5)
 	end)
 
 	for _, pl in ipairs(player.GetAll()) do
@@ -330,7 +331,7 @@ function SlashCo.StartChaseMode(slasher)
 	slasher.ChaseActivationCooldown = slasher:SlasherValue("ChaseCooldown", 3)
 	slasher:SetRunSpeed(slasher:SlasherValue("ChaseSpeed"))
 	slasher:SetWalkSpeed(slasher:SlasherValue("ChaseSpeed"))
-	slasher:PlayGlobalSound(slasher:SlasherValue("ChaseMusic"), 95, nil, true)
+	SlashCo.AudioSystem.PlaySound(slasher:SlasherValue("ChaseMusic"), 60, slasher, 1, true, 1, "ChaseMusic")
 end
 
 function SlashCo.BustDoor(slasher, target, force)
@@ -408,20 +409,41 @@ function SlashCo.GetGlobalSlasherAnger()
 end
 
 timer.Create("SlashCo:SlasherAnger", 1, 0, function()
+	if GameData.IsLobby then return end
+
 	local hasCustomBackgroundMusic = false
+	local backgroundMusic = "" -- change the file later.
 	for _, slasher in ipairs(team.GetPlayers(TEAM_SLASHER)) do
 		local addAnger = slasher:SlasherValue("AngerPassiveGain", 0)
 		SlashCo.AddSlasherAnger(slasher, addAnger)
 
+		slasher:SlasherFunction("OnAngerTick")
+
 		if slasher:SlasherValue("CustomBackgroundMusic", false) then
 			hasCustomBackgroundMusic = true -- One of the slashers has custom background music, so we shouldn't interfere with it.
+		end
+
+		local anger = SlashCo.GetSlasherAnger(slasher)
+		if anger > 75 then
+			backgroundMusic = slasher:SlasherValue("HighAngerBackgroundMusic", backgroundMusic)
+		elseif anger > 50 then
+			backgroundMusic = slasher:SlasherValue("MediumAngerBackgroundMusic", backgroundMusic)
+		elseif anger > 25 then
+			backgroundMusic = slasher:SlasherValue("LowAngerBackgroundMusic", backgroundMusic)
 		end
 	end
 
 	if hasCustomBackgroundMusic then return end
 
-	--[[if SlashCo.GetGlobalSlasherAnger() > 20 and not SlashCo.AudioSystem.ShouldPlayBackgroundMusic() then
-		SlashCo.AudioSystem.SetBackgroundMusic("slashco/slasher/ambience/angry.mp3", 5)
+	if (not backgroundMusic or backgroundMusic == "") and SlashCo.AudioSystem.ShouldPlayBackgroundMusic() then
+		SlashCo.AudioSystem.DisableBackgroundMusic()
+		return
+	end
+
+	if not SlashCo.AudioSystem.ShouldPlayBackgroundMusic() or backgroundMusic != SlashCo.AudioSystem.GetBackgroundMusic() then
+		SlashCo.AudioSystem.SetBackgroundMusic(backgroundMusic, SlashCo.GetGlobalSlasherAnger() / 100)
 		SlashCo.AudioSystem.EnableBackgroundMusic()
-	end]]
+	else
+		SlashCo.AudioSystem.SetBackgroundMusicVolume(SlashCo.GetGlobalSlasherAnger() / 100)
+	end
 end)

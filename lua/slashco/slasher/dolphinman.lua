@@ -88,8 +88,8 @@ function SLASHER.OnTickBehaviour(slasher)
 
 			slasher:SetNWBool("DolphinFound", true)
 
-			slasher:PlayGlobalSound("slashco/slasher/dolfin_call.mp3", 85, nil, true)
-			slasher:PlayGlobalSound("slashco/slasher/dolfin_call_far.mp3", 140, nil, true)
+			SlashCo.AudioSystem.PlaySound("slashco/slasher/dolfin_call.mp3", 50, slasher, 2, true, 1, "DolfinCall")
+			SlashCo.AudioSystem.PlaySound("slashco/slasher/dolfin_call_far.mp3", 80, slasher, 2, true, 1, "DolfinCallFar")
 
 			timer.Simple(10, function()
 				slasher:SetNWBool("DolphinFound", false)
@@ -132,15 +132,8 @@ function SLASHER.OnTickBehaviour(slasher)
 			if v1 <= 0 then
 				slasher:SetNWBool("DolphinHunting", false)
 
-				slasher:StopSound("slashco/slasher/dolfin_call.mp3")
-				slasher:StopSound("slashco/slasher/dolfin_call_far.mp3")
-				for i = 1, 8 do
-					--WHY THE FUCK DO I HAVE TO DO THIS HOLY SHIT
-					timer.Simple(i / 10, function()
-						slasher:StopSound("slashco/slasher/dolfin_call.mp3")
-						slasher:StopSound("slashco/slasher/dolfin_call_far.mp3")
-					end)
-				end
+				SlashCo.AudioSystem.StopSound("DolfinCall", 0.5)
+				SlashCo.AudioSystem.StopSound("DolfinCallFar", 0.5)
 			end
 		end
 	end

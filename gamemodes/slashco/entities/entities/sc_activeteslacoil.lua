@@ -42,8 +42,8 @@ if SERVER then
 	end
 
 	function ENT:Think()
-		local startTime = self:GetNW2Float("ChargeBeginning")
-		local state = self:GetNW2Int("ChargeState")
+		local startTime = self:GetChargeBeginning()
+		local state = self:GetChargeState()
 		if state == 0 then
 			self:PlayGlobalSound("slashco/survivor/teslacoil_chargeup.mp3", 100)
 			self:SetChargeState(1)
@@ -80,10 +80,11 @@ if SERVER then
 
 		if (curTime - startTime) > 29 and state == 5 then
 			self:SetChargeState(6)
-			for _, ply in ipairs(team.GetPlayers(TEAM_SLASHER)) do
-				ply:SetNW2Float("TeslaStunned", curTime + stunTime)
-				ply:SetNW2Float("LastTeslaStun", curTime)
-				ply:ScreenFade(SCREENFADE.OUT, Color(0, 0, 0), 0.5, stunTime)
+			for _, slasher in ipairs(team.GetPlayers(TEAM_SLASHER)) do
+				slasher:SetNW2Float("TeslaStunned", curTime + stunTime)
+				slasher:SetNW2Float("LastTeslaStun", curTime)
+				slasher:ScreenFade(SCREENFADE.OUT, Color(0, 0, 0), 0.5, stunTime)
+				slasher:SlasherFunction("OnHitByTeslaCoil")
 			end
 			SetGlobal2Bool("DisableWorldFog", true)
 		end

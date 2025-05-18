@@ -126,8 +126,9 @@ function SLASHER.OnTickBehaviour(slasher)
 		final_perception = 0.0
 
 		if not slasher:GetNWBool("TylerCreating") and slasher.TylerSongPickedID == nil then
-			slasher.TylerSongPickedID = "slashco/slasher/igor/tyler_song_" .. math.random(1, 6) .. ".mp3"
-			SlashCo.AudioSystem.PlaySound(slasher.TylerSongPickedID, 50, slasher, math.max(0.8 - (slasher.SlasherValue3 * 0.12), 0.1), true, 1, "TylerSong")
+			local rnd = math.random(1, 9)
+			slasher.TylerSongPickedID = "slashco/slasher/igor/tyler_song_" .. rnd .. (rnd <= 6 and ".mp3" or ".ogg")
+			SlashCo.AudioSystem.PlaySound(slasher.TylerSongPickedID, 45, slasher, math.max(0.8 - (slasher.SlasherValue3 * 0.12), 0.1), true, 1, "TylerSong")
 			SLASHER.HideTime(slasher)
 		end
 
@@ -154,7 +155,6 @@ function SLASHER.OnTickBehaviour(slasher)
 				slasher.TylerSongPickedID = nil
 			end
 		end
-		SlashCo.AudioSystem.StopSound("TylerSong", 0)
 
 		if slasher:GetNWBool("TylerCreating") and slasher.SlasherValue5 ~= 1.8 then
 			slasher.SlasherValue5 = 1.8
