@@ -254,11 +254,6 @@ function SLASHER.OnTickBehaviour(slasher)
 			SlashCo.AudioSystem.EnableBackgroundMusic() -- We only play the background music now after the first time he chased.
 			SlashCo.AudioSystem.SetBackgroundMusic("slashco/slasher/igor/igors_theme.ogg", 1)
 
-			timer.Simple(0.1, function()
-				SlashCo.AudioSystem.StopSound("TylerTheme", 1)
-				SlashCo.AudioSystem.StopSound("TylerWhisper", 1)
-			end)
-
 			slasher:SetVisible(false)
 			slasher:SetNWBool("TylerFlash", false)
 
@@ -385,15 +380,6 @@ function SLASHER.OnPrimaryFire(slasher, target)
 			SlashCo.AudioSystem.StopSound("TylerWhisper", 0.5)
 			SlashCo.AudioSystem.EnableBackgroundMusic()
 			SlashCo.AudioSystem.SetBackgroundMusic("slashco/slasher/igor/igors_theme.ogg", 1)
-
-			timer.Simple(0.1, function()
-				if not IsValid(slasher) then
-					return
-				end
-
-				SlashCo.AudioSystem.StopSound("TylerTheme", 0.5)
-				SlashCo.AudioSystem.StopSound("TylerWhisper", 0.5)
-			end)
 
 			slasher:SetNWBool("TylerFlash", false)
 			::skip::
