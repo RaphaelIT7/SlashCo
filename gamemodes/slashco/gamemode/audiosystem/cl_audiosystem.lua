@@ -396,7 +396,7 @@ end
 
 net.Receive("slashCo_AudioSystem_PlaySound", function()
 	local soundPath = net.ReadString()
-	local entIndex = net.ReadUInt(13)
+	local entIndex = net.ReadUInt(MAX_EDICT_BITS)
 	local soundLevel = net.ReadUInt(14)
 	local volume = net.ReadFloat()
 	local looping = net.ReadBool()

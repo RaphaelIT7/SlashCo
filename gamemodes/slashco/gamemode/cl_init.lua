@@ -468,7 +468,7 @@ end
 net.Receive("mantislashco_GlobalSound", function()
 	local isRemove = net.ReadBool()
 	local soundPath = net.ReadString()
-	local entID = net.ReadUInt(13)
+	local entID = net.ReadUInt(MAX_EDICT_BITS)
 
 	if isRemove then
 		removeSound(soundPath, entID)
