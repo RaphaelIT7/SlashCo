@@ -12,7 +12,7 @@ function SlashCo.AudioSystem.PlaySound(soundPath, soundLevel, entity, volume, lo
 
 	net.Start("slashCo_AudioSystem_PlaySound")
 		net.WriteString(soundPath)
-		net.WriteUInt(entity:EntIndex(), 13)
+		net.WriteUInt(entity:EntIndex(), MAX_EDICT_BITS)
 		net.WriteUInt(soundLevel, 14)
 		net.WriteFloat(volume)
 		net.WriteBool(looping)

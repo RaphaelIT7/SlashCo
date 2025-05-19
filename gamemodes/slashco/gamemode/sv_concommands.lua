@@ -223,7 +223,9 @@ end, function(cmd, args)
 	return tbl1
 end)
 
-concommand.Add("slashco_run_curconfig", function()
+concommand.Add("slashco_run_curconfig", function(ply)
+	if IsValid(ply) and not ply:IsAdmin() then return end
+
 	SlashCo.StartRound()
 end, nil, "Start a normal round with current configs.", FCVAR_PROTECTED)
 

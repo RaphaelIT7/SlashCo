@@ -85,6 +85,7 @@ function ENT:OnRemove()
 	else
 		if SlashCo.Helicopter == self then
 			SlashCo.Helicopter = nil
+			self:QuietHeli()
 		end
 	end
 end
