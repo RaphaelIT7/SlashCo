@@ -104,6 +104,7 @@ function SlashCo.ResetCurRoundData()
 		HelicopterRescuedPlayers = {}, --need opt
 		EscapeHelicopterSummoned = false,
 		DistressBeaconUsed = false,
+		OriginalSurvivors = {},
 	}
 
 	local OldOfferingKeys = {

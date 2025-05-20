@@ -679,7 +679,6 @@ function SlashCo.LegacySetup()
 end
 
 hook.Add("InitPostEntity", "LegacySetupSpawns", SlashCo.LegacySetup)
-
 ---main body of round starting function
 local function startRound(noSetup)
 	SlashCo.RoundStarted = true
@@ -730,6 +729,10 @@ local function startRound(noSetup)
 		ply:ScreenFade(SCREENFADE.IN, color_black, 1, 0)
 		ply:SetHealth(ply:GetMaxHealth())
 	end
+	
+	for _, ply in ipairs(team.GetPlayers(TEAM_SURVIVOR)) do
+    	table.insert(SlashCo.CurRound.OriginalSurvivors, ply)
+	end
 
 	local slashers = sql.Query("SELECT * FROM slashco_table_slasherdata; ") or {}
 	local dangerLevel = SlashCo.DangerLevel.Unknown
@@ -772,6 +775,7 @@ local function startRound(noSetup)
 
 	SlashCo.UpdateObjective("generator", SlashCo.ObjStatus.INCOMPLETE, GetGlobal2Int("SlashCoGeneratorsNeeded", SlashCo.GensNeeded))
 	SlashCo.SendObjectives()
+
 end
 
 ---start a round

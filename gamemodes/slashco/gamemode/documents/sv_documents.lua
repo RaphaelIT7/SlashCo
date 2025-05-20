@@ -104,7 +104,7 @@ function PLAYER:GiveDocument(name, rating)
 	self:NetworkDocument(name)
 end
 
--- You've lost your document privileges >:3
+-- You've lost your document privileges >:3. NOOOO, please don't take my nice documents :<
 function PLAYER:RevokeDocument(name)
 	sql.Query("DELETE FROM slashco_documents WHERE PlayerID = '" .. self:SteamID64() .. "' AND Document = '" .. name .. "';")
 	self.Documents = self.Documents or {}
@@ -133,7 +133,9 @@ hook.Add("SlashCo:EndRound", "SlashCo:HandoutDocuments", function(winners)
 		slashers[ply:GetNWString("Slasher")] = true
 	end
 
-	for _, ply in ipairs(team.GetPlayers(TEAM_SURVIVOR)) do
+	for _, ply in ipairs(SlashCo.CurRound.OriginalSurvivors or {}) do
+		if not IsValid(ply) then continue end
+
 		local rating = 3
 		if ply:WasSeenBySlasher() then
 			rating = rating - 1
@@ -150,6 +152,7 @@ hook.Add("SlashCo:EndRound", "SlashCo:HandoutDocuments", function(winners)
 		for name, _ in pairs(slashers) do
 			if not SlashCo.GetDocumentTable(name) then continue end -- No document with the Slasher's name exists...
 
+			-- print("[DOCUMENTS] handing out document " .. name .. " || " .. rating .. " to player: " .. ply:GetName())
 			ply:GiveDocument(name, rating)
 		end
 	end
