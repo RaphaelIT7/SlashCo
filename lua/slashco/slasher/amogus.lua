@@ -11,7 +11,7 @@ SLASHER.KillDelay = 8
 SLASHER.ProwlSpeed = 150
 SLASHER.ChaseSpeed = 296
 SLASHER.Perception = 4.5
-SLASHER.Eyesight = 6
+SLASHER.Eyesight = 4
 SLASHER.KillDistance = 130
 SLASHER.ChaseRange = 600
 SLASHER.ChaseRadius = 0.90
@@ -25,6 +25,7 @@ SLASHER.ProTip = "Amogus_tip"
 SLASHER.SpeedRating = "★★☆☆☆"
 SLASHER.EyeRating = "★★★☆☆"
 SLASHER.DiffRating = "★★★☆☆"
+SLASHER.SneakKillDistance = 50
 
 function SLASHER.PickUpAttempt(ply)
 	return ply:GetNWBool("AmogusSurvivorDisguise")
@@ -60,7 +61,8 @@ function SLASHER.OnTickBehaviour(slasher)
 
 		if slasher.SlasherValue1 > 30 then
 			slasher.SlasherValue4 = 0
-			slasher:EmitSound("slashco/slasher/amogus_speech" .. math.random(1, 7) .. ".mp3")
+			local amogus_speech = math.random(1, 7) .. ".mp3"
+			SlashCo.AudioSystem.PlaySound("slashco/slasher/amogus_speech" .. amogus_speech, 45, slasher, 1, false, 1, "AmogusSpeech")
 		end
 	else
 		slasher.SlasherValue4 = 0
@@ -91,14 +93,14 @@ function SLASHER.OnPrimaryFire(slasher, target)
 		return
 	end
 
-	if slasher:GetPos():Distance(target:GetPos()) >= SlashCoSlashers.Tyler.KillDistance or target:GetNWBool("SurvivorBeingJumpscared") then
+	if slasher:GetPos():Distance(target:GetPos()) >= SLASHER.SneakKillDistance or target:GetNWBool("SurvivorBeingJumpscared") then
 		return
 	end
 
 	target:SetNWBool("SurvivorBeingJumpscared", true)
 	target:Freeze(true)
 
-	slasher:EmitSound("slashco/slasher/amogus_stealthkill.mp3", 60)
+	SlashCo.AudioSystem.PlaySound("slashco/slasher/amogus_stealthkill.mp3", 45, slasher, 1, false, 1, "AmogusStealthKill")
 	slasher:Freeze(true)
 	slasher.KillDelayTick = SLASHER.KillDelay
 
@@ -130,7 +132,8 @@ function SLASHER.OnMainAbilityFire(slasher)
 		slasher:SetNWBool("AmogusDisguising", true)
 		slasher:Freeze(true)
 
-		slasher:EmitSound("slashco/slasher/amogus_transform" .. math.random(1, 2) .. ".mp3")
+		local amogus_tansform = math.random(1, 2) .. ".mp3"
+		SlashCo.AudioSystem.PlaySound("slashco/slasher/amogus_transform" .. amogus_transform, 45, slasher, 1, false, 1, "AmogusTransform")
 		slasher.SlasherValue2 = 4
 
 		timer.Simple(2, function()
@@ -143,7 +146,7 @@ function SLASHER.OnMainAbilityFire(slasher)
 			slasher:SlasherHudFunc("SetAvatar", "survivor")
 			slasher:SlasherHudFunc("SetTitle", "Amogus_survivor_disguised_title")
 
-			slasher:EmitSound("slashco/slasher/amogus_sus.mp3")
+			SlashCo.AudioSystem.PlaySound("slashco/slasher/amogus_sus.mp3", 45, slasher, 1, false, 1, "AmogusSus")
 
 			local s = team.GetPlayers(TEAM_SURVIVOR)
 			local modelname = "models/slashco/survivor/male_01.mdl"
@@ -160,7 +163,7 @@ function SLASHER.OnMainAbilityFire(slasher)
 		slasher:SetNWBool("AmogusSurvivorDisguise", false)
 		slasher:SetNWBool("AmogusFuelDisguise", false)
 		slasher:SetNWBool("AmogusDisguised", false)
-		slasher:EmitSound("slashco/slasher/amogus_reveal.mp3")
+		SlashCo.AudioSystem.PlaySound("slashco/slasher/amogus_reveal.mp3", 45, slasher, 1, false, 1, "AmogusReveal")
 		slasher:SetNW2Bool("DynamicFlashlight", false)
 
 		slasher:SlasherHudFunc("SetAvatar", "default")
@@ -190,7 +193,8 @@ function SLASHER.OnSpecialAbilityFire(slasher)
 	if not slasher:GetNWBool("AmogusDisguising") and slasher.SlasherValue2 < 0.01 and not slasher:GetNWBool("AmogusFuelDisguise") and not slasher:GetNWBool("AmogusDisguised") then
 		slasher:SetNWBool("AmogusDisguising", true)
 		slasher:Freeze(true)
-		slasher:EmitSound("slashco/slasher/amogus_transform" .. math.random(1, 2) .. ".mp3")
+		local amogus_tansform = math.random(1, 2) .. ".mp3"
+		SlashCo.AudioSystem.PlaySound("slashco/slasher/amogus_transform" .. amogus_transform, 45, slasher, 1, false, 1, "AmogusTransform")
 
 		slasher.SlasherValue2 = 4
 
@@ -203,7 +207,7 @@ function SLASHER.OnSpecialAbilityFire(slasher)
 			slasher:SlasherHudFunc("SetAvatar", "fuel")
 			slasher:SlasherHudFunc("SetTitle", "Amogus_gas_disguised_title")
 
-			slasher:EmitSound("slashco/slasher/amogus_sus.mp3")
+			SlashCo.AudioSystem.PlaySound("slashco/slasher/amogus_sus.mp3", 45, slasher, 1, false, 1, "AmogusSus")
 
 			slasher:SetVisible(false)
 
@@ -255,7 +259,8 @@ function SLASHER.Footstep(ply)
 			return false
 		end
 
-		ply:EmitSound("slashco/slasher/amogus_step" .. math.random(1, 3) .. ".mp3")
+		local amogus_step = math.random(1, 3) .. ".mp3"
+		SlashCo.AudioSystem.PlaySound("slashco/slasher/amogus_step" .. amogus_step, 45, slasher, 1, false, 1, "AmogusStep")
 		return true
 	end
 
