@@ -258,8 +258,8 @@ for _, document in pairs(SlashCoDocumentTypes["Slasher"] or {}) do
 	local slasher = SlashCoSlashers[document.Slasher]
 	if not slasher then continue end -- No slasher? Then something is invalid
 
-	local descriptionRows = SplitTextIntoRows(document.Description, "TVCD", screenSize / 1.01)
-	local additionalDescriptionRows = SplitTextIntoRows(document.AdditionalDescription, "TVCD", screenSize / 1.01)
+	local descriptionRows = SplitTextIntoRows(SlashCo.Language(string.lower(document.Description)), "TVCD", screenSize / 1.01)
+	local additionalDescriptionRows = SplitTextIntoRows(SlashCo.Language(string.lower(document.AdditionalDescription)), "TVCD", screenSize / 1.01)
 
 	local icon = Material("slashco/ui/icons/slasher/s_" .. slasher.ID)
 	selection["Slasher-" .. document.Name] = function(w, h)
@@ -291,9 +291,15 @@ for _, document in pairs(SlashCoDocumentTypes["Slasher"] or {}) do
 			row = 13
 		end
 
-		draw.SimpleText(SlashCo.Language("documents_attached_file"), "TVCD", h / 100, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
-
 		local rating = SlashCo.GetDocumentRating(document.Name)
+		
+		-- makes the view attached file button grey to signal that it is unavailable
+		if rating >= 2 then
+			draw.SimpleText(SlashCo.Language("documents_attached_file"), "TVCD", h / 100, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
+		else
+			draw.SimpleText(SlashCo.Language("documents_attached_file"), "TVCD", h / 100, rowSize * row, Color(80, 80, 80), 0, TEXT_ALIGN_CENTER)
+		end
+
 		local star = 0
 		for k=1, rating do
 			surface.SetDrawColor(255, 255, 255, 255)
@@ -314,17 +320,20 @@ for _, document in pairs(SlashCoDocumentTypes["Slasher"] or {}) do
 		end
 
 		row = row + 2
-		for _, rowText in ipairs(descriptionRows) do
-			draw.SimpleText(rowText, "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
-			row = row + 1
-		end
-
-		row = row + 1
 		if rating != 0 then
+			for _, rowText in ipairs(descriptionRows) do
+				draw.SimpleText(rowText, "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
+				row = row + 1
+			end
+			
+			-- without the working [VIEW ATTACHED FILE] functionality this only causes problems for now
+			--[[
+			row = row + 1
 			for _, rowText in ipairs(additionalDescriptionRows) do
 				draw.SimpleText(rowText, "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 				row = row + 1
 			end
+			]]
 		else
 			draw.SimpleText(SlashCo.Language("documents_survive_slasher"), "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 		end
@@ -376,6 +385,8 @@ hook.Add("PostDrawOpaqueRenderables", "LobbyDocumentScreen", function(bDrawingDe
 		-- debugoverlay.BoxAngles( screenPos, screenMins, screenMaxs, screenAngle, 0.02, hitPos != nil and Color(0,255,0) or Color( 255,0, 0, 10) )
 
 		if GameData.LocalPlayer:EyePos():DistToSqr(screenPos) < 50000 then
+			draw_documents_screen_marker(true)
+
 			if wasLeftMousePressed and not input.IsButtonDown(MOUSE_LEFT) then
 				wasLeftMousePressed = false
 			end
