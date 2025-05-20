@@ -624,7 +624,7 @@ SlashCo.LangTable["documents_survive_slasher"] = "[ÜBERLEBE DEN SLASHER FÜR ME
 
 -- Abomignat
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/Abomignat
-SlashCo.LangTable["abomignat_description"] = [[Eine große kryptide Kreatur, die einem zweibeinigen Säugetier ähnelt und ein übergroßes Maul hat, das dem einer Venusfliegenfalle ähnelt. Aufgrund seiner dünnen Komplexität scheint sich dieser Kryptide mit hoher Geschwindigkeit zu bewegen und jagt seine Beute mit seinen langen Gliedmaßen, die mit dicken Nägeln ausgestattet sind, die scharf genug sind, um jedes Ziel in Stücke zu reißen. Obwohl das Subjekt aufgrund seiner fehlenden Ohren nicht gut hören kann, ist er mit vier hervorstehenden Facettenaugen ausgestattet, die ihm ein weites Sichtfeld auf seine Umgebung ermöglichen, um sein nächstes Opfer zu erlegen.]]
+SlashCo.LangTable["abomignat_description"] = [[Eine große kryptide Kreatur, die einem zweibeinigen Säugetier ähnelt und ein übergroßes Maul hat, das dem einer Venusfliegenfalle ähnelt. Aufgrund seiner dünnen Begebenheit scheint sich dieser Kryptide mit hoher Geschwindigkeit zu bewegen. Es jagt seine Beute mit seinen langen Gliedmaßen, die mit dicken Nägeln ausgestattet scharf genug sind, um jedes Ziel in Stücke zu reißen. Obwohl das Subjekt aufgrund seiner fehlenden Ohren nicht gut hören kann, ist er mit vier hervorstehenden Facettenaugen ausgestattet, die ihm ein weites Sichtfeld auf seine Umgebung ermöglichen, um sein nächstes Opfer zu erlegen.]]
 SlashCo.LangTable["abomignat_description_additional"] = [[Dieser Slasher kriecht manchmal auf dem Boden, um lange Strecken mit hoher Geschwindigkeit zurückzulegen. Bei hoher [WUT] stürzt er sich auf seine Opfer und fügt ihnen schweren Schaden zu.]]
 
 -- Amogus
@@ -696,8 +696,8 @@ SlashCo.LangTable["thirsty_description_additional"] = [[Dieser Slasher gewinnt s
 
 -- Trollege
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/Trollge
-SlashCo.LangTable["trollege_description"] = [[Eine dünne, skelettartige Gestalt mit einem großen, verzerrt lächelnden Kopf. Die Bewegungen des Wesens wirken gebrechlich und langsam. Es hat sich gezeigt, dass dieser Slasher große Schwierigkeiten hat, Objekte, die sich nicht bewegen, visuell zu erkennen. Der Slasher hat außerdem ein unglaublich gutes Gehör und scheint leicht zu reizen zu sein.]]
-SlashCo.LangTable["trollege_description_additional"] = [[Bei hoher [WUT] wird Trollge empfindlicher für Geräusche und sprintet eher auf sie zu.]]
+SlashCo.LangTable["trollge_description"] = [[Eine dünne, skelettartige Gestalt mit einem großen, verzerrt lächelnden Kopf. Die Bewegungen des Wesens wirken gebrechlich und langsam. Es hat sich gezeigt, dass dieser Slasher große Schwierigkeiten hat, Objekte, die sich nicht bewegen, visuell zu erkennen. Der Slasher hat außerdem ein unglaublich gutes Gehör und scheint leicht zu reizen zu sein.]]
+SlashCo.LangTable["trollge_description_additional"] = [[Bei hoher [WUT] wird Trollge empfindlicher für Geräusche und sprintet eher auf sie zu.]]
 
 -- Tyler
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/Igor
@@ -706,5 +706,5 @@ SlashCo.LangTable["tyler_description_additional"] = [[]]
 
 -- Watcher
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/The_Watcher
-SlashCo.LangTable["the watcher_description"] = [[Eine Umbra Kreatur, die die Gestalt eines extrem großen alten Mannes annimmt, der einen olivfarbenen Mantel, eine runde Brille und einen Hut trägt. Das Wesen stolpert unbeholfen, wenn es sich bewegt, und es wurde berichtet, dass es seine Opfer geduldig beobachtet, während es sich in der Dunkelheit versteckt. Es wurde berichtet, dass dieser Slasher es vorzieht, sich in Gruppen aufzuhalten, und sich als brutaler Killer erwiesen hat, wenn er allein handelt.]]
+SlashCo.LangTable["the watcher_description"] = [[Eine Kreatur der Stufe Umbra, die die Gestalt eines extrem großen alten Mannes annimmt, der einen olivfarbenen Mantel, eine runde Brille und einen Hut trägt. Der Watcher stolpert unbeholfen, wenn er sich bewegt, und es wurde berichtet, dass er seine Opfer geduldig beobachtet, während er sich in der Dunkelheit versteckt. Es wurde ebenfalls gemeldet, dass dieser Slasher es vorzieht, sich von Gruppen fern zuhalten, und sich als brutaler Killer erweist, wenn sein Opfer alleine handelt.]]
 SlashCo.LangTable["the watcher_description_additional"] = [[Dieser Slasher kann nicht passiv [WUT] gewinnen. Der Watcher wird SEHR SCHNELL [WUT] gewinnen, wenn er ein Opfer beobachtet.]]
