@@ -128,7 +128,15 @@ function SLASHER.OnTickBehaviour(slasher)
 		if not slasher:GetNWBool("TylerCreating") and slasher.TylerSongPickedID == nil then
 			local rnd = math.random(1, 9)
 			slasher.TylerSongPickedID = "slashco/slasher/igor/tyler_song_" .. rnd .. (rnd <= 6 and ".mp3" or ".ogg")
-			SlashCo.AudioSystem.PlaySound(slasher.TylerSongPickedID, 45, slasher, math.max(0.8 - (slasher.SlasherValue3 * 0.12), 0.1), true, 1, "TylerSong")
+			SlashCo.AudioSystem.PlaySound({
+				soundPath = slasher.TylerSongPickedID,
+				identifier = "TylerSong",
+				soundLevel = 45,
+				looping = true,
+				entity = slasher,
+				volume = math.max(0.8 - (slasher.SlasherValue3 * 0.12), 0.1),
+				fadeIn = 1,
+			})
 			SLASHER.HideTime(slasher)
 		end
 
@@ -196,7 +204,15 @@ function SLASHER.OnTickBehaviour(slasher)
 		if slasher.tyler_destroyer_entrance_antispam == nil then
 			SlashCo.AudioSystem.DisableBackgroundMusic()
 			SlashCo.AudioSystem.StopSound("TylerSong", 1)
-			SlashCo.AudioSystem.PlaySound(endlessChase and "slashco/slasher/igor/igor_whatsgood_intro.ogg" or "slashco/slasher/igor/tyler_alarm.ogg", 10000, slasher, 1, true, 1, "TylerAlarm")
+			SlashCo.AudioSystem.PlaySound({
+				soundPath = endlessChase and "slashco/slasher/igor/igor_whatsgood_intro.ogg" or "slashco/slasher/igor/tyler_alarm.ogg",
+				identifier = "TylerAlarm",
+				soundLevel = 10000,
+				looping = true,
+				entity = slasher,
+				volume = 1,
+				fadeIn = 1,
+			})
 			slasher.tyler_destroyer_entrance_antispam = 0
 		end
 
@@ -207,13 +223,46 @@ function SLASHER.OnTickBehaviour(slasher)
 			SlashCo.AudioSystem.StopSound("TylerAlarm", 0.5)
 
 			if anger < 50 then -- switch up songs if his anger is below 50.
-				SlashCo.AudioSystem.PlaySound("slashco/slasher/igor/igor_nmw.ogg", 10000, slasher, 1, true, 1, "TylerTheme")
+				SlashCo.AudioSystem.PlaySound({
+					soundPath = "slashco/slasher/igor/igor_nmw.ogg",
+					identifier = "TylerTheme",
+					soundLevel = 10000,
+					looping = true,
+					entity = slasher,
+					volume = 1,
+					fadeIn = 1,
+				})
 			else
 				if endlessChase then
-					SlashCo.AudioSystem.PlaySound("slashco/slasher/igor/igor_whatsgood.ogg", 10000, slasher, 1, true, 1, "TylerTheme")
+					SlashCo.AudioSystem.PlaySound({
+						soundPath = "slashco/slasher/igor/igor_whatsgood.ogg",
+						identifier = "TylerTheme",
+						soundLevel = 10000,
+						looping = true,
+						entity = slasher,
+						volume = 1,
+						fadeIn = 1,
+					})
 				else
-					SlashCo.AudioSystem.PlaySound("slashco/slasher/igor/tyler_destroyer_theme.mp3", 10000, slasher, 1, true, 1, "TylerTheme")
-					SlashCo.AudioSystem.PlaySound("slashco/slasher/igor/tyler_destroyer_whisper.mp3", 10000, slasher, 1, true, 1, "TylerWhisper")
+					SlashCo.AudioSystem.PlaySound({
+						soundPath = "slashco/slasher/igor/tyler_destroyer_theme.mp3",
+						identifier = "TylerTheme",
+						soundLevel = 10000,
+						looping = true,
+						entity = slasher,
+						volume = 1,
+						fadeIn = 1,
+					})
+
+					SlashCo.AudioSystem.PlaySound({
+						soundPath = "slashco/slasher/igor/tyler_destroyer_whisper.mp3",
+						identifier = "TylerWhisper",
+						soundLevel = 60,
+						looping = true,
+						entity = slasher,
+						volume = 1,
+						fadeIn = 1,
+					})
 				end
 			end
 

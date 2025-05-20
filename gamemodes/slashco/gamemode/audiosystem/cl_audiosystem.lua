@@ -47,9 +47,14 @@ function SlashCo.AudioSystem.CreateChannel(soundFile, mode, callback)
 	if not soundFile or soundFile == "" then return end
 
 	soundFile = SlashCo.AudioSystem.ToSound(soundFile)
+	if not soundFile:find(".", 1, true) then -- It has no fileName?!? We shall deny this request.
+		error("[SlashCo] Tried to use a invalid sound file! (" .. soundFile .. ")")
+		return
+	end
+
 	sound.PlayFile(soundFile, mode, function(channel, errCode, errStr)
 		if not IsValid(channel) then
-			--ErrorNoHaltWithStack("[SlashCo] Failed to create audio channel! (" .. errCode .. ", " .. errStr .. "," .. soundFile .. ")\n")
+			error("[SlashCo] Failed to create audio channel! (" .. errCode .. ", " .. errStr .. "," .. soundFile .. ")\n")
 			return
 		end
 
@@ -254,6 +259,8 @@ function SlashCo.AudioSystem.PlayBackgroundMusic(fileName)
 		SlashCo.AudioSystem.StopBackgroundMusic()
 	end
 
+	if not backgroundMusic then return end
+
 	-- Delay creations so that it won't try to create a channel while it already tried and is waiting for the callback.
 	if (lastCreation + 5) > CurTime() then return end
 	lastCreation = CurTime()
@@ -351,38 +358,76 @@ end
 
 hook.Add("Think", "SlashCo:AudioSystem", SlashCo.AudioSystem.Think)
 
-function SlashCo.AudioSystem.PlaySound(soundPath, soundLevel, entity, volume, looping, fadeIn, identifier, tickCount)
-	fadeIn = fadeIn or 0
-	tickCount = tickCount or engine.TickCount()
+--[[
+	The soundData table contains all values to create and configure a channel.
+	Required fields:
+		string soundPath - the sound path for the sound to play.
 
-	SlashCo.AudioSystem.StopSound(identifier, 0.5)
+	Optional fields:
+		number soundLevel - used to calculate a distance for when the sound fades and cannot be heard from.
+		string identifier - The identifier of the sound, if nil it will use the soundPath field as the identifier
+		number startTick - The tick in which the sound was started, this value is used to syncronize the sound for all players. Defaults to the current tick
+		Entity entity - The entity the channel should follow, defaults to the world entity.
+		number volume - The volume of the sound, defaults to 1
+		boolean looping - If the sound should be looped or not, defaults to false
+		function callback - the callback function that is called when the channel was created. The channel is given to the callback as the first argument
+		number minDistance - The minimum distance for the sound to start fading
+		number maxDistance - The maximum distance after which the sound cannot be heard anymore.
+		Vector position - A position to play the sound from, be aware that if a entity is set it will override this position!
+		string modes - Any additional modes to pass to SlashCo.AudioSystem.CreateChannel
 
-	local entIndex = isnumber(entity) and entity or (IsValid(entity) and entity:EntIndex() or 0)
-	SlashCo.AudioSystem.CreateChannel(soundPath, entIndex == 0 and "mono" or "3d", function(channel)
-		if fadeIn != 0 then
+	Notes:
+		When the entity is set to the world, the sound is played as mono and NOT 3d!
+]]
+function SlashCo.AudioSystem.PlaySound(soundData)
+	soundData.identifier = soundData.identifier or soundData.soundPath
+	soundData.startTick = soundData.startTick or engine.TickCount()
+	soundData.entity = soundData.entity or game.GetWorld()
+	soundData.volume = soundData.volume or 1
+	soundData.looping = soundData.looping or false
+	soundData.modes = soundData.modes or ""
+
+	SlashCo.AudioSystem.StopSound(soundData.identifier, 0.5)
+
+	local entIndex = isnumber(soundData.entity) and soundData.entity or (IsValid(soundData.entity) and soundData.entity:EntIndex() or 0)
+	local useMono = entIndex == 0 and not soundData.position
+	SlashCo.AudioSystem.CreateChannel(soundData.soundPath, AppendMode(useMono and "mono" or "3d", soundData.modes), function(channel)
+		if soundData.fadeIn and soundData.fadeIn != 0 then
 			channel:SetVolume(0)
 		else
-			channel:SetVolume(volume)
+			channel:SetVolume(soundData.volume)
 		end
 
 		channel:Play()
-		channel:EnableLooping(looping)
-		channel:SetTime(SlashCo.AudioSystem.CalculateTime(channel, tickCount))
+		channel:EnableLooping(soundData.looping)
+		channel:SetTime(SlashCo.AudioSystem.CalculateTime(channel, soundData.startTick))
 
-		if identifier then
-			SlashCo.AudioSystem.SetChannelIdentifier(channel, identifier)
+		if soundData.identifier then
+			SlashCo.AudioSystem.SetChannelIdentifier(channel, soundData.identifier)
 		end
 
-		if fadeIn != 0 then
-			SlashCo.AudioSystem.FadeTo(channel, fadeIn, volume)
+		if soundData.fadeIn and soundData.fadeIn != 0 then
+			SlashCo.AudioSystem.FadeTo(channel, soundData.fadeIn, soundData.volume)
 		end
 
 		if entIndex != 0 then
 			SlashCo.AudioSystem.ParentChannelToEntity(channel, entIndex)
 		end
 
-		if soundLevel != 0 then
-			channel:Set3DFadeDistance(soundLevel ^ 1.25, soundLevel ^ 1.5)
+		if soundData.position then
+			channel:SetPos(soundData.position)
+		end
+
+		if soundData.soundLevel and soundData.soundLevel != 0 then
+			channel:Set3DFadeDistance(soundData.soundLevel ^ 1.25, soundData.soundLevel ^ 1.5)
+		end
+
+		if soundData.minDistance and soundData.maxDistance then
+			channel:Set3DFadeDistance(soundData.minDistance, soundData.maxDistance)
+		end
+
+		if soundData.callback then
+			soundData.callback(channel)
 		end
 	end)
 end
@@ -394,17 +439,35 @@ function SlashCo.AudioSystem.StopSound(identifier, fadeOut)
 	SlashCo.AudioSystem.DestroyChannel(channel, fadeOut)
 end
 
-net.Receive("slashCo_AudioSystem_PlaySound", function()
-	local soundPath = net.ReadString()
-	local entIndex = net.ReadUInt(MAX_EDICT_BITS)
-	local soundLevel = net.ReadUInt(14)
-	local volume = net.ReadFloat()
-	local looping = net.ReadBool()
-	local fadeIn = net.ReadFloat()
-	local tickCount = net.ReadUInt(32)
-	local identifier = net.ReadString()
+--[[
+	Helper function to read fields even if they are nil values.
+	Serverside we network a bool and then the value, the bool is true if the field was nil.
+]]
+local function ReadSoundField(readFunc, ...)
+	local isNil = net.ReadBool(isNil)
+	if not isNil then
+		return readFunc(...)
+	end
 
-	SlashCo.AudioSystem.PlaySound(soundPath, soundLevel, entIndex, volume, looping, fadeIn, identifier, tickCount)
+	return nil
+end
+
+net.Receive("slashCo_AudioSystem_PlaySound", function()
+	local soundData = {
+		soundPath = ReadSoundField(net.ReadString),
+		entIndex = ReadSoundField(net.ReadUInt, MAX_EDICT_BITS),
+		soundLevel = ReadSoundField(net.ReadUInt, 14),
+		volume = ReadSoundField(net.ReadFloat),
+		looping = ReadSoundField(net.ReadBool),
+		fadeIn = ReadSoundField(net.ReadFloat),
+		tickCount = ReadSoundField(net.ReadUInt, 32),
+		identifier = ReadSoundField(net.ReadString),
+		minDistance = ReadSoundField(net.ReadUInt, 16),
+		maxDistance = ReadSoundField(net.ReadUInt, 16),
+		modes = ReadSoundField(net.ReadString),
+	}
+
+	SlashCo.AudioSystem.PlaySound(soundData)
 end)
 
 net.Receive("slashCo_AudioSystem_StopSound", function()

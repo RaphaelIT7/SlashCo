@@ -273,7 +273,13 @@ end
 function SLASHER.Footstep(ply)
 	if SERVER then
 		local idx = math.random(1, 4)
-		SlashCo.AudioSystem.PlaySound("slashco/slasher/watcher/watcher_boot" .. idx .. ".mp3", 100, ply, 1, false, 1, "WatcherFootstep" .. idx)
+		SlashCo.AudioSystem.PlaySound({
+			soundPath = "slashco/slasher/watcher/watcher_boot" .. idx .. ".mp3",
+			identifier = "WatcherFootstep" .. idx,
+			soundLevel = 100,
+			entity = ply,
+			volume = 1,
+		})
 		return false
 	end
 
