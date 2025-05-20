@@ -628,7 +628,7 @@ SlashCo.LangTable["abomignat_description"] = [[Eine große kryptide Kreatur, die
 SlashCo.LangTable["abomignat_description_additional"] = [[Dieser Slasher kriecht manchmal auf dem Boden, um lange Strecken mit hoher Geschwindigkeit zurückzulegen. Bei hoher [WUT] stürzt er sich auf seine Opfer und fügt ihnen schweren Schaden zu.]]
 
 -- Amogus
-SlashCo.LangTable["amogus_description"] = [[]]
+SlashCo.LangTable["amogus_description"] = [[-WIP-]]
 SlashCo.LangTable["amogus_description_additional"] = [[]]
 
 -- Bababooey
@@ -642,11 +642,11 @@ SlashCo.LangTable["borgmire_description"] = [[Eine riesige humanoide mechanische
 SlashCo.LangTable["borgmire_description_additional"] = [[Dieser Slasher gewinnt schnell an [WUT]. Während der einer Jagd verliert Borgmire [WUT]. Bei hoher [WUT] erhält Borgmire die Fähigkeit, sehr schnell zu sprinten.]]
 
 -- Covenant
-SlashCo.LangTable["covenant_description"] = [[]]
+SlashCo.LangTable["covenant_description"] = [[-WIP-]]
 SlashCo.LangTable["covenant_description_additional"] = [[]]
 
 -- Criminal
-SlashCo.LangTable["criminal_description"] = [[]]
+SlashCo.LangTable["criminal_description"] = [[-WIP-]]
 SlashCo.LangTable["criminal_description_additional"] = [[]]
 
 -- Dolphinman
@@ -655,19 +655,19 @@ SlashCo.LangTable["dolphinman_description"] = [[Ein humanoides, kryptides Wesen,
 SlashCo.LangTable["dolphinman_description_additional"] = [[Dieser Slasher ist extrem geräuschempfindlich und hat eine extrem schlechte Sehkraft. Wenn er durch ein lautes Geräusch aufgeregt wird, fängt er an, laut zu heulen und zu jagen. Bei der JAGD hat er ein sehr gutes Sehvermögen. Die Empfindlichkeit gegenüber lauten Geräuschen steigt mit [WUT].]]
 
 -- Smiley Dealer
-SlashCo.LangTable["smiley_description"] = [[]]
+SlashCo.LangTable["smiley_description"] = [[-WIP-]]
 SlashCo.LangTable["smiley_description_additional"] = [[]]
 
 -- Leuonard
-SlashCo.LangTable["leuonard_description"] = [[]]
+SlashCo.LangTable["leuonard_description"] = [[-WIP-]]
 SlashCo.LangTable["leuonard_description_additional"] = [[]]
 
 -- Male07
-SlashCo.LangTable["male07_description"] = [[]]
+SlashCo.LangTable["male07_description"] = [[-WIP-]]
 SlashCo.LangTable["male07_description_additional"] = [[]]
 
 -- Manspider
-SlashCo.LangTable["manspider_description"] = [[]]
+SlashCo.LangTable["manspider_description"] = [[-WIP-]]
 SlashCo.LangTable["manspider_description_additional"] = [[]]
 
 -- Princess
@@ -676,7 +676,7 @@ SlashCo.LangTable["princess_description"] = [[Eine hundeartige Kreatur, die star
 SlashCo.LangTable["princess_description_additional"] = [[Dieser Slasher gewinnt SCHNELL an [WUT]. Man kann Prinzessin Babys zum Zerfleischen geben, was die Wut senkt und es für eine kurze Zeit besänftigt. Wenn Prinzessin angreift, beginnt es mit dem Zerfleischen und das Opfer muss [ANKÄMPFEN], um sich dem Griff zu entziehen. Die [WUT] erhöht die Schwierigkeit des [ANKÄMPFENS].]]
 
 -- Rocks
-SlashCo.LangTable["rocks_description"] = [[]]
+SlashCo.LangTable["rocks_description"] = [[-WIP-]]
 SlashCo.LangTable["rocks_description_additional"] = [[]]
 
 -- Sid
