@@ -331,7 +331,15 @@ function SlashCo.StartChaseMode(slasher)
 	slasher.ChaseActivationCooldown = slasher:SlasherValue("ChaseCooldown", 3)
 	slasher:SetRunSpeed(slasher:SlasherValue("ChaseSpeed"))
 	slasher:SetWalkSpeed(slasher:SlasherValue("ChaseSpeed"))
-	SlashCo.AudioSystem.PlaySound(slasher:SlasherValue("ChaseMusic"), 60, slasher, 1, true, 1, "ChaseMusic")
+	SlashCo.AudioSystem.PlaySound({
+		soundPath = slasher:SlasherValue("ChaseMusic"),
+		identifier = "ChaseMusic",
+		soundLevel = 60,
+		looping = true,
+		entity = slasher,
+		volume = 1,
+		fadeIn = 1,
+	})
 end
 
 function SlashCo.BustDoor(slasher, target, force)
@@ -412,7 +420,7 @@ timer.Create("SlashCo:SlasherAnger", 1, 0, function()
 	if GameData.IsLobby then return end
 
 	local hasCustomBackgroundMusic = false
-	local backgroundMusic = "" -- change the file later.
+	local backgroundMusic = nil -- change the file later.
 	for _, slasher in ipairs(team.GetPlayers(TEAM_SLASHER)) do
 		local addAnger = slasher:SlasherValue("AngerPassiveGain", 0)
 		SlashCo.AddSlasherAnger(slasher, addAnger)

@@ -740,7 +740,11 @@ local function startRound(noSetup)
 		end
 	end
 
-	SlashCo.AudioSystem.PlaySound(SlashCo.GetDangerSound(dangerLevel), 100000000000000, Entity(0), 3, false, 0)
+	SlashCo.AudioSystem.PlaySound({
+		soundPath = SlashCo.GetDangerSound(dangerLevel),
+		volume = 3,
+		fadeIn = 0,
+	})
 
 	timer.Simple(8, function()
 		SlashCo.HelicopterTakeOffIntro()

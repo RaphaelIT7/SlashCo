@@ -22,7 +22,7 @@ SLASHER.ChaseDuration = 10.0
 SLASHER.ChaseCooldown = 3
 SLASHER.JumpscareDuration = 0.5
 SLASHER.ChaseMusic = ""
-SLASHER.KillSound = "slashco/slasher/dolfin_kill.mp3"
+SLASHER.KillSound = "slashco/slasher/dolfin/dolfin_kill.mp3"
 SLASHER.Description = "Dolphinman_desc"
 SLASHER.ProTip = "Dolphinman_tip"
 SLASHER.SpeedRating = "★★☆☆☆"
@@ -32,6 +32,28 @@ SLASHER.CannotBeSpectated = true
 
 function SLASHER.OnSpawn(slasher)
 	slasher.Jump = slasher:GetJumpPower()
+end
+
+local function PlayCallSound(slasher)
+	SlashCo.AudioSystem.PlaySound({
+		soundPath = "slashco/slasher/dolfin/dolfin_call.mp3",
+		identifier = "DolfinCall",
+		soundLevel = 50,
+		looping = true,
+		entity = slasher,
+		volume = 2,
+		fadeIn = 1,
+	})
+
+	SlashCo.AudioSystem.PlaySound({
+		soundPath = "slashco/slasher/dolfin/dolfin_call_far.mp3",
+		identifier = "DolfinCallFar",
+		soundLevel = 80,
+		looping = true,
+		entity = slasher,
+		volume = 2,
+		fadeIn = 1,
+	})
 end
 
 function SLASHER.OnTickBehaviour(slasher)
@@ -57,8 +79,7 @@ function SLASHER.OnTickBehaviour(slasher)
 		if SlashCo.CurRound.EscapeHelicopterSummoned then
 			slasher:SetNWBool("DolphinFound", true)
 
-			slasher:PlayGlobalSound("slashco/slasher/dolfin_call.mp3", 85, nil, true)
-			slasher:PlayGlobalSound("slashco/slasher/dolfin_call_far.mp3", 140, nil, true)
+			PlayCallSound(slasher)
 
 			timer.Simple(10, function()
 				slasher:SetNWBool("DolphinFound", false)
@@ -88,8 +109,7 @@ function SLASHER.OnTickBehaviour(slasher)
 
 			slasher:SetNWBool("DolphinFound", true)
 
-			SlashCo.AudioSystem.PlaySound("slashco/slasher/dolfin_call.mp3", 50, slasher, 2, true, 1, "DolfinCall")
-			SlashCo.AudioSystem.PlaySound("slashco/slasher/dolfin_call_far.mp3", 80, slasher, 2, true, 1, "DolfinCallFar")
+			PlayCallSound(slasher)
 
 			timer.Simple(10, function()
 				slasher:SetNWBool("DolphinFound", false)

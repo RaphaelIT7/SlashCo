@@ -10,6 +10,10 @@ SlashCo.AudioSystem = SlashCo.AudioSystem or {}
 
 -- Simple function. Adds sound/ to the given fileName to properly work with sound.PlayFile
 function SlashCo.AudioSystem.ToSound(fileName)
+	if fileName == "" then
+		return nil
+	end
+
 	if fileName:StartsWith("sound/") then
 		return fileName
 	end

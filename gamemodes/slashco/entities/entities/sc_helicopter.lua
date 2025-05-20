@@ -91,11 +91,45 @@ function ENT:OnRemove()
 end
 
 function ENT:PlayHeliSounds()
-	SlashCo.AudioSystem.PlaySound("slashco/helicopter_engine_distant.mp3", 90, self, 2, true, 1, "HelicopterEngineDistant")
-	SlashCo.AudioSystem.PlaySound("slashco/helicopter_rotors_distant.mp3", 100, self, 2, true, 1, "HelicopterRotorsDistant")
+	SlashCo.AudioSystem.PlaySound({
+		soundPath = "slashco/helicopter_engine_distant.mp3",
+		identifier = "HelicopterEngineDistant",
+		soundLevel = 90,
+		looping = true,
+		entity = self,
+		volume = 2,
+		fadeIn = 1,
+	})
 
-	SlashCo.AudioSystem.PlaySound("slashco/helicopter_engine_close.mp3", 50, self, 2, true, 1, "HelicopterEngineClose")
-	SlashCo.AudioSystem.PlaySound("slashco/helicopter_rotors_close.mp3", 60, self, 2, true, 1, "HelicopterRotorsClose")
+	SlashCo.AudioSystem.PlaySound({
+		soundPath = "slashco/helicopter_rotors_distant.mp3",
+		identifier = "HelicopterRotorsDistant",
+		soundLevel = 100,
+		looping = true,
+		entity = self,
+		volume = 2,
+		fadeIn = 1,
+	})
+
+	SlashCo.AudioSystem.PlaySound({
+		soundPath = "slashco/helicopter_engine_close.mp3",
+		identifier = "HelicopterEngineClose",
+		soundLevel = 50,
+		looping = true,
+		entity = self,
+		volume = 2,
+		fadeIn = 1,
+	})
+
+	SlashCo.AudioSystem.PlaySound({
+		soundPath = "slashco/helicopter_rotors_close.mp3",
+		identifier = "HelicopterRotorsClose",
+		soundLevel = 60,
+		looping = true,
+		entity = self,
+		volume = 2,
+		fadeIn = 1,
+	})
 end
 
 function ENT:QuietHeli()
