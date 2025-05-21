@@ -133,7 +133,9 @@ hook.Add("SlashCo:EndRound", "SlashCo:HandoutDocuments", function(winners)
 		slashers[ply:GetNWString("Slasher")] = true
 	end
 
-	for _, ply in ipairs(team.GetPlayers(TEAM_SURVIVOR)) do
+	for _, ply in ipairs(player.GetAll()) do
+		if not ply.WasSurvivor then continue end
+
 		local rating = 3
 		if ply:WasSeenBySlasher() then
 			rating = rating - 1

@@ -353,26 +353,39 @@ function GM:PlayerShouldTakeDamage(ply, attacker)
 	return ply:Team() == TEAM_SURVIVOR
 end
 
-hook.Add("OnPlayerChangedTeam", "octoSlashCoOnPlayerChangedTeam", function(ply, oldteam, newteam)
+hook.Add("OnPlayerChangedTeam", "octoSlashCoOnPlayerChangedTeam", function(ply, oldTeam, newTeam)
 	-- Here's an immediate respawn thing by default. If you want to
 	-- re-create something more like CS or some shit you could probably
 	-- change to a spectator or something while dead.
-	if newteam == TEAM_SPECTATOR then
+	if newTeam == TEAM_SPECTATOR then
 		-- If we changed to spectator mode, respawn where we are
 		local Pos = ply:EyePos()
 		ply:Spawn()
 		ply:SetPos(Pos)
-	elseif oldteam == TEAM_SPECTATOR then
+	elseif oldTeam == TEAM_SPECTATOR then
 		-- If we're changing from spectator, join the game
 		ply:Spawn()
 	end
 
 	if g_SlashCoDebug then
-		PrintMessage(HUD_PRINTTALK, Format("%s joined '%s'", ply:Nick(), team.GetName(newteam)))
+		PrintMessage(HUD_PRINTTALK, Format("%s joined '%s'", ply:Nick(), team.GetName(newTeam)))
 	end
 
 	--Ready Message
 	SlashCo.BroadcastGlobalData()
+end)
+
+--[[
+	ToDo
+
+	We use PlayerChangedTeam here because OnPlayerChangedTeam is deprecated.
+	BUT the issue with PlayerChangedTeam is that we might be calling Player:SetTeam when we call ply:Spawn so we could enter a infinite loop.
+	Additionally as mentioned, PlayerChangedTeam is called when Player:SetTeam is used, and the logic might not like that.
+]]
+hook.Add("PlayerChangedTeam", "SlashCo:PlayerChangedTeam", function(ply, oldTeam, newTeam)
+	if newTeam == TEAM_SURVIVOR then
+		ply.WasSurvivor = true -- At some point this player was a survivor.
+	end
 end)
 
 hook.Add("InitPostEntity", "octoSlashCoInitPostEntity", function()
