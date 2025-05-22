@@ -37,7 +37,13 @@ function SlashCoDatabase.UpdateStats(id, s_type, increase)
 		return
 	end
 
-	sql.Query("UPDATE slashco_master_database SET " .. s_type .. " = " .. current_stat + increase .. " WHERE PlayerID = '" .. id .. "';")
+	local newAmount = current_stat + increase
+	sql.Query("UPDATE slashco_master_database SET " .. s_type .. " = " .. newAmount .. " WHERE PlayerID = '" .. id .. "';")
+
+	local ply = player.GetBySteamID64(id)
+	if IsValid(ply) then
+		ply:SetNW2Int(s_type, newAmount)
+	end
 
 	print("[SlashCo] (Database) " .. name .. "'s stats updated!")
 end

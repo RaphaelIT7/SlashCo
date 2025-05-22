@@ -61,7 +61,7 @@ hook.Add("HUDPaint", "LobbyInfoText", function()
 	local localPly = GameData.LocalPlayer
 
 	local scrW, scrH = ScrW(), ScrH()
-	local point_count = CL_points or 0
+	local point_count = localPly:GetNW2Int("Points", 0)
 	local localTeam = localPly:Team()
 
 	if localTeam != TEAM_SPECTATOR then

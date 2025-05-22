@@ -48,8 +48,8 @@ hook.Add("HUDPaint", "Spectator_Vision", function()
 
 	--Cool Spectator Lobby Menu
 	if #team.GetPlayers(TEAM_SURVIVOR) < 1 and GameData.IsLobby then
-		local srvwin_count = CL_srvwin_count or 0
-		local slswin_count = CL_slswin_count or 0
+		local srvwin_count = GameData.LocalPlayer:GetNW2Int("SurvivorRoundsWon", 0)
+		local slswin_count = GameData.LocalPlayer:GetNW2Int("SlasherRoundsWon", 0)
 
 		SlashCo.Blur()
 
