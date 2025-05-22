@@ -41,7 +41,8 @@ local spin = 0
 local flash = 0
 
 hook.Add("HUDPaint", "Spectator_Vision", function()
-	if GameData.LocalPlayer:Team() ~= TEAM_SPECTATOR then
+	local plyTeam = GameData.LocalPlayer:Team()
+	if plyTeam ~= TEAM_SPECTATOR and not (plyTeam == TEAM_SLASHER and GameData.LocalPlayer:GetMoveType() == MOVETYPE_NOCLIP) then
 		return
 	end
 
