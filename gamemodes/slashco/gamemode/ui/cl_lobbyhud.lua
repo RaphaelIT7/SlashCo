@@ -1,5 +1,3 @@
-local longest_name, plynum
-
 local grey = Color(128, 128, 128)
 local red = Color(255, 64, 64)
 local green = Color(64, 255, 64)
@@ -12,8 +10,40 @@ net.Receive("mantislashco_GiveLobbyStatus", function()
 	GameData.StateOfLobby = net.ReadUInt(3)
 end)
 
+local longest_name, plynum, clientReadiness, Lobby_Players
+local isClientinLobby = false
+local function UpdateLobbyState()
+	Lobby_Players = {}
+	for _, v in ipairs(GameData.LobbyInfoTable) do
+		local ply = player.GetBySteamID64(v.steamid)
+
+		if not IsValid(ply) then
+			continue
+		end
+
+		if not table.HasValue(Lobby_Players, { ID = v.steamid }) then
+			table.insert(Lobby_Players, { ID = v.steamid, Name = ply:GetName(), Ready = v.readyState })
+		end
+
+		if v.steamid == GameData.LocalSteamID64 then
+			clientReadiness = v.readyState
+			isClientinLobby = true
+		end
+	end
+
+	longest_name = longest_name or 0
+	if not plynum or plynum ~= #Lobby_Players then
+		longest_name = 0
+		plynum = #Lobby_Players
+	end
+
+	PrintTable(Lobby_Players)
+end
+
 net.Receive("mantislashco_GiveLobbyInfo", function()
 	GameData.LobbyInfoTable = net.ReadTable()
+
+	UpdateLobbyState()
 end)
 
 hook.Add("HUDDrawTargetID", "SlashCoLobbyNames", function()
@@ -51,25 +81,8 @@ hook.Add("HUDPaint", "LobbyInfoText", function()
 	end
 
 	if GameData.StateOfLobby and GameData.StateOfLobby < 1 then
-		local Lobby_Players = {}
-		local isClientinLobby = false
-
-		local clientReadiness
-		for _, v in ipairs(GameData.LobbyInfoTable) do
-			local ply = player.GetBySteamID64(v.steamid)
-
-			if not IsValid(ply) then
-				continue
-			end
-
-			if not table.HasValue(Lobby_Players, { ID = v.steamid }) then
-				table.insert(Lobby_Players, { ID = v.steamid, Name = ply:GetName(), Ready = v.readyState })
-			end
-
-			if v.steamid == GameData.LocalSteamID64 then
-				clientReadiness = v.readyState
-				isClientinLobby = true
-			end
+		if not clientReadiness or not Lobby_Players then
+			UpdateLobbyState()
 		end
 
 		longest_name = longest_name or 0
@@ -98,20 +111,21 @@ hook.Add("HUDPaint", "LobbyInfoText", function()
 					TEXT_ALIGN_TOP)
 
 			for i = 1, #Lobby_Players do
+				local lobbyPly = Lobby_Players[i]
 				local pos_y = 0.27
 				local x_pos = scrW * 0.025
 				local iconsize = ScrW() / 45
 
 				surface.SetDrawColor(0, 0, 0)
 				surface.DrawRect(scrW * 0.018, (scrH * (pos_y * mul_y)) - 18, longest_name + 65, 60)
-				surface.SetDrawColor(50, 50, 50)
+				surface.SetDrawColor((lobbyPly.Ready == 2 and 50 or 0) + 50, (lobbyPly.Ready == 1 and 50 or 0) + 50, 50)
 				surface.DrawOutlinedRect(scrW * 0.018, (scrH * (pos_y * mul_y)) - 18, longest_name + 65, 60, 3)
 
-				if string.len(Lobby_Players[i].Name) * 15 > longest_name then
+				if string.len(lobbyPly.Name) * 15 > longest_name then
 					longest_name = string.len(Lobby_Players[i].Name) * 15
 				end
 
-				draw.SimpleText(Lobby_Players[i].Name, "PlayersFont", scrW * 0.025, scrH * (pos_y * mul_y),
+				draw.SimpleText(lobbyPly.Name, "PlayersFont", scrW * 0.025, scrH * (pos_y * mul_y),
 						color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
 				local icon_pos_x = x_pos + longest_name
