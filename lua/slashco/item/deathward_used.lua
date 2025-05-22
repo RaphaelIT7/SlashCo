@@ -1,16 +1,14 @@
 local ITEM = {}
 
 ITEM.Model = "models/slashco/items/deathward.mdl"
-ITEM.Name = "Deathward"
+ITEM.EntClass = "sc_deathward_used"
+ITEM.Name = "Deathward (Used)"
 ITEM.Icon = "slashco/ui/icons/items/item_2_99"
 ITEM.Description = "You broke it!"
 ITEM.CamPos = Vector(40,0,15)
 ITEM.IsSpawnable = false
 function ITEM.DisplayColor()
 	return 128, 0, 0, 255
-end
-function ITEM.PreDrop()
-	return true
 end
 function ITEM.OnSwitchFrom(ply)
 	timer.Remove("deathWardDamage_" .. ply:UserID())
