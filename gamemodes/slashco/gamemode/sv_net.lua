@@ -20,7 +20,6 @@ util.AddNetworkString("mantislashco_OfferingVoteOut")
 util.AddNetworkString("mantislashco_VoteForOffering")
 util.AddNetworkString("mantislashco_OfferingEndVote")
 util.AddNetworkString("mantislashco_OfferingVoteFinished")
-util.AddNetworkString("mantislashco_GiveMasterDatabase")
 util.AddNetworkString("mantislashco_SendRoundData")
 util.AddNetworkString("mantislashco_LobbySlasherInformation")
 util.AddNetworkString("mantislashco_SurvivorVoicePrompt")
@@ -261,14 +260,14 @@ function SlashCo.BroadcastMasterDatabaseForClient(ply)
 		return
 	end
 
-	if sql.Query("SELECT * FROM slashco_master_database WHERE PlayerID ='" .. ply:SteamID64() .. "'; ") == nil
-			or sql.Query("SELECT * FROM slashco_master_database WHERE PlayerID ='" .. ply:SteamID64() .. "'; ") == false then
+	local data = sql.Query("SELECT * FROM slashco_master_database WHERE PlayerID ='" .. ply:SteamID64() .. "'; ")
+	if data == nil or data == false or data[1] == nil then
 		return
 	end
 
-	net.Start("mantislashco_GiveMasterDatabase")
-		net.WriteTable(sql.Query("SELECT * FROM slashco_master_database WHERE PlayerID ='" .. ply:SteamID64() .. "'; "))
-	net.Send(ply)
+	ply:SetNW2Int("SurvivorRoundsWon", data[1].SurvivorRoundsWon)
+	ply:SetNW2Int("SlasherRoundsWon", data[1].SlasherRoundsWon)
+	ply:SetNW2Int("Points", data[1].Points)
 end
 
 -- All types are defined in sh_shared.lua -> SlashCo.HelicopterVoices
