@@ -203,6 +203,14 @@ if SERVER then
 	end
 
 	-- slot can be omitted if desired
+	local validSlots = {
+		item2 = true,
+		"item2", -- added for table.concat to work as it needs a sequential table.
+		item = true,
+		"item",
+		itemEffect = true,
+		"itemEffect",
+	}
 	function PLAYER:SetItem(slot, item)
 		if not slot then
 			if SlashCoItems[item] then
@@ -212,6 +220,11 @@ if SERVER then
 			else
 				return
 			end
+		end
+
+		if not validSlots[slot] then
+			error("Tried to use a invalid item slot! (Got: " .. tostring(slot) .. ", Expected one of: " .. table.concat(validSlots, ", ") .. ")")
+			return
 		end
 
 		self:SetNWString(slot, item)
