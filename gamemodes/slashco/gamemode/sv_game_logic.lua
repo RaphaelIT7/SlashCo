@@ -305,41 +305,44 @@ function SlashCo.SurvivorWinFinish()
 	end)
 end
 
-timer.Create("SlashCo:WarningTime", 1, 0, function()
-	local curTime = CurTime()
-	local timePassed = curTime - GetGlobal2Float("SCStartTime")
-	if math.IsNearlyEqual(timePassed, SlashCo.WarningTime, 1) and (GameData.LastWarningTime or 0) < curTime then
-		GameData.LastWarningTime = curTime + 5
-		SlashCo.AudioSystem.PlaySound({
-			soundPath = "slashco/time_alert.mp3",
-			volume = 1,
-			entity = game.GetWorld(),
-			fadeIn = 0,
-		})
-	end
-end)
 
-timer.Create("SlashCo:LobbyFailSafe", 1, 0, function()
-	if SlashCo.State ~= SlashCo.States.IN_GAME or g_SlashCoDebug or GameData.TriggeredLobbyFailSafe then
-		return
-	end
+if not GameData.IsLobby then
+	timer.Create("SlashCo:WarningTime", 1, 0, function()
+		local curTime = CurTime()
+		local timePassed = curTime - GetGlobal2Float("SCStartTime")
+		if math.IsNearlyEqual(timePassed, SlashCo.WarningTime, 1) and (GameData.LastWarningTime or 0) < curTime then
+			GameData.LastWarningTime = curTime + 5
+			SlashCo.AudioSystem.PlaySound({
+				soundPath = "slashco/time_alert.mp3",
+				volume = 1,
+				entity = game.GetWorld(),
+				fadeIn = 0,
+			})
+		end
+	end)
 
-	local timePassed = CurTime() - GetGlobal2Float("SCStartTime")
-	if timePassed > 300 and not SlashCo.FailSafeActivate then
-		local slashers = team.GetPlayers(TEAM_SLASHER)
-		if #slashers == 0 then
-			print("[SlashCo] Lobby failsafe was triggered!")
-			GameData.TriggeredLobbyFailSafe = true
-			SlashCo.EndRound()
+	timer.Create("SlashCo:LobbyFailSafe", 1, 0, function()
+		if SlashCo.State ~= SlashCo.States.IN_GAME or g_SlashCoDebug or GameData.TriggeredLobbyFailSafe then
 			return
 		end
 
-		local survivors = team.GetPlayers(TEAM_SURVIVOR)
-		if #survivors == 0 then
-			print("[SlashCo] Lobby failsafe was triggered!")
-			GameData.TriggeredLobbyFailSafe = true
-			SlashCo.EndRound()
-			return
+		local timePassed = CurTime() - GetGlobal2Float("SCStartTime")
+		if timePassed > 300 and not SlashCo.FailSafeActivate then
+			local slashers = team.GetPlayers(TEAM_SLASHER)
+			if #slashers == 0 then
+				print("[SlashCo] Lobby failsafe was triggered!")
+				GameData.TriggeredLobbyFailSafe = true
+				SlashCo.EndRound()
+				return
+			end
+
+			local survivors = team.GetPlayers(TEAM_SURVIVOR)
+			if #survivors == 0 then
+				print("[SlashCo] Lobby failsafe was triggered!")
+				GameData.TriggeredLobbyFailSafe = true
+				SlashCo.EndRound()
+				return
+			end
 		end
-	end
-end)
+	end)
+end
