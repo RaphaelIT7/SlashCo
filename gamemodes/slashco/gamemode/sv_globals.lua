@@ -305,6 +305,8 @@ function SlashCo.EnableSoundScapes()
 end
 
 function SlashCo.ChangeMap(mapname)
+	if g_SlashCoDebug then return end -- Don't change map when debugging
+
 	RunConsoleCommand("changelevel", mapname)
 end
 

@@ -686,6 +686,10 @@ local function startRound(noSetup)
 	SlashCo.State = SlashCo.States.IN_GAME
 	SlashCo.CurRound.GameProgress = 0
 
+	if g_SlashCoDebug then
+		BroadcastLua([[if IsValid(SlashCo.RoundEndPanel) then SlashCo.RoundEndPanel:Remove() end]]) -- Remove the round ending panel if it exists.
+	end
+
 	SetGlobal2Float("SCStartTime", CurTime())
 	timer.Simple(SlashCo.GhostPingDelay, function()
 		SetGlobal2Bool("SpectatorsCanPing", true)
@@ -726,7 +730,7 @@ local function startRound(noSetup)
 	SlashCo.CreateHelicopter(SlashCo.CurRound.HelicopterTargetPosition, SlashCo.CurRound.HelicopterIntroAngle)
 	SlashCo.BroadcastCurrentRoundData(true)
 
-	for _, ply in ipairs(player.GetAll()) do
+	for _, ply in ipairs(team.GetPlayers(TEAM_SURVIVOR)) do
 		ply:ScreenFade(SCREENFADE.IN, color_black, 1, 0)
 		ply:SetHealth(ply:GetMaxHealth())
 	end
