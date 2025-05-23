@@ -107,17 +107,35 @@ local function IsPressing(mouse)
 	return not wasLeftMousePressed and input.IsButtonDown(mouse)
 end
 
+-- the whole purpose of this is to make that [https://i.imgur.com/imP2JEg.png]
+local text_unlock = SlashCo.Language("documents_unlocky_entry")
+local buffer = {}
+local inserted_break = false
+
+for i = 1, #text_unlock do
+	local char = text_unlock:sub(i, i)
+
+	if not inserted_break and i >= 20 and char == " " then
+		table.insert(buffer, "\n")
+		inserted_break = true
+	else
+		table.insert(buffer, char)
+	end
+end
+
+local unlocky_text = table.concat(buffer)
+
 local selection = {
 	["Selection"] = function(w, h)
-		if DrawTextWithHitbox("[SLASHERS]", "TVCDBig", w / 2, (h / 2) - (h / 6), color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER) then
+		if DrawTextWithHitbox(SlashCo.Language("documents_screen_slasher_title"), "TVCDBig", w / 2, (h / 2) - (h / 6), color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER) then
 			pointer = 0
 		end
 
-		if DrawTextWithHitbox("[LOCATIONS]", "TVCDBig", w / 2, (h / 2), color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER) then
+		if DrawTextWithHitbox(SlashCo.Language("documents_screen_locations_title"), "TVCDBig", w / 2, (h / 2), color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER) then
 			pointer = 1
 		end
 
-		if DrawTextWithHitbox("[ARCHIVE]", "TVCDBig", w / 2, (h / 2) + (h / 6), color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER) then
+		if DrawTextWithHitbox(SlashCo.Language("documents_screen_archive_title"), "TVCDBig", w / 2, (h / 2) + (h / 6), color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER) then
 			pointer = 2
 		end
 
@@ -161,7 +179,7 @@ local selection = {
 
 		local selectedDocument = documents[pointer]
 		if not selectedDocument then
-			pointer = 1 -- In case the pointer managed to be invalid?!?
+			pointer = 1 -- In case the pointer managed to be invalid?!? Valid or Invalid there is only hope
 			selectedDocument = documents[pointer]
 		end
 
@@ -181,11 +199,13 @@ local selection = {
 		surface.SetMaterial(slasher and Material("slashco/ui/icons/slasher/s_" .. slasher.ID) or unknownIcon)
 		surface.DrawTexturedRect(w / 20, h - (h / 2.7), w / 3, h / 3)
 
-		draw.SimpleText("[" .. string.upper(slasher and slasher.Name or "UNKNOWN") .. "]", "TVCDMediumBig", h / 1.45, w / 1.3, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText("[" .. string.upper(slasher and slasher.Name or SlashCo.Language("documents_unknown_name")) .. "]", "TVCDMediumBig", h / 1.45, w / 1.3, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		if slasher then
-			draw.SimpleText(string.upper(SlashCo.DangerLevel[slasher.DangerLevel] .. " " .. SlashCo.SlasherClass[slasher.Class]), "TVCDMedium", h / 1.45, w / 1.17, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText(string.upper(SlashCo.Language(SlashCo.DangerLevel[slasher.DangerLevel]) .. " " .. SlashCo.Language(SlashCo.SlasherClass[slasher.Class])), "TVCDMedium", h / 1.45, w / 1.17, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		else
-			draw.SimpleText("ENCOUNTER SLASHER TO UNLOCK ENTRY", "TVCDSmall", h / 1.45, w / 1.17, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			-- ToDo: Make the text resize or line break when to long or else this happens: https://i.imgur.com/Ph31fVh.png
+
+			draw.DrawText(unlocky_text, "TVCDSmall", w / 1.45, h / 1.17, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end
 
 		if IsPressing(MOUSE_LEFT) and slasher then
@@ -237,42 +257,48 @@ for _, document in pairs(SlashCoDocumentTypes["Slasher"] or {}) do
 	local slasher = SlashCoSlashers[document.Slasher]
 	if not slasher then continue end -- No slasher? Then something is invalid
 
-	local descriptionRows = SplitTextIntoRows(document.Description, "TVCD", screenSize / 1.01)
-	local additionalDescriptionRows = SplitTextIntoRows(document.AdditionalDescription, "TVCD", screenSize / 1.01)
+	local descriptionRows = SplitTextIntoRows(SlashCo.Language(string.lower(document.DescriptionID)), "TVCD", screenSize / 1.01)
+	local additionalDescriptionRows = SplitTextIntoRows(SlashCo.Language(string.lower(document.AdditionalDescriptionID)), "TVCD", screenSize / 1.01)
 
 	local icon = Material("slashco/ui/icons/slasher/s_" .. slasher.ID)
 	selection["Slasher-" .. document.Name] = function(w, h)
 		local row = 1
 		local rowSize = w / 32
-		draw.SimpleText("ENTRY: \"" .. slasher.Name .. "\"", "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
+		draw.SimpleText(SlashCo.Language("documents_slasher_entry") .. " \"" .. slasher.Name .. "\"", "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 
 		row = row + 1
-		draw.SimpleText("ALIASES:", "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
+		draw.SimpleText(SlashCo.Language("documents_slasher_alias"), "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 
 		for _, name in ipairs(slasher.Aliases or {}) do
 			row = row + 1
-			draw.SimpleText("\"" .. name .. "\"", "TVCD", h / 3.1, rowSize * row, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("\"" .. name .. "\"", "TVCD", h * 0.1, rowSize * row, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		end
 
 		row = row + 1
-		draw.SimpleText("CLASS:", "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
+		draw.SimpleText(SlashCo.Language("documents_slasher_class"), "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
+		
+		row = row + 1
+		draw.SimpleText("[" .. string.upper(SlashCo.SlasherClass[slasher.Class]) .. "]", "TVCD", h * 0.1, rowSize * row, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
 		row = row + 1
-		draw.SimpleText("[" .. string.upper(SlashCo.SlasherClass[slasher.Class]) .. "]", "TVCD", h / 3.1, rowSize * row, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText(SlashCo.Language("documents_danger_level"), "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 
 		row = row + 1
-		draw.SimpleText("DANGER LVL:", "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
-
-		row = row + 1
-		draw.SimpleText("[" .. string.upper(SlashCo.DangerLevel[slasher.DangerLevel]) .. "]", "TVCD", h / 3.1, rowSize * row, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText("[" .. string.upper(SlashCo.DangerLevel[slasher.DangerLevel]) .. "]", "TVCD", h * 0.1, rowSize * row, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
 		if row < 13 then -- Offset to align everything
 			row = 13
 		end
 
-		draw.SimpleText("[VIEW ATTACHED FILE]", "TVCD", h / 100, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
-
 		local rating = SlashCo.GetDocumentRating(document.Name)
+		
+		-- makes the view attached file button grey to signal that it is unavailable
+		if rating >= 2 then
+			draw.SimpleText(SlashCo.Language("documents_attached_file"), "TVCD", h / 100, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
+		else
+			draw.SimpleText(SlashCo.Language("documents_attached_file"), "TVCD", h / 100, rowSize * row, Color(80, 80, 80), 0, TEXT_ALIGN_CENTER)
+		end
+
 		local star = 0
 		for k=1, rating do
 			surface.SetDrawColor(255, 255, 255, 255)
@@ -293,19 +319,22 @@ for _, document in pairs(SlashCoDocumentTypes["Slasher"] or {}) do
 		end
 
 		row = row + 2
-		for _, rowText in ipairs(descriptionRows) do
-			draw.SimpleText(rowText, "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
-			row = row + 1
-		end
-
-		row = row + 1
 		if rating != 0 then
+			for _, rowText in ipairs(descriptionRows) do
+				draw.SimpleText(rowText, "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
+				row = row + 1
+			end
+			
+			-- without the working [VIEW ATTACHED FILE] functionality this only causes problems for now
+			--[[
+			row = row + 1
 			for _, rowText in ipairs(additionalDescriptionRows) do
 				draw.SimpleText(rowText, "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 				row = row + 1
 			end
+			]]
 		else
-			draw.SimpleText("[SURVIVE SLASHER FOR MORE INFO]", "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
+			draw.SimpleText(SlashCo.Language("documents_survive_slasher"), "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 		end
 
 		surface.SetDrawColor(255, 255, 255, 255)
@@ -318,6 +347,23 @@ for _, document in pairs(SlashCoDocumentTypes["Slasher"] or {}) do
 	end
 end
 
+local marker_hook_added = false
+local screen_width, screen_height = ScrW(), ScrH()
+
+local function draw_documents_screen_marker(draw_marker)
+	if draw_marker and not marker_hook_added then
+		hook.Add("HUDPaint", "documents_screen_crosshair", function()
+			surface.DrawCircle(screen_width / 2, screen_height / 2, 5, Color(190, 24, 24))
+		end)
+		marker_hook_added = true
+
+	elseif not draw_marker and marker_hook_added then
+		hook.Remove("HUDPaint", "documents_screen_crosshair")
+		marker_hook_added = false
+	end
+end
+
+--[[
 hook.Add("PostDrawOpaqueRenderables", "LobbyDocumentScreen", function(bDrawingDepth, bDrawingSkybox, isDraw3DSkybox)
 	if not GameData.IsLobby then
 		return
@@ -332,13 +378,15 @@ hook.Add("PostDrawOpaqueRenderables", "LobbyDocumentScreen", function(bDrawingDe
 		surface.SetDrawColor(0, 0, 0, 255)
 		surface.DrawRect(0, 0, w, h)
 
-		draw.SimpleText("[Left Click] = Enter Page", "TVCD", w * 1.55, (h / 2), color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
-		draw.SimpleText("[Right Click] = Exit Page", "TVCD", w * 1.55, (h / 2) + (h / 20), color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
+		draw.SimpleText(SlashCo.Language("documents_screen_left_click_help"), "TVCD", w * 1, (h / 2), color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_LEFT)
+		draw.SimpleText(SlashCo.Language("documents_screen_right_click_help"), "TVCD", w * 1, (h / 2) + (h / 20), color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_LEFT)
 
 		-- Debug to check screen Mins/Maxs values
 		-- debugoverlay.BoxAngles( screenPos, screenMins, screenMaxs, screenAngle, 0.02, hitPos != nil and Color(0,255,0) or Color( 255,0, 0, 10) )
 
 		if GameData.LocalPlayer:EyePos():DistToSqr(screenPos) < 50000 then
+			draw_documents_screen_marker(true)
+
 			if wasLeftMousePressed and not input.IsButtonDown(MOUSE_LEFT) then
 				wasLeftMousePressed = false
 			end
@@ -351,14 +399,16 @@ hook.Add("PostDrawOpaqueRenderables", "LobbyDocumentScreen", function(bDrawingDe
 			if not drawFunc then -- Our option was invalid, fall back to the set fallback.
 				GameData.DocumentOption = fallBackOption
 				drawFunc = selection[GameData.DocumentOption]
-			end
+			end 
 
 			if drawFunc then
 				callID = 0
 				drawFunc(w, h)
 			end
 		else
+			draw_documents_screen_marker(false)
 			GameData.DocumentOption = fallBackOption -- Reset.
 		end
 	cam.End3D2D()
 end)
+]]

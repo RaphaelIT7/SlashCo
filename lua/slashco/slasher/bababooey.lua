@@ -2,9 +2,9 @@ local SLASHER = {}
 
 SLASHER.Name = "Bababooey"
 SLASHER.Aliases = {
-	"Phantom",
-	"The Man",
-	"The Mist",
+	"bababooey_alias_phantom",
+	"bababooey_alias_man",
+	"bababooey_alias_mist",
 }
 SLASHER.ID = 1
 SLASHER.Class = 1

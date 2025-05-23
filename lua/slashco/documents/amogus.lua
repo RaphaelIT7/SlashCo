@@ -1,6 +1,6 @@
 local DOCUMENT = {}
 
-DOCUMENT.Name = "Dolphinman"
+DOCUMENT.Name = "Amogus"
 DOCUMENT.Type = "Slasher"
 
 DOCUMENT.DescriptionID = DOCUMENT.Name .. "_description"
