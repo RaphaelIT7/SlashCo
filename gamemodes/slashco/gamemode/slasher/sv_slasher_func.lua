@@ -397,7 +397,7 @@ function SlashCo.BustDoor(slasher, target, force)
 end
 
 function SlashCo.AddSlasherAnger(slasher, anger)
-	slasher:SetNW2Float("SlasherAnger", math.Clamp(slasher:GetNW2Float("SlasherAnger", 0) + anger, 0, 100))
+	slasher:SetNW2Float("SlasherAnger", math.Clamp(SlashCo.GetSlasherAnger(slasher) + anger, 0, 100))
 end
 
 function SlashCo.GetSlasherAnger(slasher)
@@ -410,7 +410,7 @@ function SlashCo.GetGlobalSlasherAnger()
 	local totalAnger = 0
 
 	for _, slasher in ipairs(slashers) do
-		totalAnger = totalAnger + slasher:GetNW2Float("SlasherAnger", 0)
+		totalAnger = totalAnger + SlashCo.GetSlasherAnger(slasher)
 	end
 
 	return totalAnger / count
