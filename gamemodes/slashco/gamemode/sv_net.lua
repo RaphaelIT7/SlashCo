@@ -224,6 +224,7 @@ local pointStateSlasher = {
 function SlashCo.RoundOverScreen(state)
 	SlashCo.QuietHeli()
 	SlashCo.AudioSystem.DisableBackgroundMusic()
+	SlashCo.AudioSystem.StopSound(nil, 1) -- Stops all sounds that use the AudioSystem.
 
 	--yucky yucky
 	local goodSurvivorTable = {}
