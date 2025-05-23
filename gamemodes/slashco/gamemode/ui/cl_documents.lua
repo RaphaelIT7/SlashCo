@@ -253,99 +253,109 @@ local function SplitTextIntoRows(text, font, maxRowWidth)
 	return descriptionRows
 end
 
-for _, document in pairs(SlashCoDocumentTypes["Slasher"] or {}) do
-	local slasher = SlashCoSlashers[document.Slasher]
-	if not slasher then continue end -- No slasher? Then something is invalid
+local function BuildSlasherPages()
+	for _, document in pairs(SlashCoDocumentTypes["Slasher"] or {}) do
+		local slasher = SlashCoSlashers[document.Slasher]
+		if not slasher then continue end -- No slasher? Then something is invalid
+		
+		local descriptionRows = SplitTextIntoRows(SlashCo.Language(string.lower(document.DescriptionID)), "TVCD", screenSize / 1.01)
+		local additionalDescriptionRows = SplitTextIntoRows(SlashCo.Language(string.lower(document.AdditionalDescriptionID)), "TVCD", screenSize / 1.01)
 
-	local descriptionRows = SplitTextIntoRows(SlashCo.Language(string.lower(document.DescriptionID)), "TVCD", screenSize / 1.01)
-	local additionalDescriptionRows = SplitTextIntoRows(SlashCo.Language(string.lower(document.AdditionalDescriptionID)), "TVCD", screenSize / 1.01)
+		local icon = Material("slashco/ui/icons/slasher/s_" .. slasher.ID)
+		local color_grey = Color(80, 80, 80)
+		selection["Slasher-" .. document.Name] = function(w, h)
+			local row = 1
+			local rowSize = w / 32
+			draw.SimpleText(SlashCo.Language("documents_slasher_entry") .. " \"" .. slasher.Name .. "\"", "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 
-	local icon = Material("slashco/ui/icons/slasher/s_" .. slasher.ID)
-	selection["Slasher-" .. document.Name] = function(w, h)
-		local row = 1
-		local rowSize = w / 32
-		draw.SimpleText(SlashCo.Language("documents_slasher_entry") .. " \"" .. slasher.Name .. "\"", "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
-
-		row = row + 1
-		draw.SimpleText(SlashCo.Language("documents_slasher_alias"), "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
-
-		for _, name in ipairs(slasher.Aliases or {}) do
 			row = row + 1
-			draw.SimpleText("\"" .. SlashCo.Language(name) .. "\"", "TVCD", h * 0.1, rowSize * row, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-		end
+			draw.SimpleText(SlashCo.Language("documents_slasher_alias"), "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 
-		row = row + 1
-		draw.SimpleText(SlashCo.Language("documents_slasher_class"), "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
-		
-		row = row + 1
-		draw.SimpleText("[" .. string.upper(SlashCo.SlasherClass[slasher.Class]) .. "]", "TVCD", h * 0.1, rowSize * row, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			for _, name in ipairs(slasher.Aliases or {}) do
+				row = row + 1
+				draw.SimpleText("\"" .. SlashCo.Language(name) .. "\"", "TVCD", h * 0.1, rowSize * row, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			end
 
-		row = row + 1
-		draw.SimpleText(SlashCo.Language("documents_danger_level"), "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
+			row = row + 1
+			draw.SimpleText(SlashCo.Language("documents_slasher_class"), "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
+			
+			row = row + 1
+			draw.SimpleText("[" .. SlashCo.Language(SlashCo.SlasherClass[slasher.Class]) .. "]", "TVCD", h * 0.1, rowSize * row, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
-		row = row + 1
-		draw.SimpleText("[" .. string.upper(SlashCo.DangerLevel[slasher.DangerLevel]) .. "]", "TVCD", h * 0.1, rowSize * row, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			row = row + 1
+			draw.SimpleText(SlashCo.Language("documents_danger_level"), "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 
-		if row < 13 then -- Offset to align everything
-			row = 13
-		end
+			row = row + 1
+			draw.SimpleText("[" .. SlashCo.Language(SlashCo.DangerLevel[slasher.DangerLevel]) .. "]", "TVCD", h * 0.1, rowSize * row, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
-		local rating = SlashCo.GetDocumentRating(document.Name)
-		
-		-- makes the view attached file button grey to signal that it is unavailable
-		if rating >= 2 then
-			draw.SimpleText(SlashCo.Language("documents_attached_file"), "TVCD", h / 100, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
-		else
-			draw.SimpleText(SlashCo.Language("documents_attached_file"), "TVCD", h / 100, rowSize * row, Color(80, 80, 80), 0, TEXT_ALIGN_CENTER)
-		end
+			if row < 13 then -- Offset to align everything
+				row = 13
+			end
 
-		local star = 0
-		for k=1, rating do
-			surface.SetDrawColor(255, 255, 255, 255)
-			surface.SetMaterial(starFilled)
-			surface.DrawTexturedRect(w / 1.275 + (w / 17 * star), rowSize * row - (h / 17.5 / 2), w / 17.5, h / 17.5)
-			star = star + 1
+			local rating = SlashCo.GetDocumentRating(document.Name)
+			
+			-- makes the view attached file button grey to signal that it is unavailable
+			if rating >= 2 then
+				draw.SimpleText(SlashCo.Language("documents_attached_file"), "TVCD", h / 100, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
+			else
+				draw.SimpleText(SlashCo.Language("documents_attached_file"), "TVCD", h / 100, rowSize * row, color_grey, 0, TEXT_ALIGN_CENTER)
+			end
 
-			if star > 3 then break end
-		end
-
-		if star < 3 then -- Draw remaining stars
-			for k=star, 2 do
+			local star = 0
+			for k=1, rating do
 				surface.SetDrawColor(255, 255, 255, 255)
-				surface.SetMaterial(starUnfilled)
+				surface.SetMaterial(starFilled)
 				surface.DrawTexturedRect(w / 1.275 + (w / 17 * star), rowSize * row - (h / 17.5 / 2), w / 17.5, h / 17.5)
 				star = star + 1
-			end
-		end
 
-		row = row + 2
-		if rating != 0 then
-			for _, rowText in ipairs(descriptionRows) do
-				draw.SimpleText(rowText, "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
+				if star > 3 then break end
+			end
+
+			if star < 3 then -- Draw remaining stars
+				for k=star, 2 do
+					surface.SetDrawColor(255, 255, 255, 255)
+					surface.SetMaterial(starUnfilled)
+					surface.DrawTexturedRect(w / 1.275 + (w / 17 * star), rowSize * row - (h / 17.5 / 2), w / 17.5, h / 17.5)
+					star = star + 1
+				end
+			end
+
+			row = row + 2
+			if rating != 0 then
+				for _, rowText in ipairs(descriptionRows) do
+					draw.SimpleText(rowText, "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
+					row = row + 1
+				end
+				
+				-- without the working [VIEW ATTACHED FILE] functionality this only causes problems for now
+				--[[
 				row = row + 1
+				for _, rowText in ipairs(additionalDescriptionRows) do
+					draw.SimpleText(rowText, "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
+					row = row + 1
+				end
+				]]
+			else
+				draw.SimpleText(SlashCo.Language("documents_survive_slasher"), "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 			end
-			
-			-- without the working [VIEW ATTACHED FILE] functionality this only causes problems for now
-			--[[
-			row = row + 1
-			for _, rowText in ipairs(additionalDescriptionRows) do
-				draw.SimpleText(rowText, "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
-				row = row + 1
+
+			surface.SetDrawColor(255, 255, 255, 255)
+			surface.SetMaterial(icon)
+			surface.DrawTexturedRect(w - (w / 2.8), h - (h / 1.02), w / 3, h / 3)
+
+			if IsPressing(MOUSE_RIGHT) then
+				SwitchSelection("Slashers", true)
 			end
-			]]
-		else
-			draw.SimpleText(SlashCo.Language("documents_survive_slasher"), "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
-		end
-
-		surface.SetDrawColor(255, 255, 255, 255)
-		surface.SetMaterial(icon)
-		surface.DrawTexturedRect(w - (w / 2.8), h - (h / 1.02), w / 3, h / 3)
-
-		if IsPressing(MOUSE_RIGHT) then
-			SwitchSelection("Slashers", true)
 		end
 	end
 end
+
+BuildSlasherPages()
+
+hook.Add("SlashCo:LanguageChanged", "NukeTextCache", function()
+	textCache = {}
+	BuildSlasherPages()
+end)
 
 local marker_hook_added = false
 local screen_width, screen_height = ScrW(), ScrH()
