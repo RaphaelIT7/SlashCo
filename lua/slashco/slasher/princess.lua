@@ -30,6 +30,9 @@ SLASHER.SpeedRating = "★★★★☆"
 SLASHER.EyeRating = "★★☆☆☆"
 SLASHER.DiffRating = "★★☆☆☆"
 SLASHER.ItemToSpawn = "Baby"
+SLASHER.AngerIncrease = 5
+SLASHER.AngerPassiveGain = 0.04
+SLASHER.AngerChaseGain = 0
 
 function SLASHER.OnSpawn(slasher)
 	slasher:SetViewOffset(Vector(0, 0, 50))
@@ -219,35 +222,50 @@ function SLASHER.Maul(slasher, target)
 	SlashCo.StopChase(slasher)
 	slasher:SetNWBool("PrincessMaulingBase", false)
 
-	timer.Simple(FrameTime() * 3, function()
-		if not IsValid(slasher) or not IsValid(target) then
-			return
-		end
+	local eatBabyFromPlayer = false -- true if were eating a baby that a player was holding.
+	if target:ItemValue("EntClass", false, true) == "sc_baby" then -- eat the baby >:3
+		SlashCo.RemoveItem(target, true)
+		eatBabyFromPlayer = true
+	end
 
-		slasher:SetNWBool("PrincessMaulingSurvivor", true)
-		target:TakeDamage(99999, slasher, slasher)
+	if not eatBabyFromPlayer and target:ItemValue("EntClass", false, false) == "sc_baby" then -- eat the baby >:3
+		SlashCo.RemoveItem(target, false)
+		eatBabyFromPlayer = true
+	end
 
-		timer.Simple(FrameTime() * 3, function()
-			if not IsValid(slasher) then
+	if not eatBabyFromPlayer then
+		timer.Simple(0, function() -- ToDo: Why do we even need a timer? Verify.
+			if not IsValid(slasher) or not IsValid(target) then
 				return
 			end
 
-			slasher.victimragdoll = target and (target.DeadBody or NULL)
+			slasher:SetNWBool("PrincessMaulingSurvivor", true)
+			target:TakeDamage(99999, slasher, slasher)
+
+			timer.Simple(FrameTime() * 3, function()
+				if not IsValid(slasher) then
+					return
+				end
+
+				slasher.victimragdoll = target and (target.DeadBody or NULL)
+			end)
 		end)
-	end)
+	end
 
 	slasher:EmitSound("slashco/slasher/princess_maul.mp3")
 
 	local pos = slasher:LocalToWorld(Vector(0, 10, -5))
 	local ang = slasher:LocalToWorldAngles(Angle(90, 0, 0))
 
-	slasher.ref_child = ents.Create("prop_physics")
-	slasher.ref_child:SetMoveType(MOVETYPE_NONE)
-	slasher.ref_child:SetCollisionGroup(COLLISION_GROUP_IN_VEHICLE)
-	slasher.ref_child:SetModel(SlashCoItems.Baby.Model)
-	slasher.ref_child:SetPos(pos)
-	slasher.ref_child:SetAngles(ang)
-	slasher.ref_child:FollowBone(slasher, slasher:LookupBone("head"))
+	if eatBabyFromPlayer or not IsValid(target) then
+		slasher.ref_child = ents.Create("prop_physics")
+		slasher.ref_child:SetMoveType(MOVETYPE_NONE)
+		slasher.ref_child:SetCollisionGroup(COLLISION_GROUP_IN_VEHICLE)
+		slasher.ref_child:SetModel(SlashCoItems.Baby.Model)
+		slasher.ref_child:SetPos(pos)
+		slasher.ref_child:SetAngles(ang)
+		slasher.ref_child:FollowBone(slasher, slasher:LookupBone("head"))
+	end
 
 	for i = 1, math.random(9, 10) do
 		timer.Simple((i / 8) * (0.7 + (math.random() * 0.3)), function()
@@ -273,11 +291,16 @@ function SLASHER.Maul(slasher, target)
 		slasher:SetNWBool("PrincessMaulingSurvivor", false)
 		slasher:SetNWBool("PrincessMaulingBase", false)
 
+		SlashCo.AddSlasherAnger(slasher, SLASHER.AngerIncrease)
+
+		if IsValid(slasher.ref_child) then
+			slasher.ref_child:Remove()
+		end
+
 		if not IsValid(slasher.victimragdoll) then
 			return
 		end
 
-		slasher.ref_child:Remove()
 		slasher.victimragdoll:Remove()
 
 		local pickedclean = ents.Create("prop_ragdoll")

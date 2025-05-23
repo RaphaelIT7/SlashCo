@@ -33,7 +33,8 @@ function ITEM.OnUse(ply)
 				ply:Kill()
 				ply:EmitSound("slashco/survivor/devildie_kill.mp3")
 
-				local slasher = team.GetPlayers(TEAM_SLASHER)[#team.GetPlayers(TEAM_SLASHER)]
+				local slasher = team.GetPlayers(TEAM_SLASHER)
+				slasher = slasher[math.random(1, #slasher)] -- If there are multiple slasher's we need to be fair and pick a random one, the previous code always chose the second slasher.
 
 				if IsValid(slasher) then
 					slasher:RandomTeleport()
