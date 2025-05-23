@@ -271,7 +271,7 @@ for _, document in pairs(SlashCoDocumentTypes["Slasher"] or {}) do
 
 		for _, name in ipairs(slasher.Aliases or {}) do
 			row = row + 1
-			draw.SimpleText("\"" .. name .. "\"", "TVCD", h * 0.1, rowSize * row, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			draw.SimpleText("\"" .. SlashCo.Language(name) .. "\"", "TVCD", h * 0.1, rowSize * row, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		end
 
 		row = row + 1
@@ -363,7 +363,6 @@ local function draw_documents_screen_marker(draw_marker)
 	end
 end
 
---[[
 hook.Add("PostDrawOpaqueRenderables", "LobbyDocumentScreen", function(bDrawingDepth, bDrawingSkybox, isDraw3DSkybox)
 	if not GameData.IsLobby then
 		return
@@ -411,4 +410,3 @@ hook.Add("PostDrawOpaqueRenderables", "LobbyDocumentScreen", function(bDrawingDe
 		end
 	cam.End3D2D()
 end)
-]]
