@@ -416,6 +416,36 @@ function SlashCo.GetGlobalSlasherAnger()
 	return totalAnger / count
 end
 
+function SlashCo.GetHighestSlasherAnger()
+	local highestAnger = 0
+	for _, slasher in ipairs(team.GetPlayers(TEAM_SLASHER)) do
+		local anger = SlashCo.GetSlasherAnger(slasher)
+		if anger > highestAnger then
+			highestAnger = anger
+		end
+	end
+
+	return highestAnger
+end
+
+--[[
+	We could remove this one since all of the sounds are .ogg but we can just keep it because why not.
+	There are also ambient_high sounds but we use thoes instead for when a player gets chased.
+]]
+local lowAmbientTracks = {
+	"slashco/ambienttrack/ambient_low1.ogg",
+	"slashco/ambienttrack/ambient_low2.ogg",
+	"slashco/ambienttrack/ambient_low3.ogg",
+	"slashco/ambienttrack/ambient_low4.ogg",
+	"slashco/ambienttrack/ambient_low5.ogg",
+}
+local midAmbientTracks = {
+	"slashco/ambienttrack/ambient_mid1.mp3",
+	"slashco/ambienttrack/ambient_mid2.mp3",
+	"slashco/ambienttrack/ambient_mid3.ogg",
+	"slashco/ambienttrack/ambient_mid4.ogg",
+	"slashco/ambienttrack/ambient_mid5.ogg",
+}
 timer.Create("SlashCo:SlasherAnger", 1, 0, function()
 	if GameData.IsLobby then return end
 
@@ -443,9 +473,18 @@ timer.Create("SlashCo:SlasherAnger", 1, 0, function()
 
 	if hasCustomBackgroundMusic then return end
 
+	local highestAnger = SlashCo.GetHighestSlasherAnger()
 	if (not backgroundMusic or backgroundMusic == "") and SlashCo.AudioSystem.ShouldPlayBackgroundMusic() then
-		SlashCo.AudioSystem.DisableBackgroundMusic()
-		return
+		GameData.AmbientID = GameData.AmbientID or math.random(1, 5)
+
+		if highestAnger < 50 then
+			backgroundMusic = lowAmbientTracks[GameData.AmbientID]
+		else
+			backgroundMusic = midAmbientTracks[GameData.AmbientID]
+		end
+
+		--SlashCo.AudioSystem.DisableBackgroundMusic()
+		--return
 	end
 
 	if not SlashCo.AudioSystem.ShouldPlayBackgroundMusic() or backgroundMusic != SlashCo.AudioSystem.GetBackgroundMusic() then
