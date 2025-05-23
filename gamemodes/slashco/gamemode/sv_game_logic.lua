@@ -320,7 +320,7 @@ timer.Create("SlashCo:WarningTime", 1, 0, function()
 end)
 
 timer.Create("SlashCo:LobbyFailSafe", 1, 0, function()
-	if SlashCo.State ~= SlashCo.States.IN_GAME then
+	if SlashCo.State ~= SlashCo.States.IN_GAME or g_SlashCoDebug or GameData.TriggeredLobbyFailSafe then
 		return
 	end
 
@@ -329,6 +329,7 @@ timer.Create("SlashCo:LobbyFailSafe", 1, 0, function()
 		local slashers = team.GetPlayers(TEAM_SLASHER)
 		if #slashers == 0 then
 			print("[SlashCo] Lobby failsafe was triggered!")
+			GameData.TriggeredLobbyFailSafe = true
 			SlashCo.EndRound()
 			return
 		end
@@ -336,6 +337,7 @@ timer.Create("SlashCo:LobbyFailSafe", 1, 0, function()
 		local survivors = team.GetPlayers(TEAM_SURVIVOR)
 		if #survivors == 0 then
 			print("[SlashCo] Lobby failsafe was triggered!")
+			GameData.TriggeredLobbyFailSafe = true
 			SlashCo.EndRound()
 			return
 		end

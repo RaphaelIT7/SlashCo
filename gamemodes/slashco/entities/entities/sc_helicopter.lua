@@ -94,7 +94,7 @@ function ENT:PlayHeliSounds()
 	SlashCo.AudioSystem.PlaySound({
 		soundPath = "slashco/helicopter_engine_distant.mp3",
 		identifier = "HelicopterEngineDistant",
-		soundLevel = 90,
+		soundLevel = 100,
 		looping = true,
 		entity = self,
 		volume = 2,
@@ -104,7 +104,7 @@ function ENT:PlayHeliSounds()
 	SlashCo.AudioSystem.PlaySound({
 		soundPath = "slashco/helicopter_rotors_distant.mp3",
 		identifier = "HelicopterRotorsDistant",
-		soundLevel = 100,
+		soundLevel = 120,
 		looping = true,
 		entity = self,
 		volume = 2,
@@ -114,7 +114,7 @@ function ENT:PlayHeliSounds()
 	SlashCo.AudioSystem.PlaySound({
 		soundPath = "slashco/helicopter_engine_close.mp3",
 		identifier = "HelicopterEngineClose",
-		soundLevel = 50,
+		soundLevel = 80,
 		looping = true,
 		entity = self,
 		volume = 2,
@@ -124,7 +124,7 @@ function ENT:PlayHeliSounds()
 	SlashCo.AudioSystem.PlaySound({
 		soundPath = "slashco/helicopter_rotors_close.mp3",
 		identifier = "HelicopterRotorsClose",
-		soundLevel = 60,
+		soundLevel = 90,
 		looping = true,
 		entity = self,
 		volume = 2,

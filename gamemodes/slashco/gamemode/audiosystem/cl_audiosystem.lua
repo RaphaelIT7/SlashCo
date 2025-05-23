@@ -194,12 +194,20 @@ function SlashCo.AudioSystem.DestroyChannel(channel, fadeOutTime)
 	SlashCo.AudioSystem.ParentedChannels[channel] = nil
 end
 
+function SlashCo.AudioSystem.EnsureValidVolume(volume)
+	if volume == volume then -- if its not nan, we can say its safe
+		return volume
+	end
+
+	return 0 -- math.Clamp(volume, -10, 10) -- We return 0 as else if it would clamp to 10 it could errape the client.
+end
+
 -- Fades the channel's volume to the target volume.
 function SlashCo.AudioSystem.FadeTo(channel, fadeInTime, targetVol)
 	targetVol = targetVol or 1
 	fadeInTime = fadeInTime or 1
 
-	local vol = channel:GetVolume()
+	local vol = SlashCo.AudioSystem.EnsureValidVolume(channel:GetVolume())
 	local lowerVol = targetVol < vol
 	local id = SlashCo.AudioSystem.GetChannelID(channel)
 	local timerName = "SlashCo:FadeInAudioChannel" .. id
@@ -224,7 +232,7 @@ function SlashCo.AudioSystem.FadeTo(channel, fadeInTime, targetVol)
 			vol = channel:GetVolume() + volumeIncrement
 		end
 
-		channel:SetVolume(vol)
+		channel:SetVolume(SlashCo.AudioSystem.EnsureValidVolume(vol))
 	end)
 end
 

@@ -477,7 +477,7 @@ timer.Create("SlashCo:SlasherAnger", 1, 0, function()
 	if (not backgroundMusic or backgroundMusic == "") and SlashCo.AudioSystem.ShouldPlayBackgroundMusic() then
 		GameData.AmbientID = GameData.AmbientID or math.random(1, 5)
 
-		if highestAnger < 50 then
+		if highestAnger < 75 then
 			backgroundMusic = lowAmbientTracks[GameData.AmbientID]
 		else
 			backgroundMusic = midAmbientTracks[GameData.AmbientID]

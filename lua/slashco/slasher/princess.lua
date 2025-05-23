@@ -206,6 +206,26 @@ function SLASHER.OnTickBehaviour(slasher)
 	slasher:SetNWInt("Slasher_Perception", perception)
 end
 
+local function IsPlayerHoldingBaby(target, removeBaby)
+	if target:ItemValue("EntClass", false, true) == "sc_baby" then -- eat the baby >:3
+		if removeBaby then
+			SlashCo.RemoveItem(target, true)
+		end
+
+		return true
+	end
+
+	if target:ItemValue("EntClass", false, false) == "sc_baby" then -- eat the baby >:3
+		if removeBaby then
+			SlashCo.RemoveItem(target, false)
+		end
+
+		return true
+	end
+
+	return false
+end
+
 function SLASHER.Maul(slasher, target)
 	timer.Remove("princessMaul_" .. slasher:UserID())
 	slasher:EmitSound("slashco/slasher/princess_bite.mp3")
@@ -215,23 +235,14 @@ function SLASHER.Maul(slasher, target)
 	bloodfx:SetOrigin(vPoint)
 	util.Effect("BloodImpact", bloodfx)
 
-	if slasher.SlasherValue1 <= 99 then
+	local eatBabyFromPlayer = IsPlayerHoldingBaby(target, true) -- true if were eating a baby that a player was holding.
+	if slasher.SlasherValue1 <= 99 and not eatBabyFromPlayer then
 		return
 	end
 
 	SlashCo.StopChase(slasher)
 	slasher:SetNWBool("PrincessMaulingBase", false)
-
-	local eatBabyFromPlayer = false -- true if were eating a baby that a player was holding.
-	if target:ItemValue("EntClass", false, true) == "sc_baby" then -- eat the baby >:3
-		SlashCo.RemoveItem(target, true)
-		eatBabyFromPlayer = true
-	end
-
-	if not eatBabyFromPlayer and target:ItemValue("EntClass", false, false) == "sc_baby" then -- eat the baby >:3
-		SlashCo.RemoveItem(target, false)
-		eatBabyFromPlayer = true
-	end
+	slasher:Freeze(true)
 
 	if not eatBabyFromPlayer then
 		timer.Simple(0, function() -- ToDo: Why do we even need a timer? Verify.
@@ -265,6 +276,7 @@ function SLASHER.Maul(slasher, target)
 		slasher.ref_child:SetPos(pos)
 		slasher.ref_child:SetAngles(ang)
 		slasher.ref_child:FollowBone(slasher, slasher:LookupBone("head"))
+		slasher:SetNWBool("PrincessMaulingChild", true)
 	end
 
 	for i = 1, math.random(9, 10) do
@@ -288,12 +300,15 @@ function SLASHER.Maul(slasher, target)
 			return
 		end
 
+		slasher:Freeze(false)
+
 		slasher:SetNWBool("PrincessMaulingSurvivor", false)
 		slasher:SetNWBool("PrincessMaulingBase", false)
 
 		SlashCo.AddSlasherAnger(slasher, SLASHER.AngerIncrease)
 
 		if IsValid(slasher.ref_child) then
+			slasher:SetNWBool("PrincessMaulingChild", false)
 			slasher.ref_child:Remove()
 		end
 
@@ -356,9 +371,33 @@ function SLASHER.OnPrimaryFire(slasher)
 			return
 		end
 
-		local target = slasher:TraceHullAttack(slasher:EyePos(), slasher:LocalToWorld(Vector(45, 0, 30)),
-				Vector(-40, -40, -60), Vector(40, 40, 60),
-				math.random(15, 30) + math.random(0, math.floor(slasher.SlasherValue1 / 4)), DMG_SLASH, 5, false)
+		local tr = util.TraceHull({
+			start = slasher:EyePos(),
+			endpos = slasher:LocalToWorld(Vector(45, 0, 30)),
+			maxs = Vector(40, 40, 60),
+			mins = Vector(-40, -40, -60),
+			filter = slasher,
+			ignoreworld = true,
+		})
+		local target = tr.Entity
+		print(target)
+
+		local damage = math.random(15, 30) + math.random(0, math.floor(slasher.SlasherValue1 / 4))
+		--local target = slasher:TraceHullAttack(slasher:EyePos(), slasher:LocalToWorld(Vector(45, 0, 30)),
+		--		Vector(-40, -40, -60), Vector(40, 40, 60),
+		--		damage, DMG_SLASH, 5, false)
+		
+		if target:IsValid() and (not target:IsPlayer() or (target:Team() == TEAM_SURVIVOR and not IsPlayerHoldingBaby(target, false))) then
+			local dmg = DamageInfo()
+			dmg:SetDamageType(DMG_SLASH)
+			dmg:SetAttacker(slasher)
+			dmg:SetInflictor(slasher)
+			dmg:SetDamage(damage)
+			dmg:SetDamageForce(Vector(1, 1, 1)) -- required or else warnings are spammed
+			dmg:SetDamagePosition(tr.HitPos) -- required or else warnings are spammed
+			target:TakeDamageInfo(dmg)
+		end
+
 
 		if target:IsValid() and target:IsPlayer() and target:Team() == TEAM_SURVIVOR then
 			SLASHER.Maul(slasher, target)

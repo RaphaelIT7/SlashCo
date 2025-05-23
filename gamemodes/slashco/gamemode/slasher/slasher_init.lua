@@ -95,6 +95,7 @@ end)
 if CLIENT then
 	local StepNotice = Material("slashco/ui/particle/step_notice")
 	local timeSinceLast = 0
+	local emitter = nil
 	hook.Add("Think", "Slasher_Vision_Light", function()
 		if GameData.LocalPlayer:Team() ~= TEAM_SLASHER then
 			return
@@ -127,6 +128,10 @@ if CLIENT then
 			timeSinceLast = 0
 		end
 
+		if not IsValid(emitter) then
+			emitter = ParticleEmitter(Vector(0, 0, 0))
+		end
+
 		--Survivor Step Notice
 		for _, v in ipairs(team.GetPlayers(TEAM_SURVIVOR)) do
 			local survivor = v
@@ -138,8 +143,8 @@ if CLIENT then
 			local vel = (survivor:GetVelocity()):Length()
 			local range = 3 * vel * PerceptionReal
 			local pos = survivor:GetPos()
-			local em = ParticleEmitter(pos)
-			local part = em:Add(StepNotice, pos)
+			emitter:SetPos(pos)
+			local part = emitter:Add(StepNotice, pos)
 
 			if part and timeSinceLast == 0 and (slasherpos):Distance(pos) < range and survivor:IsOnGround() then
 				part:SetColor(255, 255, 255, math.random(255))
@@ -149,8 +154,6 @@ if CLIENT then
 				part:SetStartSize(25)
 				part:SetEndSize(0)
 			end
-
-			em:Finish()
 		end
 
 		--Step Decoy Step Notice
@@ -160,8 +163,8 @@ if CLIENT then
 			local range = 3 * vel * PerceptionReal
 			local offsetpos = Vector(math.random(-2, 2), math.random(-2, 2), 0)
 			local pos = boot:GetPos() + offsetpos
-			local em = ParticleEmitter(pos)
-			local part = em:Add(StepNotice, pos)
+			emitter:SetPos(pos)
+			local part = emitter:Add(StepNotice, pos)
 
 			if part and timeSinceLast == 0 and (slasherpos):Distance(pos) < range then
 				part:SetColor(255, 255, 255, math.random(255))
@@ -171,8 +174,6 @@ if CLIENT then
 				part:SetStartSize(25)
 				part:SetEndSize(0)
 			end
-
-			em:Finish()
 		end
 
 		GameData.LocalPlayer:SlasherFunction("ClientSideEffect")

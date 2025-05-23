@@ -36,8 +36,6 @@ local function UpdateLobbyState()
 		longest_name = 0
 		plynum = #Lobby_Players
 	end
-
-	PrintTable(Lobby_Players)
 end
 
 net.Receive("mantislashco_GiveLobbyInfo", function()

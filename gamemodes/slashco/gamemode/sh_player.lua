@@ -40,6 +40,10 @@ function PLAYER:SetImpervious(state)
 	end
 end
 
+function PLAYER:SetupHands(spec_ply)
+	-- Nothing. We don't need gmod_hands
+end
+
 hook.Add("PlayerDeath", "slashCoRemoveImpervious", function(victim)
 	victim:SetImpervious(false)
 end)

@@ -42,12 +42,12 @@ local flash = 0
 
 hook.Add("HUDPaint", "Spectator_Vision", function()
 	local plyTeam = GameData.LocalPlayer:Team()
-	if plyTeam ~= TEAM_SPECTATOR and not (plyTeam == TEAM_SLASHER and GameData.LocalPlayer:GetMoveType() == MOVETYPE_NOCLIP) then
+	if plyTeam ~= TEAM_SPECTATOR then
 		return
 	end
 
 	--Cool Spectator Lobby Menu
-	if #team.GetPlayers(TEAM_SURVIVOR) < 1 and GameData.IsLobby then
+	if GameData.IsLobby and #team.GetPlayers(TEAM_SURVIVOR) < 1 then
 		local srvwin_count = GameData.LocalPlayer:GetNW2Int("SurvivorRoundsWon", 0)
 		local slswin_count = GameData.LocalPlayer:GetNW2Int("SlasherRoundsWon", 0)
 
@@ -129,18 +129,20 @@ hook.Add("HUDPaint", "Spectator_Vision", function()
 
 	if show_slasher_anticipation ~= false then
 		draw.SimpleText(SlashCo.Language("slasher_anticipation", show_slasher_anticipation), "LobbyFont2", ScrW() * 0.5, (ScrH() * 0.4), Color(255, 50, 50, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
-		return
+		--return
 	end
 
 	if input.IsKeyDown(KEY_Q) then
 		return
 	end
 
-	if GetGlobal2Bool("SpectatorsCanPing") then
-		draw.SimpleText(SlashCo.Language("surv_ping", "MMB"), "TVCD", ScrW() * 0.975, (ScrH() * 0.95) - 230, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
+	if not show_slasher_anticipation then
+		if GetGlobal2Bool("SpectatorsCanPing") then
+			draw.SimpleText(SlashCo.Language("surv_ping", "MMB"), "TVCD", ScrW() * 0.975, (ScrH() * 0.95) - 230, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
+		end
+		
+		draw.SimpleText("[" .. SlashCo.Language("spectating") .. "]", "TVCD", ScrW() * 0.5, ScrH() * 0.05, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 	end
-
-	draw.SimpleText("[" .. SlashCo.Language("spectating") .. "]", "TVCD", ScrW() * 0.5, ScrH() * 0.05, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 
 	draw.SimpleText(SlashCo.Language("hide_info", "Q"), "TVCD", ScrW() * 0.975, (ScrH() * 0.95) - 290, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
 	draw.SimpleText(SlashCo.Language("toggle_halo", "ALT"), "TVCD", ScrW() * 0.975, (ScrH() * 0.95) - 200, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
