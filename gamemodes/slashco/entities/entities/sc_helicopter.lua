@@ -185,6 +185,7 @@ if SERVER then
 
 			-- To be a bit more generous, we stop the time as soon as they enter the helicopter instead of waiting until SlashCo.EndRound() is executed.
 			activator:SetNW2Bool("QuickEscape", (CurTime() - GetGlobal2Float("SCStartTime")) < SlashCo.QuickEscapeTime)
+			activator:SetNW2Bool("SlowEscape", (CurTime() - GetGlobal2Float("SCStartTime")) > SlashCo.SlowEscapeTime)
 			activator:SetNW2Float("EscapeTime", CurTime() - GetGlobal2Float("SCStartTime"))
 		end
 

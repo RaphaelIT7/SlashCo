@@ -197,6 +197,10 @@ function SlashCo.EndRound()
 		if ply:GetNW2Bool("QuickEscape") then
 			ply:AddPoints("quickescape")
 		end
+
+		if ply:GetNW2Bool("SlowEscape") then
+			ply:AddPoints("slowescape")
+		end
 	end
 
 	local SurvivorCount = #survivors
@@ -301,7 +305,21 @@ function SlashCo.SurvivorWinFinish()
 	end)
 end
 
-hook.Remove("Think", "LobbyFailSafe", function()
+timer.Create("SlashCo:WarningTime", 1, 0, function()
+	local curTime = CurTime()
+	local timePassed = curTime - GetGlobal2Float("SCStartTime")
+	if math.IsNearlyEqual(timePassed, SlashCo.WarningTime, 1) and (GameData.LastWarningTime or 0) < curTime then
+		GameData.LastWarningTime = curTime + 5
+		SlashCo.AudioSystem.PlaySound({
+			soundPath = "slashco/time_alert.mp3",
+			volume = 1,
+			entity = game.GetWorld(),
+			fadeIn = 0,
+		})
+	end
+end)
+
+timer.Create("SlashCo:LobbyFailSafe", 1, 0, function()
 	if SlashCo.State ~= SlashCo.States.IN_GAME then
 		return
 	end

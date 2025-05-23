@@ -15,6 +15,7 @@ local pointAmounts = {
 	survive = 15, --
 	item = 10, -- not implemented
 	quickescape = 10, --
+	slowescape = -10, --
 	benadryl = 15, --
 	working = 5 --
 }
