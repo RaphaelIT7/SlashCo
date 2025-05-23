@@ -321,7 +321,7 @@ local function BuildSlasherPages()
 			end
 
 			row = row + 2
-			if rating != 0 then
+			if rating >= 0 then
 				for _, rowText in ipairs(descriptionRows) do
 					draw.SimpleText(rowText, "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 					row = row + 1

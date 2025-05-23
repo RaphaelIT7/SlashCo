@@ -709,8 +709,8 @@ SlashCo.LangTable["thirsty_description_additional"] = [[This Slasher gains [ANGE
 
 -- Trollege
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/Trollge
-SlashCo.LangTable["trollege_description"] = [[A thin, skeletal figure with a large, contorted smiling head. The entity's movements appear frail and slow. It has been show that this Slasher has great difficulty visually discerning objects which are not in motion. The Slasher also has incredibly good hearing, and seems to be easy to irritate.]]
-SlashCo.LangTable["trollege_description_additional"] = [[At high [ANGER], Trollge will become more sensitive to sounds, and is more likely to sprint towards them.]]
+SlashCo.LangTable["trollge_description"] = [[A thin, skeletal figure with a large, contorted smiling head. The entity's movements appear frail and slow. It has been show that this Slasher has great difficulty visually discerning objects which are not in motion. The Slasher also has incredibly good hearing, and seems to be easy to irritate.]]
+SlashCo.LangTable["trollge_description_additional"] = [[At high [ANGER], Trollge will become more sensitive to sounds, and is more likely to sprint towards them.]]
 
 -- Tyler
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/Igor
