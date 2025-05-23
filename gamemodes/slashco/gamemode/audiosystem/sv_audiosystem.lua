@@ -60,11 +60,19 @@ function SlashCo.AudioSystem.PlaySound(soundData) -- see cl_audiosystem.lua for 
 end
 
 util.AddNetworkString("slashCo_AudioSystem_StopSound")
-function SlashCo.AudioSystem.StopSound(identifier, fadeOut)
+function SlashCo.AudioSystem.StopSound(identifier, fadeOut, entity)
 	fadeOut = fadeOut or 0
 
+	local isValid = IsValid(entity)
 	net.Start("slashCo_AudioSystem_StopSound")
-		net.WriteString(identifier)
+		net.WriteBool(identifier == nil) -- if given nil as a identifier we will stop all sounds.
+		if identifier then
+			net.WriteString(identifier)
+		end
 		net.WriteFloat(fadeOut)
+		net.WriteBool(isValid)
+		if isValid then
+			net.WriteUInt(entity:EntIndex(), MAX_EDICT_BITS)
+		end
 	net.Broadcast()
 end

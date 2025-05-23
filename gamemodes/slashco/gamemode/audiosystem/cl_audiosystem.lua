@@ -432,7 +432,52 @@ function SlashCo.AudioSystem.PlaySound(soundData)
 	end)
 end
 
-function SlashCo.AudioSystem.StopSound(identifier, fadeOut)
+-- Returns all channels that were parented to the given entity.
+function SlashCo.AudioSystem.GetEntityChannels(entity)
+	local entIndex = -1
+	if IsValid(entity) then
+		entIndex = entity:EntIndex()
+	elseif isnumber(entity) then
+		entIndex = entity
+	end
+
+	if entIndex == -1 then
+		error("Invalid entity was given to us. It must be a Entity or a Entity Index!")
+		return
+	end
+
+	local results = {}
+	for channel, entTbl in pairs(SlashCo.AudioSystem.ParentedChannels) do
+		if entTbl.entIndex ~= entIndex then continue end
+		
+		table.insert(results, channel)
+	end
+
+	return results
+end
+
+--[[
+	Stops the sound by the given identifier.
+	If given no identifier and no entity, it will stop all sounds globally.
+	If given no identifier and a entity, it will stop all sounds from the entity.
+]]
+function SlashCo.AudioSystem.StopSound(identifier, fadeOut, entIndex)
+	fadeOut = fadeOut or 1
+
+	if not identifier then -- No identifier? then we want to stop all sounds.
+		if not entIndex then -- No entitiy? Then we want to stop all sounds globally.
+			for channel, _ in pairs(SlashCo.AudioSystem.Channels) do
+				if channel == SlashCo.AudioSystem.BackgroundChannel then continue end
+				SlashCo.AudioSystem.DestroyChannel(channel, fadeOut)
+			end
+		else -- We got a valid entity, then we only stop all sounds from that entity.
+			for _, channel in ipairs(SlashCo.AudioSystem.GetEntityChannels(entIndex)) do
+				SlashCo.AudioSystem.DestroyChannel(channel, fadeOut)
+			end
+		end
+		return
+	end
+
 	local channel = SlashCo.AudioSystem.GetChannelByIdentifier(identifier)
 	if not channel then return end
 
@@ -471,8 +516,16 @@ net.Receive("slashCo_AudioSystem_PlaySound", function()
 end)
 
 net.Receive("slashCo_AudioSystem_StopSound", function()
-	local identifier = net.ReadString()
+	local stopAllSounds = net.ReadBool()
+	local identifier = nil
+	if not stopAllSounds then
+		identifier = net.ReadString()
+	end
 	local fadeOut = net.ReadFloat()
+	local entIndex = nil
+	if net.ReadBool() then
+		entIndex = net.ReadUInt(MAX_EDICT_BITS)
+	end
 
-	SlashCo.AudioSystem.StopSound(identifier, fadeOut)
+	SlashCo.AudioSystem.StopSound(identifier, fadeOut, entIndex)
 end)
