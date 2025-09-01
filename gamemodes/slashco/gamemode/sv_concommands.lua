@@ -87,7 +87,7 @@ concommand.Add("slashco_become_survivor", function(ply, _, args)
 	SlashCo.CurRound.Slashers[target:SteamID64()] = nil
 
 	if not found then
-		table.insert(SlashCo.CurRound.SlasherData.AllSurvivors, { id = id, GameContribution = 0 })
+		table.insert(SlashCo.CurRound.SlasherData.AllSurvivors, { id = id })
 	end
 
 	doPrint(ply, "New Survivor successfully assigned.")
@@ -266,7 +266,7 @@ concommand.Add("slashco_debug_run_survivor", function(ply)
 			k:SetTeam(TEAM_SURVIVOR)
 			k:Spawn()
 
-			table.insert(SlashCo.CurRound.SlasherData.AllSurvivors, { id = k:SteamID64(), GameContribution = 0 })
+			table.insert(SlashCo.CurRound.SlasherData.AllSurvivors, { id = k:SteamID64() })
 			doPrint(ply, k:Name() .. " is now a survivor")
 		end
 	end)
@@ -562,4 +562,120 @@ hook.Add("StartCommand", "LobbyBot", function(ply, cmd)
 			SlashCo.Helicopter:Use(ply, ply)
 		end
 	end
+end)
+
+local bannedslashers = CreateConVar("slashco_bannedslashers", "", FCVAR_ARCHIVE, "A list with all banned slashers seperated using ;")
+function SlashCo.GetBannedSlashers(reverseOnly)
+	local banned = bannedslashers:GetString()
+	if banned == "" then
+		return {}
+	end
+
+	local results = string.Split(banned, ";")
+	for id, slasherName in ipairs(results) do -- Add additional entries so you can do things like: if result[SlasherName] then [code] end
+		if reverseOnly then
+			results[slasherName] = true
+			results[id] = nil
+		else
+			results[slasherName] = id -- We set the ID as value so that you can call table.remove(result, result[SlasherName]) to quickly remove a entry
+		end
+	end
+
+	return results
+end
+
+-- Tries to find the slasher by the slasherID, allowing you to use the slasher name, the registered name, or even the ID number that a slasher uses.
+local function SlasherIDToSlasher(slasherID)
+	local slasher = SlashCoSlashers[slasherID]
+	if not slasher then
+		for slasherName, slasherTbl in pairs(SlashCoSlashers) do
+			if slasherTbl.Name == slasherID or tostring(slasherTbl.ID) == slasherID then
+				slasher = slasherTbl
+				break
+			end
+		end
+
+		if not slasher then
+			return nil
+		end
+	end
+
+	return slasher, slasher.Name
+end
+
+function SlashCo.IsSlasherBanned(slasherID)
+	local slasher, slasherID = SlasherIDToSlasher(slasherID)
+	if not slasher then
+		return false
+	end
+
+	local banned = SlashCo.GetBannedSlashers()
+	return banned[slasherID] ~= nil
+end
+
+function SlashCo.BanSlasher(slasherID)
+	local slasher, slasherID = SlasherIDToSlasher(slasherID)
+	if not slasher then
+		return false
+	end
+
+	local banned = SlashCo.GetBannedSlashers()
+	if banned[slasherID] then
+		return true
+	end
+
+	table.insert(banned, slasherID)
+	bannedslashers:SetString(table.concat(banned, ";"))
+	return true
+end
+
+function SlashCo.UnbanSlasher(slasherID)
+	local slasher, slasherID = SlasherIDToSlasher(slasherID)
+	if not slasher then
+		return false
+	end
+
+	local banned = SlashCo.GetBannedSlashers()
+	if not banned[slasherID] then
+		return true
+	end
+
+	table.remove(banned, banned[slasherID])
+	bannedslashers:SetString(table.concat(banned, ";"))
+	return true
+end
+
+concommand.Add("slashco_banslasher", function(ply, _, _, argStr)
+	if IsValid(ply) and ply:IsPlayer() and not ply:IsAdmin() then
+		doPrint(ply, "Only admins can use this command!")
+		return
+	end
+
+	if SlashCo.BanSlasher(argStr) then
+		doPrint(ply, "Successfully banned slasher \"" .. argStr .. "\"")
+	else
+		doPrint(ply, "Failed to ban slasher \"" .. argStr .. "\", you probably wrote the name wrong")
+	end
+end)
+
+concommand.Add("slashco_unbanslasher", function(ply, _, _, argStr)
+	if IsValid(ply) and ply:IsPlayer() and not ply:IsAdmin() then
+		doPrint(ply, "Only admins can use this command!")
+		return
+	end
+
+	if SlashCo.BanSlasher(argStr) then
+		doPrint(ply, "Successfully unbanned slasher \"" .. argStr .. "\"")
+	else
+		doPrint(ply, "Failed to unban slasher \"" .. argStr .. "\", you probably wrote the name wrong")
+	end
+end)
+
+concommand.Add("slashco_announcement", function(ply, _, _, argStr)
+	if IsValid(ply) and ply:IsPlayer() and not ply:IsAdmin() then
+		doPrint(ply, "Only admins can use this command!")
+		return
+	end
+
+	SlashCo.BroadcastAnnouncement(argStr)
 end)

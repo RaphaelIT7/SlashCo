@@ -23,6 +23,7 @@
 local textCache = {}
 
 local screenAngle = Angle(0, -180, 90)
+local screenUp = screenAngle:Up()
 local screenPos = Vector(850, 127, -65)
 local screenSize = 800
 local worldScale = 0.15  -- Scale factor to convert from screen pixels to world units
@@ -32,7 +33,7 @@ local screenMaxs = Vector(screenSize * worldScale, -screenSize * worldScale, 1)
 local unknownIcon = Material("slashco/ui/icons/slasher/s_0")
 local starFilled = Material("slashco/ui/star_filled")
 local starUnfilled = Material("slashco/ui/star_unfilled")
-local pointer = 0
+GameData.DocumentPointer = GameData.DocumentPointer or 0
 local playerShootPos
 local playerAimVec
 
@@ -73,7 +74,7 @@ local function DrawTextWithHitbox(text, font, x, y, color, xAlign, yAlign)
 	local hitPos = util.IntersectRayWithOBB(playerShootPos, playerAimVec, cacheEntry.pos, screenAngle, cacheEntry.mins, cacheEntry.maxs)
 
 	-- Debug to check the text hitboxes
-	-- debugoverlay.BoxAngles(cacheEntry.pos, cacheEntry.mins, cacheEntry.maxs, screenAngle, 0.02, Color(0, 255, 0))
+	-- debugoverlay.BoxAngles(cacheEntry.pos, cacheEntry.mins, cacheEntry.maxs, screenAngle, 0.02, Color(0, 255, 0, 10))
 
 	callID = callID + 1
 	return hitPos != nil
@@ -83,8 +84,10 @@ local fallBackOption = "Selection"
 GameData.DocumentOption = GameData.DocumentOption or fallBackOption
 local wasLeftMousePressed = false
 local wasRightMousePressed = false
-SlashCo.AudioSystem.PrecacheSound("slashco/ui/terminalbutton_1.mp3", "mono", "DocumentRightClick")
-SlashCo.AudioSystem.PrecacheSound("slashco/ui/terminalbutton_2.mp3", "mono", "DocumentLeftClick")
+if GameData.IsLobby then
+	SlashCo.AudioSystem.PrecacheSound("slashco/ui/terminalbutton_1.mp3", "mono", "DocumentRightClick")
+	SlashCo.AudioSystem.PrecacheSound("slashco/ui/terminalbutton_2.mp3", "mono", "DocumentLeftClick")
+end
 local function SwitchSelection(newSelection, isRightMouse)
 	GameData.DocumentOption = newSelection
 
@@ -94,9 +97,7 @@ local function SwitchSelection(newSelection, isRightMouse)
 		wasLeftMousePressed = true
 	end
 
-	SlashCo.AudioSystem.GetPrecachedChannel(isRightMouse and "DocumentRightClick" or "DocumentLeftClick", function(channel)
-		channel:Play()
-	end)
+	SlashCo.AudioSystem.PlayPrecachedChannel(isRightMouse and "DocumentRightClick" or "DocumentLeftClick")
 end
 
 local function IsPressing(mouse)
@@ -110,32 +111,32 @@ end
 local selection = {
 	["Selection"] = function(w, h)
 		if DrawTextWithHitbox("[SLASHERS]", "TVCDBig", w / 2, (h / 2) - (h / 6), color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER) then
-			pointer = 0
+			GameData.DocumentPointer = 0
 		end
 
 		if DrawTextWithHitbox("[LOCATIONS]", "TVCDBig", w / 2, (h / 2), color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER) then
-			pointer = 1
+			GameData.DocumentPointer = 1
 		end
 
 		if DrawTextWithHitbox("[ARCHIVE]", "TVCDBig", w / 2, (h / 2) + (h / 6), color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER) then
-			pointer = 2
+			GameData.DocumentPointer = 2
 		end
 
 		local pointerPos = h / 2
-		if pointer == 0 then
+		if GameData.DocumentPointer == 0 then
 			pointerPos = pointerPos - (h / 6)
-		elseif pointer == 2 then
+		elseif GameData.DocumentPointer == 2 then
 			pointerPos = pointerPos + (h / 6)
 		end
 
 		draw.SimpleText("<", "TVCDBig", w - (w / 16), pointerPos, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 
 		if IsPressing(MOUSE_LEFT) then
-			if pointer == 0 then
+			if GameData.DocumentPointer == 0 then
 				SwitchSelection("Slashers")
-			elseif pointer == 1 then
+			elseif GameData.DocumentPointer == 1 then
 				SwitchSelection("Locations")
-			elseif pointer == 2 then
+			elseif GameData.DocumentPointer == 2 then
 				SwitchSelection("Archive")
 			end
 		end
@@ -146,9 +147,9 @@ local selection = {
 		local rowSplit = 10 -- number of rows before it's split into a new one
 		local documents = {}
 		for _, document in SortedPairs(SlashCoDocumentTypes["Slasher"] or {}) do
-			local hasDocument = SlashCo.HasDocument(document.Name)
+			local hasDocument = SlashCo.HasDocument(document.Slasher or document.Name)
 			if DrawTextWithHitbox("[" .. string.upper(hasDocument and document.Name or " ??? ") .. "]", "TVCDMedium", w / 5 + (row * w / 2.1), (h / 18) * count, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER) then
-				pointer = count + (row * rowSplit) -- if we changed rows, we need to 
+				GameData.DocumentPointer = count + (row * rowSplit) -- if we changed rows, we need to 
 			end
 
 			table.insert(documents, document)
@@ -159,14 +160,14 @@ local selection = {
 			end
 		end
 
-		local selectedDocument = documents[pointer]
+		local selectedDocument = documents[GameData.DocumentPointer]
 		if not selectedDocument then
-			pointer = 1 -- In case the pointer managed to be invalid?!?
-			selectedDocument = documents[pointer]
+			GameData.DocumentPointer = 1 -- In case the GameData.DocumentPointer managed to be invalid?!?
+			selectedDocument = documents[GameData.DocumentPointer]
 		end
 
-		local pointerRow = math.floor(pointer / rowSplit)
-		local pointerCount = pointer - (pointerRow * rowSplit) -- minimum value is 1
+		local pointerRow = math.floor(GameData.DocumentPointer / rowSplit)
+		local pointerCount = GameData.DocumentPointer - (pointerRow * rowSplit) -- minimum value is 1
 		if pointerCount == 0 and pointerRow > 0 then
 			pointerRow = pointerRow - 1
 			pointerCount = rowSplit
@@ -178,18 +179,18 @@ local selection = {
 		local slasher = SlashCo.HasDocument(selectedDocument.Name) and SlashCoSlashers[selectedDocument.Slasher] or nil
 
 		surface.SetDrawColor(255, 255, 255, 255)
-		surface.SetMaterial(slasher and Material("slashco/ui/icons/slasher/s_" .. slasher.ID) or unknownIcon)
+		surface.SetMaterial(slasher and Material("slashco/ui/icons/slasher/s_" .. slasher.ID) or (selectedDocument.ID and Material("slashco/ui/icons/slasher/s_" .. selectedDocument.ID) or unknownIcon))
 		surface.DrawTexturedRect(w / 20, h - (h / 2.7), w / 3, h / 3)
 
-		draw.SimpleText("[" .. string.upper(slasher and slasher.Name or "UNKNOWN") .. "]", "TVCDMediumBig", h / 1.45, w / 1.3, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		if slasher then
-			draw.SimpleText(string.upper(SlashCo.DangerLevel[slasher.DangerLevel] .. " " .. SlashCo.SlasherClass[slasher.Class]), "TVCDMedium", h / 1.45, w / 1.17, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText("[" .. string.upper(slasher and slasher.Name or (selectedDocument.Name or "UNKNOWN")) .. "]", "TVCDMediumBig", h / 1.45, w / 1.3, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		if slasher or (selectedDocument.DangerLevel and selectedDocument.Class) then
+			draw.SimpleText(string.upper(SlashCo.DangerLevel[slasher and slasher.DangerLevel or selectedDocument.DangerLevel] .. " " .. SlashCo.SlasherClass[slasher and slasher.Class or selectedDocument.Class]), "TVCDMedium", h / 1.45, w / 1.17, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		else
 			draw.SimpleText("ENCOUNTER SLASHER TO UNLOCK ENTRY", "TVCDSmall", h / 1.45, w / 1.17, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end
 
-		if IsPressing(MOUSE_LEFT) and slasher then
-			SwitchSelection("Slasher-" .. selectedDocument.Name)
+		if IsPressing(MOUSE_LEFT) and (slasher or selectedDocument.ID) then
+			SwitchSelection("Slasher-" .. (selectedDocument.Slasher or selectedDocument.Name))
 		end
 
 		if IsPressing(MOUSE_RIGHT) then
@@ -235,21 +236,27 @@ end
 
 for _, document in pairs(SlashCoDocumentTypes["Slasher"] or {}) do
 	local slasher = SlashCoSlashers[document.Slasher]
-	if not slasher then continue end -- No slasher? Then something is invalid
+	local Aliases = document.Aliases or (slasher and slasher.Aliases or {})
+	local Class = string.upper(SlashCo.SlasherClass[document.Class or (slasher and slasher.Class or SlashCo.SlasherClass.Unknown)])
+	local DangerLevel = string.upper(SlashCo.DangerLevel[document.DangerLevel or (slasher and slasher.DangerLevel or SlashCo.DangerLevel.Unknown)])
+	local Name = slasher and slasher.Name or document.Name
+	local ID = slasher and slasher.ID or document.ID
+
+	if not Aliases or not Class or not DangerLevel or not ID then continue end -- No slasher and no data? Then something is invalid
 
 	local descriptionRows = SplitTextIntoRows(document.Description, "TVCD", screenSize / 1.01)
 	local additionalDescriptionRows = SplitTextIntoRows(document.AdditionalDescription, "TVCD", screenSize / 1.01)
 
-	local icon = Material("slashco/ui/icons/slasher/s_" .. slasher.ID)
-	selection["Slasher-" .. document.Name] = function(w, h)
+	local icon = Material("slashco/ui/icons/slasher/s_" .. ID)
+	selection["Slasher-" .. (document.Slasher or document.Name)] = function(w, h)
 		local row = 1
 		local rowSize = w / 32
-		draw.SimpleText("ENTRY: \"" .. slasher.Name .. "\"", "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
+		draw.SimpleText("ENTRY: \"" .. Name .. "\"", "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 
 		row = row + 1
 		draw.SimpleText("ALIASES:", "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 
-		for _, name in ipairs(slasher.Aliases or {}) do
+		for _, name in ipairs(Aliases) do
 			row = row + 1
 			draw.SimpleText("\"" .. name .. "\"", "TVCD", h / 3.1, rowSize * row, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end
@@ -258,13 +265,13 @@ for _, document in pairs(SlashCoDocumentTypes["Slasher"] or {}) do
 		draw.SimpleText("CLASS:", "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 
 		row = row + 1
-		draw.SimpleText("[" .. string.upper(SlashCo.SlasherClass[slasher.Class]) .. "]", "TVCD", h / 3.1, rowSize * row, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText("[" .. Class .. "]", "TVCD", h / 3.1, rowSize * row, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 
 		row = row + 1
 		draw.SimpleText("DANGER LVL:", "TVCD", h / 75, rowSize * row, color_white, 0, TEXT_ALIGN_CENTER)
 
 		row = row + 1
-		draw.SimpleText("[" .. string.upper(SlashCo.DangerLevel[slasher.DangerLevel]) .. "]", "TVCD", h / 3.1, rowSize * row, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText("[" .. DangerLevel .. "]", "TVCD", h / 3.1, rowSize * row, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 
 		if row < 13 then -- Offset to align everything
 			row = 13
@@ -324,7 +331,10 @@ hook.Add("PostDrawOpaqueRenderables", "LobbyDocumentScreen", function(bDrawingDe
 	end
 
 	playerShootPos = GameData.LocalPlayer:GetShootPos()
-	playerAimVec = GameData.LocalPlayer:GetAimVector() * 500
+
+	playerAimVec = GameData.LocalPlayer:GetAimVector()
+	local isFacing = playerAimVec:Dot(screenUp) < -0.3 -- We have to do this before we multiply the vector.
+	playerAimVec:Mul(500)
 
 	cam.Start3D2D(screenPos, screenAngle, worldScale)
 		local w, h = screenSize, screenSize
@@ -338,7 +348,7 @@ hook.Add("PostDrawOpaqueRenderables", "LobbyDocumentScreen", function(bDrawingDe
 		-- Debug to check screen Mins/Maxs values
 		-- debugoverlay.BoxAngles( screenPos, screenMins, screenMaxs, screenAngle, 0.02, hitPos != nil and Color(0,255,0) or Color( 255,0, 0, 10) )
 
-		if GameData.LocalPlayer:EyePos():DistToSqr(screenPos) < 50000 then
+		if GameData.LocalPlayer:EyePos():DistToSqr(screenPos) < 50000 and isFacing then
 			if wasLeftMousePressed and not input.IsButtonDown(MOUSE_LEFT) then
 				wasLeftMousePressed = false
 			end
@@ -358,7 +368,7 @@ hook.Add("PostDrawOpaqueRenderables", "LobbyDocumentScreen", function(bDrawingDe
 				drawFunc(w, h)
 			end
 		else
-			GameData.DocumentOption = fallBackOption -- Reset.
+			--GameData.DocumentOption = fallBackOption -- Reset.
 		end
 	cam.End3D2D()
 end)

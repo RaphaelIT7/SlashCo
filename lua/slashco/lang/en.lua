@@ -23,6 +23,7 @@ SlashCo.LangTable["SomeRescued"] = "Only some of the dispatched SlashCo Workers 
 SlashCo.LangTable["NoneRescued"] = "The dispatched SlashCo Workers could not be rescued."
 SlashCo.LangTable["Cursed"] = "Your soul is now forfeit."
 SlashCo.LangTable["Judgement"] = "JUDGEMENT"
+SlashCo.LangTable["newplayer_spawnnotice"] = "Press [%s] to Spawn"
 
 SlashCo.LangTable["HP"] = "HP"
 SlashCo.LangTable["FUEL"] = "FUEL"
@@ -75,6 +76,8 @@ SlashCo.LangTable["item_toomany"] = "Too many Survivors already have this item."
 SlashCo.LangTable["map_already_selected"] = "This map has already been selected."
 SlashCo.LangTable["map_notenough"] = "You don't have enough points for a Map Guarantee."
 SlashCo.LangTable["map_guaranteed_to"] = "%s spent %s points to set the mission to be on %s."
+
+SlashCo.LangTable["ask_to_become_slasher"] = "Do you want to become the Slasher?"
 
 SlashCo.LangTable["playermodel_choose"] = "[CHOOSE...]"
 
@@ -134,6 +137,9 @@ SlashCo.LangTable["Alcohol_desc"] = "Unfortunate."
 SlashCo.LangTable["Baby"] = "The Baby"
 SlashCo.LangTable["Baby_desc"] = "Halve your health to teleport to a random location. At low health, using this item has a chance of killing you instantly. If you die to this item, the slasher will teleport instead."
 
+SlashCo.LangTable["BalkanBoost"] = "Balkan Boost"
+SlashCo.LangTable["BalkanBoost_desc"] = "I think the FDA is much too terrified to regulate this.\nUse at your own discretion.\nWhen you're going through hell, keep going."
+
 SlashCo.LangTable["Battery"] = "Battery"
 SlashCo.LangTable["Battery_desc"] = "A lead-acid battery that serves as a reusable source of electric current."
 
@@ -143,6 +149,7 @@ SlashCo.LangTable["Beacon_already_on_way"] = "The Helicopter is already on its w
 SlashCo.LangTable["Beacon_already_active"] = "There is already a beacon deployed."
 SlashCo.LangTable["Beacon_confirm"] = "Using the beacon with more than 1 living survivor will cause it to take time to arm. Use again to confirm."
 SlashCo.LangTable["Beacon_unavailable"] = "You can activate the beacon once one generator has been turned on."
+SlashCo.LangTable["Beacon_survivors"] = "You can't activate the beacon if there more than 5 survivors alive."
 
 SlashCo.LangTable["Benadryl"] = "25 gram Benadryl"
 SlashCo.LangTable["Benadryl_desc"] = "All new 25 gram Benadryl, made from 1200 pills.\n Feel free to take this if you feel the Assignments aren't challenging enough as is."
@@ -176,6 +183,9 @@ SlashCo.LangTable["Mayonnaise_desc"] = "Get a large boost to health."
 
 SlashCo.LangTable["MilkJug"] = "Milk Jug"
 SlashCo.LangTable["MilkJug_desc"] = "Gain a temporary boost in speed on use.\nA certain Slasher seems to really like this item."
+
+SlashCo.LangTable["NightVisionGoggles"] = "NightVision Goggles"
+SlashCo.LangTable["NightVisionGoggles_desc"] = "Grants night vision when equipped."
 
 SlashCo.LangTable["PocketSand"] = "Pocket Sand"
 SlashCo.LangTable["PocketSand_desc"] = "Blinds a nearby slasher."
@@ -247,6 +257,8 @@ SlashCo.LangTable["cur_assignment"] = "Current Assignment: %s"
 SlashCo.LangTable["slasher_assess"] = "-Slasher Assessment-"
 
 SlashCo.LangTable["offering_idle"] = "Make an Offering"
+
+SlashCo.LangTable["server_announcement"] = "Server Announcement"
 
 --Survivor
 SlashCo.LangTable["item_use"] = "[%s] USE"

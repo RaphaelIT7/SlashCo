@@ -117,12 +117,15 @@ hook.Add("HUDShouldDraw", "DisableDefaultHUD", function(name)
 end)
 
 local skyBoxVec = Vector(0, 0, 100000)
+-- local dynamicfog = CreateConVar("slashco_dynamicfog", "1", FCVAR_ARCHIVE, "Experimental - Dynamic fog that changes based on your location", 0, 1)
 function GM:SetupWorldFog() -- A basic world fog that dynamicly changes depending on the environment
+	-- if not dynamicfog:GetBool() then return end
 	if GameData.IsLobby then return end
 	if GameData.LocalPlayer:Team() == TEAM_SPECTATOR then return end
 
+	local r, g, b = SlashCo.GetGlobalFogColor(2)
 	render.FogMode(MATERIAL_FOG_LINEAR)
-	render.FogColor(0, 0, 0)
+	render.FogColor(r, g, b)
 	render.FogMaxDensity(1)
 
 	local targetFogStart = 200
@@ -162,10 +165,9 @@ function GM:SetupWorldFog() -- A basic world fog that dynamicly changes dependin
 		targetFogEnd = targetFogStart * 1.5
 	end
 
-	local mult = GameData.LocalPlayer:GetNW2Float("FogMult", 1)
+	local mult = (GameData.LocalPlayer:GetFogMult() + SlashCo.GetGlobalFogMult()) / 2
 	GameData.LastFogStart = Lerp(0.005, GameData.LastFogStart or 3000, targetFogStart * mult)
 	GameData.LastFogEnd = Lerp(0.005, GameData.LastFogEnd or 3000, targetFogEnd * mult)
-	--print(targetFogEnd, brighness, GameData.LastFogEnd)
 
 	render.FogStart(GameData.LastFogStart)
 	render.FogEnd(GameData.LastFogEnd)
@@ -373,7 +375,7 @@ end)
 net.Receive("mantislashco_GiveSlasherData", function()
 	local SlasherTable = net.ReadTable()
 	local ply = GameData.LocalPlayer
-	if not ply:IsValid() then
+	if not IsValid(ply) then
 		return
 	end
 
@@ -571,8 +573,8 @@ hook.Add("PostDrawOpaqueRenderables", "LobbyScreens", function()
 
 		local text = SlashCo.Language("offering_idle")
 
-		if offering_name ~= nil then
-			text = SlashCo.Language("Offering_name", offering_name)
+		if GameData.OfferingName ~= nil then
+			text = SlashCo.Language("Offering_name", GameData.OfferingName)
 		end
 
 		surface.SetFont("LobbyFont1")
@@ -759,38 +761,6 @@ function SlashCo.ReadSound(fileName)
 	end
 
 	return _sound
-end
-
-local function WasSeenBySlasher(_, _, old, new)
-	if new then
-		SlashCo.AudioSystem.CreateChannel("slashco/survivor/seen_by_slasher.mp3", "mono noplay", function(channel)
-			channel:SetVolume(0)
-			channel:Play()
-			SlashCo.AudioSystem.FadeTo(channel, 1)
-			SlashCo.AudioSystem.ParentChannelToEntity(channel, GameData.LocalPlayer)
-
-			timer.Create("SlashCo:SeenBySlasherSound", 1, 0, function() -- Properly unregister the channel when it finished playing.
-				if not IsValid(channel) or channel:GetState() != GMOD_CHANNEL_PLAYING then
-					SlashCo.AudioSystem.DestroyChannel(channel)
-					timer.Remove("SlashCo:SeenBySlasherSound")
-				end
-			end)
-		end)
-	end
-end
-
-local function SetupWasSeenHook()
-	local ply = GameData and GameData.LocalPlayer or LocalPlayer()
-
-	ply:SetNW2VarProxy("WasSeenBySlasher", WasSeenBySlasher)
-
-	-- Plays the sound if the player was already seen
-	-- WasSeenBySlasher(nil, nil, nil, ply:WasSeenBySlasher())
-end
-
-hook.Add("InitPostEntity", "SlashCo:WasLocalPlayerSeenBySlasher", SetupWasSeenHook)
-if game.GetWorld() != NULL then
-	SetupWasSeenHook()
 end
 
 SC_CLIENT_LOADED = true

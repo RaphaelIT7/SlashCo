@@ -26,6 +26,8 @@ util.AddNetworkString("mantislashco_SurvivorVoicePrompt")
 util.AddNetworkString("mantislashco_SurvivorPings")
 util.AddNetworkString("mantislashco_HelicopterVoice")
 util.AddNetworkString("mantislashco_MapAmbientPlay")
+util.AddNetworkString("SlashCo:AskToBecomeSlasher")
+util.AddNetworkString("SlashCo:Announcement")
 
 local ENTITY = FindMetaTable("Entity")
 
@@ -115,21 +117,21 @@ function SlashCo.BroadcastCurrentRoundData(readygame)
 	net.Broadcast()
 end
 
-function SlashCo.EndOfferingVote(play)
+function SlashCo.EndOfferingVote(ply)
 	net.Start("mantislashco_OfferingEndVote")
-		net.WriteTable({ ply = play:SteamID64() })
+		net.WriteUInt64(ply:SteamID64())
 	net.Broadcast()
 end
 
-function SlashCo.OfferingVoteFinished(result)
+function SlashCo.OfferingVoteFinished(rarity) -- rarity can range from 1 to 3.
 	net.Start("mantislashco_OfferingVoteFinished")
-		net.WriteTable({ r = result })
+		net.WriteUInt(rarity, 2)
 	net.Broadcast()
 end
 
 hook.Add("scValue_sendOffer", "slashCo_StartOfferingVote", function(ply, offer)
 	table.insert(SlashCo.LobbyData.Offerors, ply:SteamID64())
-	SlashCo.BroadcastOfferingVote(ply:SteamID64(), offer)
+	SlashCo.BroadcastOfferingVote(ply, offer)
 	SlashCo.LobbyData.VotedOffering = offer
 
 	timer.Create("OfferingVoteTimer", 20, 1, function()
@@ -147,7 +149,8 @@ end
 
 function SlashCo.BroadcastOfferingVote(offeror, o_id)
 	net.Start("mantislashco_OfferingVoteOut")
-		net.WriteTable({ ply = offeror, name = SCInfo.Offering[o_id].Name })
+		net.WriteEntity(offeror)
+		net.WriteString(SCInfo.Offering[o_id].Name)
 	net.Broadcast()
 end
 
@@ -277,4 +280,15 @@ function SlashCo.HelicopterRadioVoice(type)
 		net.WriteUInt(type, 4)
 		net.WriteUInt(math.random(1, type == SlashCo.HelicopterVoices.INTRO and 8 or 5), 4) -- Sound index
 	net.Broadcast()
+end
+
+function SlashCo.BroadcastAnnouncement(text, time, ply)
+	net.Start("SlashCo:Announcement")
+		net.WriteUInt(time or (5 + (string.len(text) / 20)), 8)
+		net.WriteString(text)
+	if ply then
+		net.Send(ply)
+	else
+		net.Broadcast()
+	end
 end

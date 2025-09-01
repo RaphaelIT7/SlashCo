@@ -1,9 +1,12 @@
 local SLASHER = {}
 
 SLASHER.Name = "Leuonard"
+SLASHER.Aliases = {
+	"MONDAY NIGHT RAW",
+}
 SLASHER.ID = 14
-SLASHER.Class = 2
-SLASHER.DangerLevel = 3
+SLASHER.Class = SlashCo.SlasherClass.Demon
+SLASHER.DangerLevel = SlashCo.DangerLevel.Devastating
 SLASHER.IsSelectable = false
 SLASHER.Model = "models/slashco/slashers/leuonard/leuonard.mdl"
 SLASHER.GasCanMod = 0
@@ -18,57 +21,64 @@ SLASHER.ChaseRadius = 0.86
 SLASHER.ChaseDuration = 5.0
 SLASHER.ChaseCooldown = 4
 SLASHER.JumpscareDuration = 2
-SLASHER.ChaseMusic = "slashco/slasher/leuonard_chase.mp3"
-SLASHER.KillSound = "slashco/slasher/leuonard_yell1.mp3"
+SLASHER.ChaseMusic = "slashco/slasher/leuonard/leuonard_chase.ogg"
+SLASHER.KillSound = "slashco/slasher/leuonard/leuonard_yell1.mp3"
 SLASHER.Description = "Leuonard_desc"
 SLASHER.ProTip = "Leuonard_tip"
 SLASHER.SpeedRating = "★★★★☆"
 SLASHER.EyeRating = "★★★☆☆"
 SLASHER.DiffRating = "★★★★☆"
+SLASHER.RoidMult = 0.3 -- Roid multiplier used to multiply FrameTime by. Higher means more Roid is gained.
+
+function SLASHER.OnBalanceForPlayers(totalSurvivors, additionalSurvivors)
+	local SO = SlashCo.CurRound.OfferingData.Singularity
+
+	SLASHER.RoidMult = 0.3 + (SO * 0.3)
+end
 
 function SLASHER.OnSpawn(slasher)
 	SlashCo.CreateItem("sc_dogg", SlashCo.RandomPosLocator(), Angle(0, 0, 0))
 	slasher.soundon = 0
 	slasher:SetNWBool("CanKill", true)
 	slasher:SetNWBool("CanChase", true)
+
+	slasher.LeuonardRoid = 0
+	slasher.MouseDriftTick = 0
 end
 
 function SLASHER.OnTickBehaviour(slasher)
-	local SO = SlashCo.CurRound.OfferingData.Singularity
-
-	local v1 = slasher.SlasherValue1 --Roid
-	local v2 = slasher.SlasherValue2 --Tick to change mouse drift
-	local v3 = slasher.SlasherValue3 --Tick to move mouse
+	local Roid = slasher.LeuonardRoid or 0 --Roid
+	local MouseTick = slasher.MouseDriftTick or 0 --Tick to change mouse drift
 
 	if slasher.MouseDrift == nil then
 		slasher.MouseDrift = Vector(0, 0, 0)
 	end
 
-	if v1 < 100 then
+	if Roid < 100 then
 		if slasher.MoveHooks then
 			slasher:SlasherHudFunc("Degoblinize")
 			slasher.MoveHooks = false
 		end
 
 		if not slasher:GetNWBool("LeuonardRoiding") then
-			slasher.SlasherValue1 = v1 + (FrameTime() * (0.3 + (SO * 0.3)))
+			slasher.LeuonardRoid = Roid + (FrameTime() * SLASHER.RoidMult)
 
 			--sound
 
-			if math.floor(slasher.SlasherValue1) == 25 and slasher.soundon == 0 then
-				slasher:EmitSound("slashco/slasher/leuonard_25_" .. math.random(1, 3) .. ".mp3", 95)
+			if math.floor(slasher.LeuonardRoid) == 25 and slasher.soundon == 0 then
+				slasher:EmitSound("slashco/slasher/leuonard/leuonard_25_" .. math.random(1, 3) .. ".mp3", 95)
 				slasher.soundon = 1
 				slasher:SlasherHudFunc("FlashMeter", "r**e")
 			end
 
-			if math.floor(slasher.SlasherValue1) == 50 and slasher.soundon == 1 then
-				slasher:EmitSound("slashco/slasher/leuonard_50_" .. math.random(1, 3) .. ".mp3", 95)
+			if math.floor(slasher.LeuonardRoid) == 50 and slasher.soundon == 1 then
+				slasher:EmitSound("slashco/slasher/leuonard/leuonard_50_" .. math.random(1, 3) .. ".mp3", 95)
 				slasher.soundon = 2
 				slasher:SlasherHudFunc("FlashMeter", "r**e")
 			end
 
-			if math.floor(slasher.SlasherValue1) == 90 and slasher.soundon == 2 then
-				slasher:EmitSound("slashco/slasher/leuonard_90_" .. math.random(1, 3) .. ".mp3", 95)
+			if math.floor(slasher.LeuonardRoid) == 90 and slasher.soundon == 2 then
+				slasher:EmitSound("slashco/slasher/leuonard/leuonard_90_" .. math.random(1, 3) .. ".mp3", 95)
 				slasher.soundon = 3
 				slasher:SlasherHudFunc("FlashMeter", "r**e")
 			end
@@ -85,19 +95,19 @@ function SLASHER.OnTickBehaviour(slasher)
 					slasher.soundon = 0
 					ent:Remove()
 					slasher:SetNWBool("LeuonardRoiding", true)
-					slasher:EmitSound("slashco/slasher/leuonard_yell1.mp3")
+					slasher:EmitSound("slashco/slasher/leuonard/leuonard_yell1.mp3")
 					slasher:Freeze(true)
 					timer.Simple(4, function()
 						if not IsValid(slasher) or not slasher:GetNWBool("LeuonardRoiding", false) then
 							return
 						end
-						slasher:EmitSound("slashco/slasher/leuonard_grunt_loop.mp3")
+						slasher:EmitSound("slashco/slasher/leuonard/leuonard_grunt_loop.mp3")
 					end)
 				end
 			end
 		else
-			if v1 > 0 then
-				slasher.SlasherValue1 = v1 - (FrameTime() * 2)
+			if Roid > 0 then
+				slasher.LeuonardRoid = Roid - (FrameTime() * 2)
 				slasher:SetBodygroup(1, 1)
 				SlashCo.StopChase(slasher)
 			else
@@ -107,12 +117,12 @@ function SLASHER.OnTickBehaviour(slasher)
 
 				SlashCo.CreateItem("sc_dogg", SlashCo.RandomPosLocator(), Angle(0, 0, 0))
 
-				slasher:StopSound("slashco/slasher/leuonard_grunt_loop.mp3")
-				slasher:EmitSound("slashco/slasher/leuonard_grunt_finish.mp3")
+				slasher:StopSound("slashco/slasher/leuonard/leuonard_grunt_loop.mp3")
+				slasher:EmitSound("slashco/slasher/leuonard/leuonard_grunt_finish.mp3")
 			end
 		end
 	else
-		slasher.SlasherValue1 = 100.25
+		slasher.LeuonardRoid = 100.25
 		slasher:SetNWBool("LeuonardFullRoid", true)
 
 		SlashCo.StopChase(slasher)
@@ -121,7 +131,7 @@ function SLASHER.OnTickBehaviour(slasher)
 		slasher:SetNWBool("CanChase", false)
 	end
 
-	if v1 == 100.25 then
+	if Roid == 100.25 then
 		--100% bad word n stuff
 
 		--LOCATE THE DOG..........
@@ -135,7 +145,7 @@ function SLASHER.OnTickBehaviour(slasher)
 				--I FOUND YOU........
 				ent:Remove()
 				slasher:SetNWBool("LeuonardRoiding", true)
-				slasher:EmitSound("slashco/slasher/leuonard_grunt_loop.mp3")
+				slasher:EmitSound("slashco/slasher/leuonard/leuonard_grunt_loop.mp3")
 				slasher:Freeze(true)
 				slasher:SetBodygroup(1, 1)
 
@@ -144,7 +154,7 @@ function SLASHER.OnTickBehaviour(slasher)
 						return
 					end
 
-					slasher:StopSound("slashco/slasher/leuonard_grunt_loop.mp3")
+					slasher:StopSound("slashco/slasher/leuonard/leuonard_grunt_loop.mp3")
 					slasher:Freeze(false)
 					slasher:SetNWBool("LeuonardRoiding", false)
 					slasher:SetBodygroup(1, 0)
@@ -152,10 +162,10 @@ function SLASHER.OnTickBehaviour(slasher)
 			end
 		end
 
-		if slasher.soundon > 0 then
-			slasher:PlayGlobalSound("slashco/slasher/leuonard_yell7.mp3", 100)
-			slasher:PlayGlobalSound("slashco/slasher/leuonard_full_close.mp3", 80)
-			slasher:PlayGlobalSound("slashco/slasher/leuonard_full_far.mp3", 125)
+		if not slasher.soundon == 0 then
+			slasher:PlayGlobalSound("slashco/slasher/leuonard/leuonard_yell7.mp3", 100)
+			slasher:PlayGlobalSound("slashco/slasher/leuonard/leuonard_full_close.mp3", 80)
+			slasher:PlayGlobalSound("slashco/slasher/leuonard/leuonard_full_far.mp3", 125)
 			slasher.soundon = 0
 		end
 
@@ -169,12 +179,12 @@ function SLASHER.OnTickBehaviour(slasher)
 				slasher.MoveHooks = true
 			end
 
-			if v2 < 0 then
-				slasher.SlasherValue2 = 2 + (math.random() * 2)
+			if MouseTick < 0 then
+				slasher.MouseDriftTick = 2 + (math.random() * 2)
 				slasher:SlasherHudFunc("GoblinShift")
-				slasher:EmitSound("slashco/slasher/leuonard_yell" .. math.random(1, 7) .. ".mp3")
+				slasher:EmitSound("slashco/slasher/leuonard/leuonard_yell" .. math.random(1, 7) .. ".mp3")
 			end
-			slasher.SlasherValue2 = slasher.SlasherValue2 - FrameTime()
+			slasher.MouseDriftTick = slasher.MouseDriftTick - FrameTime()
 
 			local find = ents.FindInSphere(slasher:GetPos(), 80)
 			for i = 1, #find do
@@ -222,7 +232,7 @@ function SLASHER.OnTickBehaviour(slasher)
 		end
 	end
 
-	slasher:SetNWInt("LeuonardRoid", math.floor(v1))
+	slasher:SetNWInt("LeuonardRoid", math.floor(Roid))
 	slasher:SetNWFloat("Slasher_Eyesight", SLASHER.Eyesight)
 	slasher:SetNWInt("Slasher_Perception", SLASHER.Perception)
 end
@@ -233,6 +243,10 @@ end
 
 function SLASHER.OnSecondaryFire(slasher)
 	SlashCo.StartChaseMode(slasher)
+end
+
+function SLASHER.Thirdperson(ply)
+	return ply:GetNWBool("LeuonardRoiding")
 end
 
 function SLASHER.Animator(ply)
@@ -272,13 +286,20 @@ end
 
 function SLASHER.Footstep(ply)
 	if SERVER then
-		ply:EmitSound("slashco/slasher/leuonard_step" .. math.random(1, 3) .. ".mp3")
-		return true
+		local idx = math.random(1, 3)
+		SlashCo.AudioSystem.PlaySound({
+			soundPath = "slashco/slasher/leuonard/leuonard_step" .. idx .. ".mp3",
+			identifier = "LeuonardFootstep" .. idx,
+			minDistance = 200,
+			maxDistance = 500,
+			entity = ply,
+			volume = 1,
+			fadeIn = 0,
+			unreliable = true,
+		})
 	end
 
-	if CLIENT then
-		return true
-	end
+	return true
 end
 
 function SLASHER.InitHud(_, hud)
@@ -349,7 +370,7 @@ if CLIENT then
 	hook.Add("Think", "LeuonardLight", function()
 		for _, slasher in ipairs(team.GetPlayers(TEAM_SLASHER)) do
 			if slasher:GetNWBool("LeuonardFullRoid") then
-				local tlight = DynamicLight(slasher:EntIndex() + 965)
+				local tlight = DynamicLight(MAX_EDICT + slasher:EntIndex())
 				if (tlight) then
 					tlight.pos = slasher:LocalToWorld(Vector(0, 0, 20))
 					tlight.r = 255

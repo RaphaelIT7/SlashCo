@@ -64,7 +64,8 @@ end
 
 --Door Ramming
 hook.Add("PlayerButtonDown", "SurvivorFunctions", function(ply, button)
-	if ply:Team() ~= TEAM_SURVIVOR then
+	local team = ply:Team()
+	if team ~= TEAM_SURVIVOR and team ~= TEAM_LOBBY then
 		return
 	end
 
@@ -74,8 +75,7 @@ hook.Add("PlayerButtonDown", "SurvivorFunctions", function(ply, button)
 	if ply:GetNWBool("SurvivorTackled") then
 		if button == KEY_D or button == KEY_A and ply.LastTackleStruggleKey ~= button then
 			ply.LastTackleStruggleKey = button
-			ply.TackleStruggle = ply.TackleStruggle or 0
-			ply.TackleStruggle = ply.TackleStruggle + 1
+			ply.TackleStruggle = (ply.TackleStruggle or 0) + 1
 		end
 
 		return
@@ -223,7 +223,7 @@ function PLAYER:SlamDoor(door_ent)
 	local pos = self:GetPos()
 	local name = door_ent:GetName()
 	slamDoor(door_ent, pos)
-	for _, v in ipairs(ents.FindInSphere(door_ent:WorldSpaceCenter(), 150)) do
+	for _, v in ipairs(ents.FindInSphere(door_ent:WorldSpaceCenter(), 100)) do
 		if v:GetName() == name then
 			slamDoor(v, pos)
 		end
