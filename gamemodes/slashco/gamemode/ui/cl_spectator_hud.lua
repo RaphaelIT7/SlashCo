@@ -59,15 +59,19 @@ hook.Add("HUDPaint", "Spectator_Vision", function()
 			spin = 1
 		end
 
-		local blip = "☞ [,] ☜"
-		if #team.GetPlayers(TEAM_LOBBY) > (GameData.MaxPlayers - 1) then
-			blip = "☓ [,] ☓"
+		local blip = "☞ [Q] ☜"
+		if GameData.IsNewPlayer then
+			blip = SlashCo.Language("newplayer_spawnnotice", "Q") --"Press [Q] to Spawn"
 		else
-			flash = flash + RealFrameTime()
-			if flash > 1 then flash = 0 end
+			if #team.GetPlayers(TEAM_LOBBY) > (GameData.MaxPlayers - 1) then
+				blip = "☓ [Q] ☓"
+			else
+				flash = flash + RealFrameTime()
+				if flash > 1 then flash = 0 end
 
-			if flash > 0.5 then
-				blip = "☛[,]☚"
+				if flash > 0.5 then
+					blip = "☛[Q]☚"
+				end
 			end
 		end
 
@@ -161,12 +165,13 @@ if CLIENT then
 		if not IsFirstTimePredicted() then
 			return
 		end
-		if button ~= 107 or not SlashCoTestConfig then
+		if button ~= KEY_COUNT or not SlashCoTestConfig then
 			return
 		end
-
-		if IsValid(ply:GetEyeTrace().Entity) then
-			ply:ChatPrint("ENTITY SPAWNPOINT ID: " .. ply:GetEyeTrace().Entity:GetNWInt("SpawnPoint_ID"))
+		
+		local eyeTrace = ply:GetEyeTrace()
+		if IsValid(eyeTrace.Entity) then
+			ply:ChatPrint("ENTITY SPAWNPOINT ID: " .. eyeTrace.Entity:GetNWInt("SpawnPoint_ID"))
 		end
 	end)
 end
@@ -225,15 +230,15 @@ hook.Add("Think", "Spectator_Vision_Light", function()
 
 	--Eyesight - an arbitrary range from 1 - 10 which decides how illuminated the Slasher 'vision is client-side. (1 - barely any illumination, 10 - basically fullbright )
 
-	local dlight = DynamicLight(GameData.LocalPlayer:EntIndex() + 984)
+	local dlight = DynamicLight(GameData.LocalPlayer:EntIndex())
 	if dlight then
 		dlight.pos = GameData.LocalPlayer:GetShootPos()
 		dlight.r = 255
 		dlight.g = 255
 		dlight.b = 255
-		dlight.brightness = 1
+		dlight.brightness = 2
 		dlight.Decay = 1000
-		dlight.Size = 2500
+		dlight.Size = 1000
 		dlight.DieTime = CurTime() + 0.1
 	end
 end)

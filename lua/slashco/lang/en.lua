@@ -23,6 +23,7 @@ SlashCo.LangTable["SomeRescued"] = "Only some of the dispatched SlashCo Workers 
 SlashCo.LangTable["NoneRescued"] = "The dispatched SlashCo Workers could not be rescued."
 SlashCo.LangTable["Cursed"] = "Your soul is now forfeit."
 SlashCo.LangTable["Judgement"] = "JUDGEMENT"
+SlashCo.LangTable["newplayer_spawnnotice"] = "Press [%s] to Spawn"
 
 SlashCo.LangTable["HP"] = "HP"
 SlashCo.LangTable["FUEL"] = "FUEL"
@@ -75,6 +76,8 @@ SlashCo.LangTable["item_toomany"] = "Too many Survivors already have this item."
 SlashCo.LangTable["map_already_selected"] = "This map has already been selected."
 SlashCo.LangTable["map_notenough"] = "You don't have enough points for a Map Guarantee."
 SlashCo.LangTable["map_guaranteed_to"] = "%s spent %s points to set the mission to be on %s."
+
+SlashCo.LangTable["ask_to_become_slasher"] = "Do you want to become the Slasher?"
 
 SlashCo.LangTable["playermodel_choose"] = "[CHOOSE...]"
 
@@ -134,6 +137,9 @@ SlashCo.LangTable["Alcohol_desc"] = "Unfortunate."
 SlashCo.LangTable["Baby"] = "The Baby"
 SlashCo.LangTable["Baby_desc"] = "Halve your health to teleport to a random location. At low health, using this item has a chance of killing you instantly. If you die to this item, the slasher will teleport instead."
 
+SlashCo.LangTable["BalkanBoost"] = "Balkan Boost"
+SlashCo.LangTable["BalkanBoost_desc"] = "I think the FDA is much too terrified to regulate this.\nUse at your own discretion.\nWhen you're going through hell, keep going."
+
 SlashCo.LangTable["Battery"] = "Battery"
 SlashCo.LangTable["Battery_desc"] = "A lead-acid battery that serves as a reusable source of electric current."
 
@@ -143,6 +149,7 @@ SlashCo.LangTable["Beacon_already_on_way"] = "The Helicopter is already on its w
 SlashCo.LangTable["Beacon_already_active"] = "There is already a beacon deployed."
 SlashCo.LangTable["Beacon_confirm"] = "Using the beacon with more than 1 living survivor will cause it to take time to arm. Use again to confirm."
 SlashCo.LangTable["Beacon_unavailable"] = "You can activate the beacon once one generator has been turned on."
+SlashCo.LangTable["Beacon_survivors"] = "You can't activate the beacon if there more than 5 survivors alive."
 
 SlashCo.LangTable["Benadryl"] = "25 gram Benadryl"
 SlashCo.LangTable["Benadryl_desc"] = "All new 25 gram Benadryl, made from 1200 pills.\n Feel free to take this if you feel the Assignments aren't challenging enough as is."
@@ -176,6 +183,9 @@ SlashCo.LangTable["Mayonnaise_desc"] = "Get a large boost to health."
 
 SlashCo.LangTable["MilkJug"] = "Milk Jug"
 SlashCo.LangTable["MilkJug_desc"] = "Gain a temporary boost in speed on use.\nA certain Slasher seems to really like this item."
+
+SlashCo.LangTable["NightVisionGoggles"] = "NightVision Goggles"
+SlashCo.LangTable["NightVisionGoggles_desc"] = "Grants night vision when equipped."
 
 SlashCo.LangTable["PocketSand"] = "Pocket Sand"
 SlashCo.LangTable["PocketSand_desc"] = "Blinds a nearby slasher."
@@ -247,6 +257,8 @@ SlashCo.LangTable["cur_assignment"] = "Current Assignment: %s"
 SlashCo.LangTable["slasher_assess"] = "-Slasher Assessment-"
 
 SlashCo.LangTable["offering_idle"] = "Make an Offering"
+
+SlashCo.LangTable["server_announcement"] = "Server Announcement"
 
 --Survivor
 SlashCo.LangTable["item_use"] = "[%s] USE"
@@ -641,8 +653,8 @@ SlashCo.LangTable["abomignat_description"] = [[A large cryptid creature that res
 SlashCo.LangTable["abomignat_description_additional"] = [[This Slasher will sometimes crawl on the ground to traverse long distances at high speed. At high [ANGER], it will lunge at its victims, dealing heavy damage.]]
 
 -- Amogus
-SlashCo.LangTable["amogus_description"] = [[]]
-SlashCo.LangTable["amogus_description_additional"] = [[]]
+SlashCo.LangTable["amogus_description"] = [[This cryptid appears to rotate between searching for victims as well as hiding in plain sight in an attempt to deceive them by disguising himself as a human, or even a Fuel Can. Teams should be particularly careful about Fuel Cans or team members which look “sus”. Once the cryptid starts hunting a player; the subject will begin shouting, “AMONG US!”.]]
+SlashCo.LangTable["amogus_description_additional"] = [[This cryptid has a pair of massively muscular legs with huge glutes which support a relatively small mid-section with a visor in the front.]]
 
 -- Bababooey
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/Bababooey
@@ -721,4 +733,3 @@ SlashCo.LangTable["tyler_description_additional"] = [[]]
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/The_Watcher
 SlashCo.LangTable["the watcher_description"] = [[An umbra entity, taking the form of an extremely tall old man wearing an olive overcoat, round glasses and a hat. The entity awkwardly stumbles when moving, and has mostly been reported to observe victims patiently while hidden in the dark. This Slasher has been reported to prefer to stay in groups, and has shown to be a brutal killer when acting alone.]]
 SlashCo.LangTable["the watcher_description_additional"] = [[This Slasher cannot passively gain [ANGER]. The Watcher will VERY RAPIDLY gain [ANGER] when observing a victim.]]
-

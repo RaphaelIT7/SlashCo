@@ -5,8 +5,8 @@ SLASHER.Aliases = {
 	"speedrunner_alias_hunted",
 }
 SLASHER.ID = 15
-SLASHER.Class = 1
-SLASHER.DangerLevel = 3
+SLASHER.Class = SlashCo.SlasherClass.Cryptid
+SLASHER.DangerLevel = SlashCo.DangerLevel.Devastating
 SLASHER.IsSelectable = true
 SLASHER.Model = "models/slashco/slashers/dream/dream.mdl"
 SLASHER.GasCanMod = 0
@@ -22,7 +22,7 @@ SLASHER.ChaseDuration = 0.0
 SLASHER.ChaseCooldown = 1
 SLASHER.JumpscareDuration = 1.5
 SLASHER.ChaseMusic = ""
-SLASHER.KillSound = "slashco/slasher/speedrunner_kill.mp3"
+SLASHER.KillSound = "slashco/slasher/speedrunner/speedrunner_kill.mp3"
 SLASHER.Description = "Speedrunner_desc"
 SLASHER.ProTip = "Speedrunner_tip"
 SLASHER.SpeedRating = "★★★★★"
@@ -30,32 +30,42 @@ SLASHER.EyeRating = "★★★☆☆"
 SLASHER.DiffRating = "★★★★★"
 
 function SLASHER.OnSpawn(slasher)
-	slasher:PlayGlobalSound("slashco/slasher/speedrunner_1.mp3", 100, nil, true)
+	SlashCo.AudioSystem.PlaySound({
+		soundPath = "slashco/slasher/speedrunner/speedrunner_1.ogg",
+		identifier = "Speedrun1",
+		minDistance = 750,
+		maxDistance = 1400,
+		looping = true,
+		entity = slasher,
+		volume = 1,
+		fadeIn = 0,
+	})
 	slasher:SetNWBool("CanKill", true)
-	slasher.SlasherValue1 = 100
-	slasher.SlasherValue2 = 1
-	slasher.SlasherValue3 = 285
+
+	slasher.Speedrun = 100
+	slasher.Speedrunning = 1
+	slasher.Speedrunned = 285
 end
 
 function SLASHER.OnTickBehaviour(slasher)
 	local SO = SlashCo.CurRound.OfferingData.Singularity
 
-	local v1 = slasher.SlasherValue1 --Speed
-	local v2 = slasher.SlasherValue2 --Speed Gain multiplier
-	local v3 = slasher.SlasherValue3 --max speed allowed
+	local Speed = slasher.Speedrun or 0 --Speed
+	local SpeedGain = slasher.Speedrunning or 0 --Speed Gain multiplier
+	local SpeedMax = slasher.Speedrunned or 0 --max speed allowed
 
-	if v1 < v3 then
+	if Speed < SpeedMax then
 		local gasMod = SlashCo.IsPositionLegalForSlashers(slasher:GetPos(), true) and 1 or 0.5
 		local mapSizeMod = (0.5 / SlashCo.MapSize) + 0.5
-		slasher.SlasherValue1 = v1 + engine.TickInterval() * mapSizeMod * v2 * (1 + SO) * 0.66 * gasMod
+		slasher.Speedrun = Speed + engine.TickInterval() * mapSizeMod * SpeedGain * (1 + SO) * 0.66 * gasMod
 	end
 
-	slasher:SetRunSpeed(math.floor(slasher.SlasherValue1))
-	slasher:SetWalkSpeed(math.floor(slasher.SlasherValue1))
-	slasher:SetSlowWalkSpeed(math.floor(slasher.SlasherValue1))
+	slasher:SetRunSpeed(math.floor(slasher.Speedrun))
+	slasher:SetWalkSpeed(math.floor(slasher.Speedrun))
+	slasher:SetSlowWalkSpeed(math.floor(slasher.Speedrun))
 
-	if slasher:GetNWInt("SpeedrunnerSpeed") ~= math.floor(v1) then
-		slasher:SetNWInt("SpeedrunnerSpeed", math.floor(v1))
+	if slasher:GetNWInt("SpeedrunnerSpeed") ~= math.floor(Speed) then
+		slasher:SetNWInt("SpeedrunnerSpeed", math.floor(Speed))
 	end
 
 	slasher:SetNWFloat("Slasher_Eyesight", SLASHER.Eyesight)
@@ -64,7 +74,7 @@ end
 
 function SLASHER.OnPrimaryFire(slasher, target)
 	if SlashCo.Jumpscare(slasher, target) then
-		slasher.SlasherValue1 = math.min(slasher.SlasherValue1 + 30, slasher.SlasherValue3)
+		slasher.Speedrun = math.min(slasher.Speedrun + 30, slasher.Speedrunned)
 	end
 end
 
@@ -78,7 +88,7 @@ function SLASHER.RandomTPCans()
 end
 
 function SLASHER.OnMainAbilityFire(slasher)
-	if slasher.SlasherValue1 < slasher.SlasherValue3 or slasher:GetNWBool("SpeedrunnerSacrificeTwo") then
+	if slasher.Speedrun < slasher.Speedrunned or slasher:GetNWBool("SpeedrunnerSacrificeTwo") then
 		return
 	end
 
@@ -87,23 +97,21 @@ function SLASHER.OnMainAbilityFire(slasher)
 	end
 	slasher.SpeedRunnering = true
 
-	slasher:StopSound("slashco/slasher/speedrunner_1.mp3")
-	slasher:StopSound("slashco/slasher/speedrunner_2.mp3")
 	timer.Simple(0.1, function()
 		if not IsValid(slasher) then
 			return
 		end
 
-		slasher:StopSound("slashco/slasher/speedrunner_1.mp3")
-		slasher:StopSound("slashco/slasher/speedrunner_2.mp3")
+		SlashCo.AudioSystem.StopSound("Speedrun1", 0.5)
+		SlashCo.AudioSystem.StopSound("Speedrun2", 0.5)
 	end)
 
 	slasher:Freeze(true)
 
 	if not slasher:GetNWBool("SpeedrunnerSacrificeOne") then
-		slasher:EmitSound("slashco/slasher/speedrunner_rng1.mp3", 85, 100)
+		slasher:EmitSound("slashco/slasher/speedrunner/speedrunner_rng1.mp3", 85, 100)
 	else
-		slasher:EmitSound("slashco/slasher/speedrunner_rng2.mp3", 85, 100)
+		slasher:EmitSound("slashco/slasher/speedrunner/speedrunner_rng2.mp3", 85, 100)
 	end
 
 	timer.Simple(2, function()
@@ -111,15 +119,24 @@ function SLASHER.OnMainAbilityFire(slasher)
 			return
 		end
 
-		slasher.SlasherValue1 = 100
+		slasher.Speedrun = 100
 		slasher.SpeedRunnering = nil
 		slasher:Freeze(false)
 
 		if not slasher:GetNWBool("SpeedrunnerSacrificeOne") then
 			slasher:SetNWBool("SpeedrunnerSacrificeOne", true)
-			slasher:PlayGlobalSound("slashco/slasher/speedrunner_2.mp3", 100, nil, true)
-			slasher.SlasherValue2 = 2
-			slasher.SlasherValue3 = 325
+			SlashCo.AudioSystem.PlaySound({
+				soundPath = "slashco/slasher/speedrunner/speedrunner_2.ogg",
+				identifier = "Speedrun2",
+				minDistance = 750,
+				maxDistance = 1400,
+				looping = true,
+				entity = slasher,
+				volume = 1,
+				fadeIn = 0,
+			})
+			slasher.Speedrunning = 2
+			slasher.Speedrunned = 325
 			SLASHER.RandomTPCans()
 
 			return
@@ -127,9 +144,18 @@ function SLASHER.OnMainAbilityFire(slasher)
 
 		if not slasher:GetNWBool("SpeedrunnerSacrificeTwo") then
 			slasher:SetNWBool("SpeedrunnerSacrificeTwo", true)
-			slasher:PlayGlobalSound("slashco/slasher/speedrunner_3.mp3", 100, nil, true)
-			slasher.SlasherValue2 = 4
-			slasher.SlasherValue3 = 500
+			SlashCo.AudioSystem.PlaySound({
+				soundPath = "slashco/slasher/speedrunner/speedrunner_3.ogg",
+				identifier = "Speedrun3",
+				minDistance = 750,
+				maxDistance = 1400,
+				looping = true,
+				entity = slasher,
+				volume = 1,
+				fadeIn = 0,
+			})
+			slasher.Speedrunning = 4
+			slasher.Speedrunned = 500
 			slasher:SetBodygroup(1, 1)
 			SLASHER.RandomTPCans()
 
@@ -310,7 +336,7 @@ if CLIENT then
 			end
 
 			if v:GetNWBool("SpeedrunnerSacrificeTwo") then
-				local tlight = DynamicLight(v:EntIndex() + 965)
+				local tlight = DynamicLight(MAX_EDICT + v:EntIndex())
 				if tlight then
 					tlight.pos = v:LocalToWorld(Vector(0, 0, 20))
 					tlight.r = 80

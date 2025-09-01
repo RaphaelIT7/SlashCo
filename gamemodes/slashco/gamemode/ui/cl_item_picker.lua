@@ -2,7 +2,13 @@ local selectedItem, selectedMap
 local itemSelectFrame, mapForce
 local SlashCoItems = SlashCoItems
 local MGSelection = false
-local mapPrice = 50
+local mapPrice = 100
+
+if GameData.IsLobby then
+	SlashCo.AudioSystem.PrecacheSound("slashco/ui/terminalbutton_1.mp3", "mono", "ItemPickerMenuClick") -- Used for all other ui sounds
+	SlashCo.AudioSystem.PrecacheSound("slashco/ui/item_display.mp3", "mono", "ItemPickerDisplayClick") -- Used for item selection
+	SlashCo.AudioSystem.PrecacheSound("slashco/ui/item_select.mp3", "mono", "ItemPickerSelect") -- Used when a item is confirmed
+end
 
 local function BlockConfirm()
 	itemSelectFrame.Confirm:SetText("XXXXXXX")
@@ -36,8 +42,10 @@ local function SetConfirm()
 	function itemSelectFrame.Confirm.DoClick()
 		if MGSelection then
 			SlashCo.SendValue("pickMap", selectedMap)
+			SlashCo.AudioSystem.PlayPrecachedChannel("ItemPickerSelect")
 		else
 			SlashCo.SendValue("pickItem", selectedItem)
+			SlashCo.AudioSystem.PlayPrecachedChannel("ItemPickerSelect")
 		end
 		itemSelectFrame:Remove()
 	end
@@ -98,6 +106,7 @@ local function SetupBase()
 	function MapGuaranteeSelect.DoClick()
 		MGSelection = not MGSelection
 		DrawItemSelectorBox()
+		SlashCo.AudioSystem.PlayPrecachedChannel("ItemPickerClick")
 	end
 
 	local leftSide = vgui.Create("DScrollPanel", itemSelectFrame)
@@ -207,6 +216,7 @@ local function SetupItems()
 			selectedItem = k
 			setItemLabel()
 			leftSide.Items[selectedItem]:SetEnabled(false)
+			SlashCo.AudioSystem.PlayPrecachedChannel("ItemPickerDisplayClick")
 		end
 		item:Dock(TOP)
 		item:SetHeight(30)
@@ -268,6 +278,7 @@ local function SetupMaps()
 			selectedMap = k
 			SetConfirm()
 			leftSide.Items[selectedMap]:SetEnabled(false)
+			SlashCo.AudioSystem.PlayPrecachedChannel("ItemPickerClick")
 		end
 		item:Dock(TOP)
 		item:SetHeight(30)

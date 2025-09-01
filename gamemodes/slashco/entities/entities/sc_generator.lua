@@ -66,7 +66,7 @@ if CLIENT then
 		GameData.GeneratorLight:DrawModel()
 
 		local curTime = CurTime()
-		local dlight = DynamicLight(cacheData.entindex + 99996)
+		local dlight = DynamicLight(cacheData.entindex)
 		if dlight then
 			dlight.pos = cacheData.pos
 			dlight.r = not running and 255 or 0
@@ -75,8 +75,8 @@ if CLIENT then
 			dlight.brightness = 5
 			dlight.Decay = 1000
 			--dlight.nomodel = true -- We don't need that.
-			dlight.Size = math.abs(math.sin(curTime)) * 200
-			dlight.DieTime = curTime + 0.1
+			dlight.Size = math.abs(running and 1 or math.sin(curTime)) * 200
+			dlight.DieTime = curTime + (running and 60 or 0.1)
 		end
 
 		self:DrawModel()
@@ -141,7 +141,7 @@ end
 function ENT:SendData(ply)
 	net.Start("mantislashco_GasPourProgress")
 		net.WriteUInt(TimeToFuel, 8)
-		net.WriteEntity(self.FuelingCan)
+		net.WriteUInt(self.FuelingCan:EntIndex(), MAX_EDICT_BITS) -- NOTE: We require this since we might send this net message before the Entity was networked, so we need to accout for that.
 		net.WriteBool(self.IsFueling)
 		net.WriteFloat(self.TimeUntilFueled)
 	net.Send(ply)
@@ -219,13 +219,38 @@ function ENT:CheckProgress(dontFailStart)
 		self.IsRunning = true
 		self.Progress = 5
 		self:SetRunning(true)
-		self:EmitSound("slashco/generator_start.mp3", 85, 100, 1)
+		SlashCo.AudioSystem.PlaySound({ -- Let everyone hear that a generator was started
+			soundPath = "slashco/generator_start.mp3",
+			identifier = "GeneratorStart",
+			minDistance = 1500,
+			maxDistance = 10000,
+			entity = self,
+			volume = 1,
+			fadeIn = 0,
+		})
 
 		timer.Simple(6.4, function()
-			self:PlayGlobalSound("slashco/generator_loop.mp3", 85, nil, true)
+			SlashCo.AudioSystem.PlaySound({ -- Let everyone hear that a generator was started
+				soundPath = "slashco/generator_loop.mp3",
+				identifier = "GeneratorLoop",
+				minDistance = 250,
+				maxDistance = 750,
+				entity = self,
+				volume = 1,
+				fadeIn = 0,
+				looping = true,
+			})
 		end)
 	elseif not dontFailStart and self.HasBattery and (self.CansRemaining or gasPerGen) > 0 then
-		self:EmitSound("slashco/generator_failstart.mp3", 85, 100, 1)
+		SlashCo.AudioSystem.PlaySound({
+			soundPath = "slashco/generator_failstart.mp3",
+			identifier = "GeneratorFailedStart",
+			minDistance = 500,
+			maxDistance = 1500,
+			entity = self,
+			volume = 1,
+			fadeIn = 0,
+		})
 	end
 end
 
@@ -265,6 +290,9 @@ function ENT:Use(activator)
 			self.ItemModel = activator:ItemValue("Model", false, true)
 			timer.Simple(0.25, function()
 				self:MakeGasCan(self.ItemModel)
+				if IsValid(activator) then
+					self:Use(activator, activator) -- Hopefully allow them to instantly pour into the generator instead of having to release and press USE again.
+				end
 			end)
 
 			activator:SecondaryItemFunction("OnFuel", self)

@@ -1,9 +1,13 @@
 local SLASHER = {}
 
 SLASHER.Name = "Free Smiley Dealer"
+SLASHER.Aliases = {
+	"Yellow Guy",
+	"Smiley",
+}
 SLASHER.ID = 13
-SLASHER.Class = 1
-SLASHER.DangerLevel = 2
+SLASHER.Class = SlashCo.SlasherClass.Cryptid
+SLASHER.DangerLevel = SlashCo.DangerLevel.Considerable
 SLASHER.IsSelectable = true
 SLASHER.Model = "models/slashco/slashers/freesmiley/freesmiley.mdl"
 SLASHER.GasCanMod = 0
@@ -15,33 +19,43 @@ SLASHER.Eyesight = 8
 SLASHER.KillDistance = 150
 SLASHER.ChaseRange = 1600
 SLASHER.ChaseRadius = 0.85
-SLASHER.ChaseDuration = 5.0
+SLASHER.ChaseDuration = 9.0
 SLASHER.ChaseCooldown = 4
 SLASHER.JumpscareDuration = 2
-SLASHER.ChaseMusic = "slashco/slasher/freesmiley_chase.mp3"
-SLASHER.KillSound = "slashco/slasher/freesmiley_kill.mp3"
+SLASHER.ChaseMusic = "slashco/slasher/freesmiley/freesmiley_chase.ogg"
+SLASHER.KillSound = "slashco/slasher/freesmiley/freesmiley_kill.mp3"
 SLASHER.Description = "FreeSmiley_desc"
 SLASHER.ProTip = "FreeSmiley_tip"
 SLASHER.SpeedRating = "★☆☆☆☆"
 SLASHER.EyeRating = "★★★☆☆"
 SLASHER.DiffRating = "★★☆☆☆"
+SLASHER.SummonCooldown = 50 -- Summon cooldown
+
+function SLASHER.OnBalanceForPlayers(totalSurvivors, additionalSurvivors)
+	local SO = SlashCo.CurRound.OfferingData.Singularity
+
+	SLASHER.SummonCooldown = 50 - (25 * SO)
+end
 
 function SLASHER.OnSpawn(slasher)
 	SLASHER.SmileyIdle(slasher)
 	slasher:SetNWBool("CanKill", true)
 	slasher:SetNWBool("CanChase", true)
+
+	slasher.SummonCooldown = 0
+	slasher.SummonChoose = 0
 end
 
 function SLASHER.OnTickBehaviour(slasher)
-	local v1 = slasher.SlasherValue1 --Summon Cooldown
-	local v2 = slasher.SlasherValue2 --Selected Summon
+	local SummonCD = slasher.SummonCooldown or 0 --Summon Cooldown
+	local SummonChoose = slasher.SummonChoose or 0 --Selected Summon
 
-	if v1 > 0 then
-		slasher.SlasherValue1 = v1 - FrameTime()
+	if SummonCD > 0 then
+		slasher.SummonCooldown = SummonCD - FrameTime()
 	end
 
-	slasher:SetNWInt("SmileySummonCooldown", math.floor(v1))
-	slasher:SetNWInt("SmileySummonSelect", v2)
+	slasher:SetNWInt("SmileySummonCooldown", math.floor(SummonCD))
+	slasher:SetNWInt("SmileySummonSelect", SummonChoose)
 
 	slasher:SetNWFloat("Slasher_Eyesight", SLASHER.Eyesight)
 	slasher:SetNWInt("Slasher_Perception", SLASHER.Perception)
@@ -59,33 +73,31 @@ function SLASHER.OnMainAbilityFire(slasher)
 	if slasher:GetNWBool("FreeSmileySummoning") then
 		return
 	end
-	if slasher.SlasherValue1 > 0 then
+	if slasher.SummonCooldown > 0 then
 		return
 	end
 
-	if slasher.SlasherValue2 == 0 then
-		slasher.SlasherValue2 = 1
+	if slasher.SummonChoose == 0 then
+		slasher.SummonChoose = 1
 		return
 	end
-	if slasher.SlasherValue2 == 1 then
-		slasher.SlasherValue2 = 0
+	if slasher.SummonChoose == 1 then
+		slasher.SummonChoose = 0
 		return
 	end
 end
 
 function SLASHER.OnSpecialAbilityFire(slasher)
-	local SO = SlashCo.CurRound.OfferingData.Singularity
-
 	if not SlashCo.IsPositionLegalForSlashers(slasher:GetPos()) then
 		return
 	end
 
-	if slasher.SlasherValue1 > 0 then
+	if slasher.SummonCooldown > 0 then
 		return
 	end
 
 	local zanies = ents.FindByClass("sc_zanysmiley")
-	if slasher.SlasherValue2 == 0 and #zanies >= 2 then
+	if slasher.SummonChoose == 0 and #zanies >= 2 then
 		for _, v in ipairs(zanies) do
 			v:Use(slasher)
 		end
@@ -93,20 +105,20 @@ function SLASHER.OnSpecialAbilityFire(slasher)
 		return
 	end
 
-	slasher.SlasherValue1 = 50 - (SO * 25)
+	slasher.SummonCooldown = SLASHER.SummonCooldown
 
 	slasher:SetNWBool("FreeSmileySummoning", true)
 
 	slasher:Freeze(true)
 	timer.Simple(4, function()
-		if slasher.SlasherValue2 == 0 then
+		if slasher.SummonChoose == 0 then
 			local smiley = ents.Create("sc_zanysmiley")
 			smiley:SetPos(slasher:LocalToWorld(Vector(60, 0, 0)))
 			smiley:SetAngles(slasher:GetAngles())
 			smiley:Spawn()
 			smiley:Activate()
 		end
-		if slasher.SlasherValue2 == 1 then
+		if slasher.SummonChoose == 1 then
 			local smiley = ents.Create("sc_pensivesmiley")
 			smiley:SetPos(slasher:LocalToWorld(Vector(60, 0, 0)))
 			smiley:SetAngles(slasher:GetAngles())
@@ -119,6 +131,10 @@ function SLASHER.OnSpecialAbilityFire(slasher)
 		slasher:Freeze(false)
 		slasher:SetNWBool("FreeSmileySummoning", false)
 	end)
+end
+
+function SLASHER.Thirdperson(ply)
+	return ply:GetNWBool("FreeSmileySummoning")
 end
 
 function SLASHER.Animator(ply)
@@ -155,20 +171,25 @@ function SLASHER.Footstep(ply)
 		if ply.SmileyStepTick == nil or ply.SmileyStepTick > 1 then
 			ply.SmileyStepTick = 0
 		end
+
 		if ply.SmileyStepTick == 0 then
-			ply:EmitSound("npc/footsteps/hardboot_generic" .. math.random(1, 6) .. ".wav", 50, 70, 0.75)
-			ply.SmileyStepTick = ply.SmileyStepTick + 1
-			return false
+			local idx = math.random(1, 6)
+			SlashCo.AudioSystem.PlaySound({
+				soundPath = "npc/footsteps/hardboot_generic" .. idx .. ".wav",
+				identifier = "FreeSmileyFootstep" .. idx,
+				minDistance = 200,
+				maxDistance = 500,
+				entity = ply,
+				volume = 1,
+				fadeIn = 0,
+				unreliable = true,
+			})
 		end
 
 		ply.SmileyStepTick = ply.SmileyStepTick + 1
-
-		return true
 	end
 
-	if CLIENT then
-		return true
-	end
+	return true
 end
 
 local dealTable = {
@@ -267,7 +288,7 @@ end
 
 function SLASHER.SmileyIdle(slasher)
 	if not slasher:GetNWBool("InSlasherChaseMode") then
-		slasher:EmitSound("slashco/slasher/freesmiley_idle" .. math.random(1, 7) .. ".mp3")
+		slasher:EmitSound("slashco/slasher/freesmiley/freesmiley_idle" .. math.random(1, 7) .. ".mp3")
 	end
 
 	timer.Simple(math.random(3, 5), function()

@@ -138,8 +138,8 @@ end
 
 local function lobbyButtons(ply, button)
 	local plyTeam = ply:Team()
-	if SlashCo.LobbyData.LOBBYSTATE == 0 then
-		if plyTeam == TEAM_LOBBY and button == KEY_F1 then
+	if SlashCo.LobbyData.LOBBYSTATE == 0 and plyTeam == TEAM_LOBBY  then
+		if button == KEY_F1 then
 			if getReadyState(ply) ~= 1 then
 				lobbyPlayerReadying(ply, 1)
 				broadcastLobbyInfo()
@@ -153,17 +153,17 @@ local function lobbyButtons(ply, button)
 			Sndd:ChangePitch(100, 0)
 		end
 
-		if plyTeam == TEAM_LOBBY and button == KEY_F2 then
+		if button == KEY_F2 then
 			if getReadyState(ply) ~= 2 then
 				--Check if the player has made an offering or agreed to one
-				if isPlyOfferer(ply) then
+				--[[if isPlyOfferer(ply) then
 					ply:ChatPrint("Cannot ready as Slasher as you have either made or agreed to an Offering.")
 					local Sndd = CreateSound(ply, Sound("slashco/blip.mp3"))
 					Sndd:Play()
 					Sndd:ChangeVolume(0.5, 0)
 					Sndd:ChangePitch(65, 0)
 					return
-				end
+				end]]
 
 				lobbyPlayerReadying(ply, 2)
 				broadcastLobbyInfo()
@@ -181,14 +181,15 @@ local function lobbyButtons(ply, button)
 			end
 		end
 
-		if plyTeam == TEAM_LOBBY and button == 95 and SlashCo.LobbyData.VotedOffering > 0 and not isPlyOfferer(ply) then
+		if button == KEY_F4 and SlashCo.LobbyData.VotedOffering > 0 and not isPlyOfferer(ply) then
 			SlashCo.OfferingVote(ply, true)
 			SlashCo.EndOfferingVote(ply)
 		end
 	end
 
 	--Switching Teams
-	if button == KEY_COMMA and SlashCo.LobbyData.LOBBYSTATE == 0 then
+	-- NOTE: We check both KEY_COMMA and KEY_Q since previously the key was set to be COMMA but was changed to be Q.
+	if (button == KEY_COMMA or button == KEY_Q) and SlashCo.LobbyData.LOBBYSTATE == 0 then
 		if plyTeam == TEAM_SPECTATOR then
 			if (#team.GetPlayers(TEAM_LOBBY) < GameData.MaxPlayers) then
 				ply:SetTeam(TEAM_LOBBY)
@@ -281,7 +282,7 @@ local function spectatorButtons(ply, button)
 		return
 	end
 
-	if button == KEY_SPACE then
+	if button == KEY_SPACE and IsValid(ply:GetObserverTarget()) then
 		--Spectator presses Space, cycles camera modes.
 		if ply:GetObserverMode() == OBS_MODE_CHASE then
 			ply:SetObserverMode(OBS_MODE_IN_EYE)
@@ -298,14 +299,17 @@ local function slasherButtons(ply, button)
 		ply:SlasherFunction("OnPrimaryFire", lagTrace(ply))
 		return
 	end --Killing / Damaging
+
 	if button == MOUSE_RIGHT then
 		ply:SlasherFunction("OnSecondaryFire", lagTrace(ply))
 		return
 	end --Activate Chase Mode
+
 	if button == KEY_R then
 		ply:SlasherFunction("OnMainAbilityFire", lagTrace(ply))
 		return
 	end --Main Ability
+
 	if button == KEY_F then
 		ply:SlasherFunction("OnSpecialAbilityFire", lagTrace(ply))
 		return
@@ -452,7 +456,7 @@ local function Think()
 				totalCansRemaining = totalCansRemaining + (v.CansRemaining or gasPerGen)
 			end
 
-			if #ents.FindByClass("sc_gascan") <= totalCansRemaining then
+			if #gens <= totalCansRemaining then
 				return
 			end --Prevent draining if there is too few gas cans
 
@@ -478,8 +482,11 @@ local function Think()
 			end
 		end
 
+		-- having two slashers its not that big of a deal, specially if there's like 14 survivors
+		-- one generator can be speedrunned instanly in most maps
+
 		--//duality condition//--
-		if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Duality and runningCount > 0 and not SlashCo.CurRound.EscapeHelicopterSummoned then
+		--[[if SlashCo.CurRound.OfferingData.CurrentOffering == SCInfo.Offering.Duality and runningCount > 0 and not SlashCo.CurRound.EscapeHelicopterSummoned then
 			--(SPAWN HELICOPTER)
 
 			local failed = SlashCo.SummonEscapeHelicopter()
@@ -492,7 +499,7 @@ local function Think()
 
 				SlashCo.CurRound.DistressBeaconUsed = false
 			end
-		end
+		end]]
 
 		--Go back to lobby if everyone dies.
 		if team.NumPlayers(TEAM_SURVIVOR) <= 0 and SlashCo.CurRound.roundOverToggle then
@@ -566,7 +573,28 @@ hook.Add("PlayerInitialSpawn", "octoSlashCoPlayerInitialSpawn", function(ply)
 	timer.Simple(2, function()
 		if IsValid(ply) then
 			SlashCo.BroadcastMasterDatabaseForClient(ply)
+
+			if not GameData.IsLobby and SlashCo.RoundStarted and SlashCo.GetRoundTime() < SlashCo.MaximumLateJoinTime then
+				local steamID = ply:SteamID64()
+				for _, data in ipairs(SlashCo.CurRound.ExpectedPlayers) do
+					if data.steamid == steamID then
+						ply:SetTeam(TEAM_SURVIVOR)
+						ply:Spawn()
+
+						if GameData.SurvivorData then
+							local itemEntry = GameData.SurvivorData[steamID]
+							if itemEntry then
+								SlashCo.DropAllItems(ply)
+								SlashCo.ChangeSurvivorItem(ply, itemEntry.Item, true)
+								SlashCo.SendValue(ply, "preItem", itemEntry.Item)
+							end
+						end
+						break
+					end
+				end
+			end
 		end
+
 		SlashCo.BroadcastCurrentRoundData(false)
 		SlashCo.BroadcastGlobalData()
 	end)
@@ -689,8 +717,6 @@ function GM:PlayerDeath(victim)
 		if team.NumPlayers(TEAM_SURVIVOR) == 1 and #SlashCo.CurRound.SlasherData.AllSurvivors > 1 then
 			team.GetPlayers(TEAM_SURVIVOR)[1]:SetPoints("last_survive")
 		end
-
-		--...............
 
 		victim:SetTeam(TEAM_SPECTATOR)
 		timer.Simple(0, function()

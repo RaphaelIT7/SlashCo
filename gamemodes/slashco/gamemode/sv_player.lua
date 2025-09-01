@@ -38,7 +38,9 @@ function GM:PlayerSpawn(ply, transition)
 
 	-- Stop observer mode
 	ply:UnSpectate()
-	ply:SetupHands()
+	if ply:Team() == TEAM_SURVIVOR then -- So that we have less entities & also less possible errors.
+		ply:SetupHands()
+	end
 
 	player_manager.OnPlayerSpawn(ply, transition)
 	player_manager.RunClass(ply, "Spawn")
@@ -89,6 +91,10 @@ hook.Add("PlayerCanHearPlayersVoice", "Maximum Range", function(listener, talker
 	end
 
 	local talkerTeam = talker:Team()
+	local listenerTeam = listener:Team()
+	if listenerTeam == talkerTeam and (talkerTeam == TEAM_SLASHER or talkerTeam == TEAM_SPECTATOR) then
+		return true
+	end
 	if talkerTeam == TEAM_SPECTATOR or talkerTeam == TEAM_SLASHER then
 		return false
 	end
@@ -104,8 +110,12 @@ hook.Add("GetFallDamage", "RealisticDamage", function(_, speed)
 end)
 
 hook.Add("PlayerCanSeePlayersChat", "TeamChat", function(_, _, listener, speaker)
-	if not proximity_chat:GetBool() then
+	if not proximity_chat:GetBool() or GameData.IsLobby then
 		return true
+	end
+
+	if not IsValid(speaker) then
+		return true -- The console spoke. Let everyone know :3
 	end
 
 	local listenerTeam = listener:Team()

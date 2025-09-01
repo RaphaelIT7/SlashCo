@@ -9,6 +9,9 @@ include("player_class/player_survivor.lua")
 include("player_class/player_slasher_base.lua")
 include("player_class/player_lobby.lua")
 
+game.AddParticles("particles/slashco.pcf")
+PrecacheParticleSystem("pocketsand")
+
 SlashCo = SlashCo or {}
 
 SlashCo.GasPerGen = 4 --Default number of gas cans required to fill up a generator
@@ -19,7 +22,9 @@ SlashCo.HelicopterModel = "models/slashco/other/helicopter/helicopter.mdl" --Mod
 SlashCo.GhostPingDelay = 480
 SlashCo.QuickEscapeTime = 600 -- Time in seconds to count as a quick escape
 SlashCo.SlowEscapeTime = 1200 -- Time in seconds to count as a slow escape
-SlashCo.WarningTime = SlashCo.SlowEscapeTime - 300 -- Time in seconds when the survivors should be warned that they got only 5 minutes left before its a slow run.
+SlashCo.OverTime = SlashCo.SlowEscapeTime - 300 -- Time in seconds when the survivors should be warned that they got only 5 minutes left before its a slow run. NOTE: At this point, some hints will be given to survivors like fuel cans will make sounds
+SlashCo.AllowLateJoin = true -- If enabled, players that joined after the lobby was created BUT before the round was started will get spawned as survivors.
+SlashCo.MaximumLateJoinTime = 180 -- Time in seconds in which players will still be spawned as survivors if they just took ages to load, though they won't be spawned a survivors if they weren't expected to join!
 
 SlashCo.HelicopterVoices = {
 	INTRO = 1,
@@ -32,12 +37,20 @@ function SlashCo.CopyColor(col)
 	return Color(col:Unpack())
 end
 
+function SlashCo.GetRoundStartTime()
+	return GetGlobal2Float("SCStartTime", CurTime()) -- We fallback to CurTime() since if we haven't started yet, the time should be 0 when calculated.
+end
+
+function SlashCo.GetRoundTime()
+	return CurTime() - SlashCo.GetRoundStartTime()
+end
+
 function SlashCo.IsQuickEscape()
-	return SlashCo.QuickEscapeTime > (CurTime() - GetGlobal2Float("SCStartTime"))
+	return SlashCo.QuickEscapeTime > SlashCo.GetRoundTime()
 end
 
 function SlashCo.IsSlowEscape()
-	return SlashCo.SlowEscapeTime < (CurTime() - GetGlobal2Float("SCStartTime"))
+	return SlashCo.SlowEscapeTime < SlashCo.GetRoundTime()
 end
 
 SlashCo.UnknownCol = Color(200, 0, 0) -- Text Color used for fields that are unknown
@@ -57,6 +70,57 @@ end
 
 function SlashCo.GetClassColor(class)
 	return class == SlashCo.SlasherClass.Unknown and SlashCo.UnknownCol or SlashCo.KnownCol
+end
+
+function SlashCo.SetGlobalFogMult(mult)
+	SetGlobal2Float("FogMult", mult)
+end
+
+function SlashCo.GetGlobalFogMult()
+	return GetGlobal2Float("FogMult", 1)
+end
+
+-- Accepts a vector or color as input.
+function SlashCo.SetGlobalFogColor(color)
+	local r, g, b = 0, 0, 0
+	if isvector(color) then -- If given a vector we assume it use a range from 0-1 for colors so we multiply it by 255
+		r, g, b = color:Unpack()
+		r, g, b = r * 255, g * 255, b * 255
+	else
+		r = color.r
+		g = color.g
+		b = color.b
+	end
+
+	SetGlobal2Float("FogColorR", r)
+	SetGlobal2Float("FogColorG", g)
+	SetGlobal2Float("FogColorB", b)
+end
+
+-- type = if not given, it will return a color object, if set to 1, it will return a vector with a colors as a range from 0-1, if set to 2, it will return 3 arguments r g b.
+-- object = if not nil then it will use the given color or vector object and set the values directly into it instead of creating a new one
+function SlashCo.GetGlobalFogColor(type, object)
+	local r = GetGlobal2Float("FogColorR", 0)
+	local g = GetGlobal2Float("FogColorG", 0)
+	local b = GetGlobal2Float("FogColorB", 0)
+
+	if not object then
+		if not type then
+			return Color(r, g, b)
+		elseif type == 1 then
+			return Vector(r / 255, g / 255, b / 255)
+		elseif type == 2 then
+			return r, g, b
+		end
+	else
+		if not asVector then
+			object.r = r
+			object.g = g
+			object.b = b
+		else
+			object:SetUnpacked(r / 255, g / 255, b / 255)
+		end
+	end
 end
 
 --[[
@@ -185,14 +249,20 @@ GameData = GameData or {} -- A table containing data that is frequently used, al
 GameData.Map = game.GetMap()
 GameData.Lobby = GameData.Lobby or "sc_lobby" -- Map name of the default lobby, might change after GM:InitPostEntity was called(if you use it before it was called you might experience issues so don't use it too early)
 GameData.IsLobby = GameData.Map == GameData.Lobby -- true if the current map is a lobby, same as above don't use it too early.
-GameData.MaxPlayers = game.MaxPlayers()
+GameData.BaseMaxSurvivors = 6 -- Used later on to calculate balancement
+GameData.BaseMaxPlayers = GameData.BaseMaxSurvivors + 1 -- 6 survivors, 1 slasher
+GameData.MaxPlayers = GameData.BaseMaxPlayers -- This value is set in InitPostEntity & will be networked to all clients
+GameData.TotalSlots = game.MaxPlayers()
 GameData.IsSinglePlayer = game.SinglePlayer()
 GameData.IsLan = GetConVar("sv_lan"):GetBool()
+GameData.World = GameData.World or game.GetWorld()
+MAX_EDICT = math.pow(2, MAX_EDICT_BITS)
 
 if CLIENT then
 	--GameData.LocalPlayer = nil
 	--GameData.LocalSteamID = nil
 	--GameData.LocalSteamID64 = nil
+	--GameData.LocalEntIndex = -1
 	GameData.StateOfLobby = GameData.StateOfLobby or 0
 	GameData.LobbyInfoTable = GameData.LobbyInfoTable or {}
 	GameData.TimeLeft = GameData.TimeLeft or nil
@@ -200,22 +270,39 @@ if CLIENT then
 	GameData.IsLobby = GetGlobal2Bool("SlashCo:IsLobby", GameData.IsLobby) -- For autorefresh
 	GameData.Lobby = GetGlobal2String("SlashCo:Lobby", GameData.Lobby) -- For autorefresh
 	GameData.IsLan = GetGlobal2Bool("SlashCo:IsLan", GameData.IsLan)
+	GameData.IsNewPlayer = cookie.GetNumber("slashco_totalplaycount", 0) < 3 -- We keep track how many rounds they played. If they played more than 3 rounds, their not considered a new player anymore. this variable is used to enable hints for them.
+	GameData.MaxPlayers = GetGlobal2Int("SlashCo:MaxPlayers", GameData.MaxPlayers) -- For autorefresh
 
 	function GM:InitPostEntity()
+		GameData.World = game.GetWorld()
+		GameData.World:SetNW2VarProxy("SlashCo:MaxPlayers", function(_, _, _, newVal)
+			GameData.MaxPlayers = newVal
+		end)
+
 		GameData.IsLobby = GetGlobal2Bool("SlashCo:IsLobby", GameData.IsLobby)
 		GameData.Lobby = GetGlobal2String("SlashCo:Lobby", GameData.Lobby)
 		GameData.IsLan = GetGlobal2Bool("SlashCo:IsLan", GameData.IsLan)
+		GameData.MaxPlayers = GetGlobal2Int("SlashCo:MaxPlayers", GameData.MaxPlayers)
 
 		if GameData.IsLan then -- We require this for multirun clients.
 			SlashCo.SetupLanOverrides()
 		end
 
 		GameData.LocalPlayer = LocalPlayer()
+		GameData.LocalEntIndex = GameData.LocalPlayer:EntIndex()
 		GameData.LocalSteamID = GameData.LocalPlayer:SteamID()
 		GameData.LocalSteamID64 = GameData.LocalPlayer:SteamID64()
 	end
 else
+	local maxplayers = CreateConVar("slashco_maxplayers", tostring(GameData.BaseMaxPlayers), FCVAR_ARCHIVE, "The number of maximum players, by default 7. 6 survivors - 1 slasher", 1, 255)
+	cvars.AddChangeCallback("slashco_maxplayers", function(convar, _, newValue)
+		GameData.MaxPlayers = math.min(tonumber(newValue) or GameData.MaxPlayers, GameData.TotalSlots) -- We clamp it so that we cannot have more max players than slots to avoid confusion.
+		SetGlobal2Int("SlashCo:MaxPlayers", GameData.MaxPlayers)
+	end, "slashco_maxplayers_refresh")
+
 	function GM:InitPostEntity()
+		GameData.World = game.GetWorld()
+
 		if GameData.IsLobby then
 			GameData.Lobby = GameData.Map
 			cookie.Set("SlashCo:LastLobby", GameData.Lobby)
@@ -234,6 +321,8 @@ else
 		SetGlobal2Bool("SlashCo:IsLobby", GameData.IsLobby) -- Network our state.
 		SetGlobal2String("SlashCo:Lobby", GameData.Lobby)
 		SetGlobal2Bool("SlashCo:IsLan", GameData.IsLan)
+		GameData.MaxPlayers = math.min(maxplayers and maxplayers:GetInt() or GameData.MaxPlayers, GameData.TotalSlots)
+		SetGlobal2Int("SlashCo:MaxPlayers", GameData.MaxPlayers)
 
 		if GameData.IsLan then
 			SlashCo.SetupLanOverrides()
@@ -297,6 +386,9 @@ SCInfo = {}
 
 SCInfo.Offering = {} // use ipairs to iterate, if you use pairs you will get errors as the enums -> Exposure and such will be included.
 function SlashCo.AddOffering(offeringTbl)
+	-- Rarity can only range from 1 to 3. Their used only for the sound that is played when their enabled.
+	offeringTbl.Rarity = math.Clamp(offeringTbl.Rarity, 1, 3)
+
 	SCInfo.Offering[offeringTbl.Name] = table.insert(SCInfo.Offering, offeringTbl)
 end
 
@@ -409,11 +501,14 @@ hook.Add("GameContentChanged", "SlashCo:RefreshMapConfigs", SlashCo.LoadMapConfi
 function SlashCo.IsPositionLegalForSlashers(pos, noSurvivorCheck, distFactor)
 	local dist = (600 + GetGlobal2Int("SlashCoMapSize", 1) * 150) * (distFactor or 1)
 
-	for _, v in ipairs(ents.FindInSphere(pos, dist)) do
+	-- removing this may not be the best solution, need to check if theres a better way
+	-- to prevent unplayable rounds for slashers that use this function
+	
+	--[[for _, v in ipairs(ents.FindInSphere(pos, dist)) do
 		if v:GetClass() == "sc_generator" then
 			return false
 		end
-	end
+	end]]
 
 	if noSurvivorCheck then
 		return true

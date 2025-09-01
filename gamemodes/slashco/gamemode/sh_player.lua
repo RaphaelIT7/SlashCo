@@ -40,9 +40,13 @@ function PLAYER:SetImpervious(state)
 	end
 end
 
+--[[
+	Nevermind, we do need it.
+	Without hands items that are held are not rendered.
+	
 function PLAYER:SetupHands(spec_ply)
 	-- Nothing. We don't need gmod_hands
-end
+end]]
 
 hook.Add("PlayerDeath", "slashCoRemoveImpervious", function(victim)
 	victim:SetImpervious(false)
@@ -75,10 +79,18 @@ function PLAYER:WasSeenBySlasher()
 	return self:GetNW2Bool("WasSeenBySlasher", false)
 end
 
+function PLAYER:SetFogMult(mult)
+	self:SetNW2Float("FogMult", mult)
+end
+
+function PLAYER:GetFogMult()
+	return self:GetNW2Float("FogMult", 1)
+end
+
 -- This function is VERY expensive, BUT it shouldn't be called too frequent anyways.
 function PLAYER:FindPlayersInView(dist, radius, notrace)
 	local pos = self:EyePos()
-	local foundEnts = ents.FindInCone(pos, self:GetEyeTrace().Normal, dist, radius)
+	local foundEnts = ents.FindInCone(pos, self:GetAimVector(), dist, radius)
 	local results = {}
 	for _, ent in ipairs(foundEnts) do
 		if ent:IsPlayer() and ent:Team() == TEAM_SURVIVOR and ent:CanBeSeen() then

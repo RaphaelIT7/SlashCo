@@ -9,8 +9,8 @@ ENT.Spawnable		= true
 
 hook.Add("SlashCo:Precache", "PrecacheClone", function()
 	SlashCo.PrecacheModel("models/slashco/slashers/criminal/criminal.mdl")
-	SlashCo.PrecacheSound("slashco/slasher/criminal_rage.mp3")
-	SlashCo.PrecacheSound("slashco/slasher/criminal_loop.mp3")
+	SlashCo.PrecacheSound("slashco/slasher/criminal/criminal_rage.mp3")
+	SlashCo.PrecacheSound("slashco/slasher/criminal/criminal_loop.mp3")
 end)
 
 function ENT:SetupDataTables()
@@ -19,10 +19,8 @@ end
 
 function ENT:Initialize()
 	self:SetModel("models/slashco/slashers/criminal/criminal.mdl")
-
-	self.RandPos = 0.12
-
 	self:SetNotSolid(true)
+	self.RandPos = 0.12
 end
 
 function ENT:OnTakeDamage()
@@ -30,19 +28,40 @@ function ENT:OnTakeDamage()
 end
 
 function ENT:RunBehaviour()
-	while true do							-- Here is the loop, it will run forever
-		if self.AssignedSlasher == nil or not IsValid(player.GetBySteamID64(self.AssignedSlasher)) then return end
+	while true do
+		local owner = self:GetOwner()
+		if not IsValid(owner) then return end
 
-		local rage_switch = player.GetBySteamID64(self.AssignedSlasher):GetNWBool("CriminalRage")
-
+		local rage_switch = owner:GetNWBool("CriminalRage")
 		self:StartActivity(ACT_IDLE)
 		if self.IsMain ~= true then
-			if rage_switch then self:EmitSound("slashco/slasher/criminal_rage.mp3")
-			else self:EmitSound("slashco/slasher/criminal_loop.mp3") end
+			if rage_switch then
+				SlashCo.AudioSystem.PlaySound({
+					soundPath = "slashco/slasher/criminal/criminal_rage.mp3",
+					identifier = "CriminalRage",
+					minDistance = 850 * SlashCo.MapSize,
+					maxDistance = 1550 * SlashCo.MapSize,
+					looping = true,
+					entity = self,
+					volume = 1,
+					fadeIn = 0,
+				})
+			else
+				SlashCo.AudioSystem.PlaySound({
+					soundPath = "slashco/slasher/criminal/criminal_loop.mp3",
+					identifier = "CriminalLoop",
+					minDistance = 700 * SlashCo.MapSize,
+					maxDistance = 1240 * SlashCo.MapSize,
+					looping = true,
+					entity = self,
+					volume = 1,
+					fadeIn = 0,
+				}) 
+			end
 		end
 		coroutine.wait(10)
-		self:StopSound("slashco/slasher/criminal_loop.mp3")
-		self:StopSound("slashco/slasher/criminal_rage.mp3")
+		SlashCo.AudioSystem.StopSound("CriminalLoop", 0.5)
+		SlashCo.AudioSystem.StopSound("CriminalRage", 0.5)
 
 		coroutine.yield()
 	end
@@ -54,12 +73,13 @@ if SERVER then
 	end
 
 	function ENT:Think()
-		if self.AssignedSlasher == nil or not IsValid(player.GetBySteamID64(self.AssignedSlasher)) then
+		local owner = self:GetOwner()
+		if not IsValid(owner) then
 			self:Remove()
 			return
 		end
 
-		local rage_switch = player.GetBySteamID64(self.AssignedSlasher):GetNWBool("CriminalRage")
+		local rage_switch = owner:GetNWBool("CriminalRage")
 
 		if not self.IsMain then
 			if rage_switch then
@@ -70,19 +90,21 @@ if SERVER then
 
 			self.RandPos = self.RandPos - FrameTime()
 
-			if self.RandPos < 0.01 or player.GetBySteamID64(self.AssignedSlasher):GetPos():Distance(self:GetPos()) > 1200 then
-				local n_pos = SlashCo.LocalizedTraceHullLocator(player.GetBySteamID64(self.AssignedSlasher), 1000)
+			if self.RandPos < 0.01 or owner:GetPos():Distance(self:GetPos()) > 1200 then
+				local n_pos = SlashCo.LocalizedTraceHullLocator(owner, 1000)
 
-				self:SetPos(n_pos)
+				if n_pos then
+					self:SetPos(n_pos)
+				end
 				self:SetAngles(Angle(0, math.random(0, 359), 0))
 
 				self.RandPos = math.random(1, 15)
 			end
 		else
-			local c_pos = player.GetBySteamID64(self.AssignedSlasher):GetPos()
-			local c_ang = player.GetBySteamID64(self.AssignedSlasher):GetAngles()
+			local c_pos = owner:GetPos()
+			local c_ang = owner:GetAngles()
 
-			if player.GetBySteamID64(self.AssignedSlasher):GetVelocity():Length() < 5 then
+			if owner:GetVelocity():Length() < 5 then
 				self:SetPos(c_pos)
 				self:SetAngles(c_ang)
 			end

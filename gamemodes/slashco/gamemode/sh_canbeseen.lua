@@ -20,7 +20,7 @@ function PLAYER:CanBeSeen()
 		return false
 	end
 
-	return self:GetNWBool("SlashCoVisible", true)
+	return self:IsVisible()
 end
 
 function PLAYER:CanSeeFlashlights()
@@ -38,6 +38,10 @@ function PLAYER:CanSeeFlashlights()
 	end
 
 	return self:GetNWBool("SlashCoSeeFlashlights", true)
+end
+
+function PLAYER:IsVisible()
+	return self:GetNWBool("SlashCoVisible", true)
 end
 
 if CLIENT then

@@ -71,7 +71,7 @@ function SlashCo.ResetCurRoundData()
 			CurrentOffering = 0,
 			OfferingName = "",
 			GasCanMod = 0,
-			Singularity = 0, -- ToDo: rename this and the two below, what do they do, what are they? no idea :(
+			Singularity = 0,
 			Duality = false,
 			Satiation = 0,
 			--DrainageTick = 0, --not used
@@ -342,8 +342,18 @@ function SlashCo.SummonEscapeHelicopter(distress)
 		Difficulty 1,2 - 30-100 seconds
 		Difficulty 3 - 30-140 seconds
 	]]
+	
+	local helicopterArriveTime = -1
+	for _, slasher in ipairs(team.GetPlayers(TEAM_SLASHER)) do
+		local arriveTime = slasher:SlasherValue("HelicopterArriveTime", -1)
+		if arriveTime ~= -1 and (helicopterArriveTime ~= -1 and (arriveTime < helicopterArriveTime) or helicopterArriveTime == -1) then
+			helicopterArriveTime = arriveTime
+		end
 
-	local delay = 30 + math.random(0, 30 + (SlashCo.CurRound.Difficulty * 20))
+		slasher:SlasherFunction("OnHelicopterSummon")
+	end
+	
+	local delay = helicopterArriveTime ~= -1 and helicopterArriveTime or (30 + math.random(0, 30 + (SlashCo.CurRound.Difficulty * 20)))
 
 	print("[SlashCo] Generators On. The Helicopter will arrive in " .. delay .. " seconds.")
 
@@ -355,8 +365,18 @@ function SlashCo.SummonEscapeHelicopter(distress)
 			SlashCo.HelicopterGoAboveLand(ent)
 		end)
 
-		SlashCo.AudioSystem.SetBackgroundMusic("slashco/music/slashco_helicopter.wav", 3)
-		SlashCo.AudioSystem.EnableBackgroundMusic()
+		local disableHelicopterMusic = false
+		for _, slasher in ipairs(team.GetPlayers(TEAM_SLASHER)) do
+			if slasher:SlasherValue("DisableHelicopterMusic", false) then
+				disableHelicopterMusic = true
+				break
+			end
+		end
+
+		if not disableHelicopterMusic then
+			SlashCo.AudioSystem.SetBackgroundMusic("slashco/music/slashco_helicopter.wav", 1)
+			SlashCo.AudioSystem.EnableBackgroundMusic()
+		end
 	end)
 end
 

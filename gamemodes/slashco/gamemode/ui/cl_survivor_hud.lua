@@ -5,7 +5,7 @@ CreateClientConVar("slashco_cl_show_healthvalue", 0, true, false,
 
 local SlashCoItems = SlashCoItems
 local prevHp, SetTime, ShowDamage, prevHp1, aHp, TimeToFuel, TimeUntilFueled
-local FuelingCan
+local FuelingCan, FuelingCanIndex = NULL, -1
 local IsFueling
 local maxHp = 100
 local healthIndicatorShift = 0
@@ -37,9 +37,11 @@ end
 
 net.Receive("mantislashco_GasPourProgress", function()
 	TimeToFuel = net.ReadUInt(8)
-	FuelingCan = net.ReadEntity()
+	FuelingCanIndex = net.ReadUInt(MAX_EDICT_BITS)
 	IsFueling = net.ReadBool()
 	TimeUntilFueled = net.ReadFloat()
+
+	FuelingCan = Entity(FuelingCanIndex)
 end)
 
 hook.Add("DrawOverlay", "SlashCoVHS", function()
@@ -215,7 +217,13 @@ local function gasFuelMeter(hitPos)
 		end
 	end
 
-	if IsFueling and IsValid(FuelingCan) then
+	if IsFueling then
+		if not IsValid(FuelingCan) and FuelingCanIndex ~= -1 then
+			FuelingCan = Entity(FuelingCanIndex)
+		end
+
+		if FuelingCan == NULL then return end -- We don't need IsValid since it here can either be NULL or Valid.
+
 		local genPos = FuelingCan:GetPos()
 		local realDistance = hitPos:Distance(genPos)
 		if realDistance < 100 then
@@ -239,6 +247,8 @@ local function gasFuelMeter(hitPos)
 					yClamp, Color(255, 255, 255, fade), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		else
 			IsFueling = false
+			FuelingCanIndex = -1
+			FuelingCan = NULL
 		end
 	end
 end
@@ -315,10 +325,102 @@ local function hpMeter()
 	parsed:Draw(ScrW() * 0.025 + 4, ScrH() * 0.95, TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
 end
 
+local lastDeathSecond = 0
+local lastDeathTime = 0
+local skull = Material("slashco/ui/slashco_skull", "noclamp")
+local deathward = Material("slashco/ui/deathward", "noclamp")
+local deathwardBorken = Material("slashco/ui/deathward_broken", "noclamp")
+hook.Add("PreRender", "SlashCo:DeathUI", function()
+	if not GameData.LocalPlayer:GetNW2Bool("ShowDeathUI", false) then return end
+
+	local curTime = GameData.LocalPlayer:GetNW2Float("DeathUITime", 0)
+	if curTime == 0 then return end
+
+	if lastDeathTime ~= curTime then
+		lastDeathSecond = 0
+		lastDeathTime = curTime
+	end
+
+	--GameData.LocalPlayer:EmitSound("slashco/survivor/deathward.mp3")
+	--GameData.LocalPlayer:EmitSound("slashco/survivor/deathward_break" .. math.random(1, 2) .. ".mp3")
+
+	local animTime = (CurTime() - curTime) * 2
+	local isDeathWard = GameData.LocalPlayer:GetNW2Bool("DeathWardUI", false)
+	if lastDeathSecond ~= math.floor(animTime) then
+		lastDeathSecond = math.floor(animTime)
+
+		if lastDeathSecond % 2 == 1 and animTime < 8 and animTime > 2 then
+			SlashCo.AudioSystem.PlaySound({
+				soundPath = "slashco/deathbeep.mp3",
+				identifier = "DeathBeep",
+				volume = 1,
+				fadeIn = 0,
+			})
+		end
+
+		if lastDeathSecond == 16 and isDeathWard then
+			SlashCo.AudioSystem.PlaySound({
+				soundPath = "slashco/survivor/deathward_break" .. math.random(1, 2) .. ".mp3",
+				identifier = "DeathWardBreak",
+				volume = 1,
+				fadeIn = 0,
+			})
+		end
+	end
+
+	local endTime = isDeathWard and 18 or 7
+	if endTime + 2 < animTime then return end -- We were supposed to be done already!
+
+	cam.Start2D()
+		local scrW, scrH = ScrW(), ScrH()
+		surface.SetDrawColor(0, 0, 0, 255)
+		surface.DrawRect(0, 0, scrW, scrH)
+
+		if animTime > 2 then
+			surface.SetDrawColor(color_white)
+			if lastDeathSecond % 2 == 1 and animTime < 8 then
+				surface.SetMaterial(skull)
+				surface.DrawTexturedRect(scrW / 2 - 128, scrH / 2 - 128, 256, 256)
+			end
+
+			if isDeathWard and animTime > 10 then
+				local shakeStrength = 25
+				if animTime < 16 then
+					surface.SetMaterial(deathward)
+
+					if animTime > 13 then
+						local scale = 1 + ((animTime - 16) / 3)
+						local strength = scale * shakeStrength
+						surface.DrawTexturedRect(scrW / 2 - 128 + math.random(-strength, strength), scrH / 2 - 128 + math.random(-strength, strength), 256, 256)
+					else
+						surface.DrawTexturedRect(scrW / 2 - 128, scrH / 2 - 128, 256, 256)
+					end
+				else
+					surface.SetMaterial(deathwardBorken)
+
+					if animTime > 18 then
+						surface.DrawTexturedRect(scrW / 2 - 128 + math.random(-shakeStrength, shakeStrength), scrH / 2 - 128 + math.random(-shakeStrength, shakeStrength), 256, 256)
+					else
+						surface.DrawTexturedRect(scrW / 2 - 128, scrH / 2 - 128, 256, 256)
+					end
+				end
+			end
+		end
+	cam.End2D()
+
+	return true
+end)
+
 hook.Add("HUDPaint", "SurvivorHUD", function()
 	local ply = GameData.LocalPlayer
+	
+	local team = ply:Team()
+	if team == TEAM_LOBBY then
+		slamIndicator()
+		return
+	end
 
-	if ply:Team() ~= TEAM_SURVIVOR then
+	if team ~= TEAM_SURVIVOR then
 		return
 	end
 
@@ -347,27 +449,26 @@ end)
 local chaseLightOffset = Vector(0, 0, 20)
 hook.Add("Think", "Slasher_Chasing_Light", function()
 	local curTime = CurTime()
-	for s=1, #ents.FindByClass("sc_crimclone") do
-		local clone = ents.FindByClass("sc_crimclone")[s]
+	for _, clone in ipairs(ents.FindByClass("sc_crimclone")) do
 		if clone:GetMainRageClone() then
-			local tlight = DynamicLight(clone:EntIndex() + 1)
+			local tlight = DynamicLight(clone:EntIndex())
 			if tlight then
 				tlight.pos = clone:LocalToWorld(chaseLightOffset)
 				tlight.r = 255
 				tlight.g = 0
 				tlight.b = 255
 				tlight.brightness = 5
-				tlight.Decay = 1000
-				tlight.Size = 250
+				local size = 250
+				tlight.Decay = size * 4
+				tlight.Size = size
 				tlight.DieTime = curTime + 1
 			end
 		end
 	end
 
-	for s=1, #team.GetPlayers(TEAM_SLASHER) do
-		local slasher = team.GetPlayers(TEAM_SLASHER)[s]
+	for _, slasher in ipairs(team.GetPlayers(TEAM_SLASHER)) do
 		if slasher:GetNWBool("TrollgeStage2") then
-			local tlight = DynamicLight(slasher:EntIndex() + 1)
+			local tlight = DynamicLight(slasher:EntIndex())
 			if tlight then
 				tlight.pos = slasher:LocalToWorld(chaseLightOffset)
 				tlight.r = 255
@@ -378,6 +479,7 @@ hook.Add("Think", "Slasher_Chasing_Light", function()
 				tlight.Size = 2500
 				tlight.DieTime = curTime + 1
 			end
+			continue
 		end
 
 		if slasher:GetNWBool("TylerFlash") then
@@ -387,11 +489,13 @@ hook.Add("Think", "Slasher_Chasing_Light", function()
 				dlight.r = 255
 				dlight.g = 0
 				dlight.b = 0
-				dlight.brightness = 8
-				dlight.Decay = 1000
-				dlight.Size = 300
+				dlight.brightness = 10
+				local size = 400
+				dlight.Decay = size * 3
+				dlight.Size = size
 				dlight.DieTime = curTime + 1
 			end
+			continue
 		end
 
 		if not slasher:GetNWBool("InSlasherChaseMode") and not slasher:GetNWBool("SidGunRage") and not slasher:GetNWBool("WatcherRage") then
@@ -405,9 +509,110 @@ hook.Add("Think", "Slasher_Chasing_Light", function()
 			dlight.g = 0
 			dlight.b = 0
 			dlight.brightness = 6
-			dlight.Decay = 1000
-			dlight.Size = 250
+			local size = 250
+			dlight.Decay = size * 4
+			dlight.Size = size
 			dlight.DieTime = curTime + 1
 		end
 	end
+end)
+
+net.Receive("SlashCo:AskToBecomeSlasher", function()
+	system.FlashWindow() -- Flash it to notify them if their tabbed out.
+	SlashCo.AudioSystem.PrecacheSound("slashco/deathbeep.mp3", "mono", "AskToBecomeSlasher")
+
+	local timeToAsk = net.ReadUInt(8)
+	local startTime = CurTime()
+	local fadeTime = 0.5 -- in seconds
+	local textColor = Color(255, 255, 255)
+	local chooseYes = false
+	local chooseTime = 0
+	hook.Add("PostDrawHUD", "SlashCo:AskToBecomeSlasher", function()
+		local curTime = CurTime()
+		local difference = curTime - startTime
+		local fadeOut = difference > timeToAsk
+		if fadeOut then
+			difference = difference - timeToAsk
+		end
+
+		local alpha = fadeOut and (255 - (math.Clamp(difference / fadeTime, 0, 1) * 255)) or (math.Clamp(difference / fadeTime, 0, 1) * 255)
+		cam.Start2D() -- If we don't do this, we get shifted by like 1 pixel for some reason.
+			surface.SetDrawColor(0, 0, 0, alpha)
+			surface.DrawRect(0, 0, ScrW(), ScrH()) -- Yes, its shifted for some reason.
+
+			textColor.a = alpha
+			draw.SimpleText(SlashCo.Language("ask_to_become_slasher"), "TVCD", ScrW() * 0.5, ScrH() * 0.27, textColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+
+			if fadeOut or difference > 1 then
+				local textAlpha = math.Clamp(fadeOut and 1 or ((difference - 1) / fadeTime), 0, 1) * 255
+				if (chooseTime > 0 and not chooseYes) then
+					textAlpha = (math.Clamp(chooseTime - curTime, 0, 1) * 255)
+				end
+
+				textColor.a = (fadeOut and textAlpha > 0) and alpha or textAlpha
+				draw.SimpleText(SlashCo.Language("vocal_yes") .. " - [F1]", "TVCD", ScrW() * 0.5, ScrH() * 0.34, textColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+			end
+
+			if fadeOut or difference > 2 then
+				local textAlpha = math.Clamp(fadeOut and 1 or ((difference - 2) / fadeTime), 0, 1) * 255
+				if (chooseTime > 0 and chooseYes) then
+					textAlpha = (math.Clamp(chooseTime - curTime, 0, 1) * 255)
+				end
+
+				textColor.a =  (fadeOut and textAlpha > 0) and alpha or textAlpha
+				draw.SimpleText(SlashCo.Language("vocal_no") .. " - [F2]", "TVCD", ScrW() * 0.5, ScrH() * 0.38, textColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+			end
+
+			if not fadeOut and chooseTime <= 0 then
+				if input.IsButtonDown(KEY_F1) then
+					chooseTime = CurTime() + fadeTime
+					chooseYes = true
+					SlashCo.AudioSystem.PlayPrecachedChannel("AskToBecomeSlasher")
+					net.Start("SlashCo:AskToBecomeSlasher")
+						net.WriteBool(true)
+					net.SendToServer()
+				elseif input.IsButtonDown(KEY_F2) then
+					chooseTime = CurTime() + fadeTime
+					chooseYes = false
+					SlashCo.AudioSystem.PlayPrecachedChannel("AskToBecomeSlasher")
+					net.Start("SlashCo:AskToBecomeSlasher")
+						net.WriteBool(false)
+					net.SendToServer()
+				end
+			end
+		cam.End2D()
+	end)
+end)
+
+net.Receive("SlashCo:Announcement", function()
+	system.FlashWindow() -- Flash it to notify them if their tabbed out.
+
+	local timeToDisplay = net.ReadUInt(8)
+	local text = net.ReadString()
+	local startTime = CurTime()
+	local fadeTime = 0.5 -- in seconds
+	local textColor = Color(255, 255, 255)
+	hook.Add("PostDrawHUD", "SlashCo:AskToBecomeSlasher", function()
+		local curTime = CurTime()
+		local difference = curTime - startTime
+		local fadeOut = difference > timeToDisplay
+		if fadeOut then
+			difference = difference - timeToDisplay
+		end
+
+		local alpha = fadeOut and (255 - (math.Clamp(difference / fadeTime, 0, 1) * 255)) or (math.Clamp(difference / fadeTime, 0, 1) * 255)
+		cam.Start2D() -- If we don't do this, we get shifted by like 1 pixel for some reason.
+			surface.SetDrawColor(0, 0, 0, alpha)
+			surface.DrawRect(0, 0, ScrW(), ScrH()) -- Yes, its shifted for some reason.
+
+			textColor.a = alpha
+			draw.SimpleText(SlashCo.Language("server_announcement"), "TVCD", ScrW() * 0.5, ScrH() * 0.27, textColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+
+			if fadeOut or difference > 1 then
+				local textAlpha = math.Clamp(fadeOut and 1 or ((difference - 1) / fadeTime), 0, 1) * 255
+				textColor.a = (fadeOut and textAlpha > 0) and alpha or textAlpha
+				draw.SimpleText(text, "TVCD", ScrW() * 0.5, ScrH() * 0.34, textColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+			end
+		cam.End2D()
+	end)
 end)

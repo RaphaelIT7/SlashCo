@@ -132,10 +132,12 @@ if CLIENT then
 			emitter = ParticleEmitter(Vector(0, 0, 0))
 		end
 
-		--Survivor Step Notice
-		for _, v in ipairs(team.GetPlayers(TEAM_SURVIVOR)) do
-			local survivor = v
+		if GameData.LocalPlayer:GetNW2Bool("Slasher:NoFootsteps") then
+			return
+		end
 
+		--Survivor Step Notice
+		for _, survivor in ipairs(team.GetPlayers(TEAM_SURVIVOR)) do
 			if survivor:ItemFunction("OnFootstep") then
 				continue
 			end
@@ -157,8 +159,7 @@ if CLIENT then
 		end
 
 		--Step Decoy Step Notice
-		for i = 1, #ents.FindByClass("sc_stepdecoy") do
-			local boot = ents.FindByClass("sc_stepdecoy")[i]
+		for _, boot in ipairs(ents.FindByClass("sc_stepdecoy")) do
 			local vel = 300
 			local range = 3 * vel * PerceptionReal
 			local offsetpos = Vector(math.random(-2, 2), math.random(-2, 2), 0)
