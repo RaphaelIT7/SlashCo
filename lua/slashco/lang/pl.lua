@@ -582,29 +582,29 @@ SlashCo.LangTable["points_working"] = "[%s] WYKONYWANIE SWOJEJ ROBOTY"
 -- document localization
 
 -- UI
-SlashCo.LangTable["documents_screen_slasher_title"] = "[SLASHERS]"
-SlashCo.LangTable["documents_screen_locations_title"] = "[LOCATIONS]"
-SlashCo.LangTable["documents_screen_archive_title"] = "[ARCHIVE]"
+SlashCo.LangTable["documents_screen_slasher_title"] = "[OPRAWCY]"
+SlashCo.LangTable["documents_screen_locations_title"] = "[LOKALIZACJE]"
+SlashCo.LangTable["documents_screen_archive_title"] = "[ARCHIWUM]"
 
-SlashCo.LangTable["documents_screen_left_click_help"] = "[Left Click] = Enter Page"
-SlashCo.LangTable["documents_screen_right_click_help"] = "[Right Click] = Exit Page"
+SlashCo.LangTable["documents_screen_left_click_help"] = "[Lewy Klik] = Wejdź na stronę"
+SlashCo.LangTable["documents_screen_right_click_help"] = "[Prawy Klik] = Wyjdź ze strony"
 
-SlashCo.LangTable["documents_unlocky_entry"] = "ENCOUNTER SLASHER TO UNLOCK ENTRY"
-SlashCo.LangTable["documents_unknown_name"] = "UNKNOWN"
-SlashCo.LangTable["documents_attached_file"] = "[VIEW ATTACHED FILE]"
-SlashCo.LangTable["documents_danger_level"] = "DANGER LVL:"
-SlashCo.LangTable["documents_slasher_class"] = "CLASS:"
-SlashCo.LangTable["documents_slasher_entry"] = "ENTRY:"
-SlashCo.LangTable["documents_slasher_alias"] = "ALIASES:"
-SlashCo.LangTable["documents_survive_slasher"] = "[SURVIVE SLASHER FOR MORE INFO]"
+SlashCo.LangTable["documents_unlocky_entry"] = "SPOTKAJ OPRAWCĘ, ABY ODBLOKOWAĆ WPIS"
+SlashCo.LangTable["documents_unknown_name"] = "NIEZNANY"
+SlashCo.LangTable["documents_attached_file"] = "[ZOBACZ ZAŁĄCZONY PLIK]"
+SlashCo.LangTable["documents_danger_level"] = "POZIOM ZAGROŻENIA:"
+SlashCo.LangTable["documents_slasher_class"] = "KLASA:"
+SlashCo.LangTable["documents_slasher_entry"] = "WPIS:"
+SlashCo.LangTable["documents_slasher_alias"] = "PSEUDONIMY:"
+SlashCo.LangTable["documents_survive_slasher"] = "[PRZETRWAJ SPOTKANIE Z OPRAWCĄ, ABY ZDOBYĆ WIĘCEJ INFORMACJI]"
 
 
 -- slasher docs
 
 -- Abomignat
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/Abomignat
-SlashCo.LangTable["abomignat_description"] = [[A large cryptid creature that resembles a biped mammal with an overgrown mouth similar to a Venus flytrap's. Due to its skinny complexity, this cryptid appears to move at high speeds and hunts down its prey with its long limbs that are equipped with thick nails, sharp enough to tear any target into shreds. The cryptid, although not good with hearing due to its lack of ears, is equipped with 4 protruding compound eyes, granting it a wide field of view of its surroundings to help hunt down its next victim.]]
-SlashCo.LangTable["abomignat_description_additional"] = [[This Slasher will sometimes crawl on the ground to traverse long distances at high speed. At high [ANGER], it will lunge at its victims, dealing heavy damage.]]
+SlashCo.LangTable["abomignat_description"] = [[Duży kryptyd przypominający dwunożnego ssaka z przerośniętym pyskiem przypominającym muchołówkę. Dzięki szczupłej budowie porusza się bardzo szybko i poluje długimi kończynami zakończonymi grubymi, ostrymi pazurami, zdolnymi rozszarpać ofiarę. Ma słaby słuch z powodu braku uszu, ale posiada 4 wystające złożone oczy, które dają mu szerokie pole widzenia.]]
+SlashCo.LangTable["abomignat_description_additional"] = [[Czasem porusza się pełzając po ziemi z dużą prędkością. Przy wysokim poziomie [WŚCIEKŁOŚCI] rzuca się na ofiary, zadając ogromne obrażenia.]]
 
 -- Amogus
 SlashCo.LangTable["amogus_description"] = [[]]
@@ -612,13 +612,13 @@ SlashCo.LangTable["amogus_description_additional"] = [[]]
 
 -- Bababooey
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/Bababooey
-SlashCo.LangTable["bababooey_description"] = [[A non-organic entity composed of very thick, tar-like particulate smoke which condenses itself into the shape of a muscular male humanoid, with a massive chin and huge smiling mouth. This Slasher seems to not be very aggressive, choosing to be more playful with its victims. It seems to take enjoyment from scaring humans and catching them off their guard.]]
-SlashCo.LangTable["bababooey_description_additional"] = [[When Bababooey has enough [ANGER], he will start turning invisible, indicated with a loud sound. When invisible, he will scare survivors who he reaches. While invisible, will also leave behind harmless clones to scare survivors.]]
+SlashCo.LangTable["bababooey_description"] = [[Nieorganiczna istota z gęstego, smołowatego dymu, który kondensuje się w postać umięśnionego humanoida z wielkim podbródkiem i ogromnym uśmiechem. Nie jest szczególnie agresywny, woli bawić się ofiarami i czerpie przyjemność z ich straszenia.]]
+SlashCo.LangTable["bababooey_description_additional"] = [[Po osiągnięciu odpowiedniego poziomu [WŚCIEKŁOŚCI], staje się niewidzialny - towarzyszy temu głośny dźwięk. W niewidzialnej formie straszy ocalałych i zostawia po sobie nieszkodliwe klony, które mają ich wystraszyć.]]
 
 -- Borgmire
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/Borgmire
-SlashCo.LangTable["borgmire_description"] = [[A huge humanoid mechanical contraption, possessing large, solid steel hands, glowing red goggle eyes and an open chest cavity with a beating heart. This Slasher has quite poor eyesight, but a considerably good stamina.]]
-SlashCo.LangTable["borgmire_description_additional"] = [[This Slasher gains [ANGER] quickly. During pursuit, Borgmire will lose [ANGER]. At high [ANGER], Borgmire will gain the ability to sprint very quickly.]]
+SlashCo.LangTable["borgmire_description"] = [[Ogromny humanoidalny mechanizm z masywnymi, stalowymi rękami, świecącymi czerwonymi okularami i otwartą klatką piersiową z bijącym sercem. Ma kiepski wzrok, ale za to sporą wytrzymałość.]]
+SlashCo.LangTable["borgmire_description_additional"] = [[Szybko gromadzi [WŚCIEKŁOŚĆ]. Podczas pościgu ją traci. Przy wysokiej [WŚCIEKŁOŚCI] może błyskawicznie sprintować.]]
 
 -- Covenant
 SlashCo.LangTable["covenant_description"] = [[]]
@@ -630,8 +630,8 @@ SlashCo.LangTable["criminal_description_additional"] = [[]]
 
 -- Dolphinman
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/Dolphinman
-SlashCo.LangTable["dolphinman_description"] = [[A humanoid cryptid creature, having the body of a man with biological features of a dolphin. Its skin secretes a sticky mucous, giving it a glistening and moist texture. The creature has very poor eyesight, and mostly relies on its hearing and echolocation to ascertain its surroundings. When hunting, it sings a continuous loud wail to intimidate its target.]]
-SlashCo.LangTable["dolphinman_description_additional"] = [[This Slasher is extremely sensitive to sound and has extremely poor eyesight. If agitated with a loud sound, Dolphinman will begin wailing loudly and start HUNTING. When HUNTING, Dolphinman has very good eyesight. Sensitivity to loud sounds increases with [ANGER].]]
+SlashCo.LangTable["dolphinman_description"] = [[Humanoidalny kryptyd z ciałem człowieka i cechami delfina. Jego skóra wydziela lepką, błyszczącą wydzielinę. Ma bardzo słaby wzrok i polega głównie na słuchu oraz echolokacji. Podczas polowania wydaje przeraźliwy, przeciągły krzyk.]]
+SlashCo.LangTable["dolphinman_description_additional"] = [[Ten Slasher jest niezwykle wrażliwy na dźwięki i ma bardzo słaby wzrok. Jeśli zostanie pobudzony głośnym dźwiękiem, Dolphinman zacznie głośno zawodzić i rozpocznie POLOWANIE. Podczas polowania Dolphinman ma bardzo dobry wzrok. Wrażliwość na głośne dźwięki wzrasta wraz z [ANGER].]]
 
 -- Smiley Dealer
 SlashCo.LangTable["smiley_description"] = [[]]
@@ -651,8 +651,8 @@ SlashCo.LangTable["manspider_description_additional"] = [[]]
 
 -- Princess
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/Princess
-SlashCo.LangTable["princess_description"] = [[A canine creature strongly resembling an excessively large Pitbull, with brightly glowing green eyes. This Demon has seen to exhibit a particularly great urge to brutally attack and maul humans, especially toddlers and small children.]]
-SlashCo.LangTable["princess_description_additional"] = [[This Slasher RAPIDLY gains [ANGER]. Princess can be given Babies to maul, which will lower his anger and pacify him for a short while. Upon attacking, Princess will begin mauling, and the victim must [STRUGGLE] to escape the grasp. [ANGER] increases the difficulty of the [STRUGGLE].]]
+SlashCo.LangTable["princess_description"] = [[Psowate stworzenie przypominające nadmiernie dużego Pitbulla, o jasno świecących zielonych oczach. Demon ten wykazuje szczególną chęć do brutalnego atakowania i maltretowania ludzi, zwłaszcza niemowląt i małych dzieci.]]
+SlashCo.LangTable["princess_description_additional"] = [[Ten Slasher SZYBKO zyskuje [ANGER]. Księżniczce można dawać dzieci do maltretowania, co obniży jego gniew i uspokoi go na krótką chwilę. Gdy zaatakuje, Księżniczka zacznie ją maltretować, a ofiara będzie musiała [WALCZYĆ], aby uciec z jej uścisku. [ANGER] zwiększa trudność [STRUGGLE]].
 
 -- Rocks
 SlashCo.LangTable["rocks_description"] = [[]]
@@ -660,30 +660,30 @@ SlashCo.LangTable["rocks_description_additional"] = [[]]
 
 -- Sid
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/Sid
-SlashCo.LangTable["sid_description"] = [[A non-organic entity which takes the form of a crudely-made mascot costume of the character Cookie Monster. The Slasher is armed with a large caliber handgun which appears to operate without the need to reload. The rounds it fires were measured to be chambered in .50 BMG. This Slasher is extremely aggressive and psychotic. Its only concern seems to be the killing of as many humans as possible as quickly as it can.]]
-SlashCo.LangTable["sid_description_additional"] = [[This Slasher gains [ANGER] quickly. At low [ANGER], Sid will seek out Cookies to eat. Eating a cookie will slightly reduce [ANGER] and pacify Sid for around a minute. At high [ANGER], Sid will equip his gun. After this, he will not eat cookies anymore.]]
+SlashCo.LangTable["sid_description"] = [[Nieorganiczna istota, która przyjmuje formę prymitywnie wykonanego kostiumu maskotki postaci Ciasteczkowego Potwora. Slasher jest uzbrojony w pistolet dużego kalibru, który wydaje się działać bez potrzeby przeładowywania. Zmierzono, że wystrzeliwane przez niego naboje są kalibru .50 BMG. Slasher jest niezwykle agresywny i psychotyczny. Jego jedynym zmartwieniem wydaje się być zabicie jak największej liczby ludzi tak szybko, jak to możliwe."]]
+SlashCo.LangTable["sid_description_additional"] = [[Ten Slasher szybko zyskuje [ANGER]. Przy niskim [ANGER] Sid będzie szukał ciasteczek do zjedzenia. Zjedzenie ciasteczka nieznacznie zmniejszy [ANGER] i uspokoi Sida na około minutę. Przy wysokim [ANGER] Sid wyposaży się w broń. Po tym nie będzie już jadł ciasteczek.]]
 
 -- Speedrunner
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/Speedrunner
-SlashCo.LangTable["speedrunner_description"] = [[A large, skeletal, humanoid, green-skinned cryptid, wearing a white smiley face mask, believed to be related to taking the shortest time possible to beat a block-based survival video game. This Slasher appears to require a kind of 'warm-up' before being able to utilize his full speed.]]
-SlashCo.LangTable["speedrunner_description_additional"] = [[This Slasher gains [ANGER] VERY RAPIDLY. Speedrunner can only gain [ANGER] passively. This Slasher's movement speed is initially very slow, but is heavily affected by [ANGER].]]
+SlashCo.LangTable["speedrunner_description"] = [[Duży, szkieletowy, humanoidalny, zielonoskóry kryptyd, noszący białą maskę z uśmiechniętą buźką, uważany za związanego z jak najkrótszym czasem pokonania blokowej gry wideo opartej na przetrwaniu. Wydaje się, że ten Slasher wymaga pewnego rodzaju „rozgrzewki”, zanim będzie w stanie wykorzystać swoją pełną prędkość.]]
+SlashCo.LangTable["speedrunner_description_additional"] = [[Ten Slasher BARDZO SZYBKO zyskuje [ANGER]. Speedrunner może zyskać [ANGER] tylko pasywnie. Prędkość ruchu tego Slashera jest początkowo bardzo wolna, ale [ANGER] ma na nią duży wpływ.]]
 
 -- Thristy
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/Thirsty
-SlashCo.LangTable["thirsty_description"] = [[A humanoid entity, appearing to wear an all-black bodysuit and a cracked, plain white mask. This Slasher moves around very quietly, and seems to not be very aggressive, but it is suspected to be easily irritable if provoked. This Demon has an incredibly high affinity for Milk, which could be used as an advantage to keep it distracted.]]
-SlashCo.LangTable["thirsty_description_additional"] = [[This Slasher gains [ANGER] quickly, especially if aggravated. At low to medium [ANGER], Thirsty is PASSIVE. Thirsty will seek out Milk Jugs to drink.]]
+SlashCo.LangTable["thirsty_description"] = [[Humanoidalna istota nosząca czarny kombinezon i popękaną, białą maskę. Ten Slasher porusza się bardzo cicho i nie wydaje się być bardzo agresywny, ale podejrzewa się, że łatwo się irytuje, jeśli zostanie sprowokowany. Demon ten ma niewiarygodnie wysokie powinowactwo do mleka, co można wykorzystać jako zaletę, aby go rozproszyć]]
+SlashCo.LangTable["thirsty_description_additional"] = [[Ten Slasher szybko zyskuje [ANGER], zwłaszcza jeśli jest poirytowany. Przy niskim lub średnim [ANGER], Spragniony jest PASYWNY. Spragniony będzie szukał dzbanków z mlekiem, aby się napić.]]
 
 -- Trollege
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/Trollge
-SlashCo.LangTable["trollge_description"] = [[A thin, skeletal figure with a large, contorted smiling head. The entity's movements appear frail and slow. It has been show that this Slasher has great difficulty visually discerning objects which are not in motion. The Slasher also has incredibly good hearing, and seems to be easy to irritate.]]
-SlashCo.LangTable["trollge_description_additional"] = [[At high [ANGER], Trollge will become more sensitive to sounds, and is more likely to sprint towards them.]]
+SlashCo.LangTable["trollge_description"] = [[Cienka, szkieletowa postać z dużą, wykrzywioną, uśmiechniętą głową. Ruchy istoty wydają się wątłe i powolne. Wykazano, że Slasher ma duże trudności z wizualnym rozpoznawaniem obiektów, które nie są w ruchu. Slasher ma również niesamowicie dobry słuch i wydaje się być łatwy do zirytowania]]
+SlashCo.LangTable["trollge_description_additional"] = [[Przy wysokim [ANGER], Trollge staje się bardziej wrażliwy na dźwięki i jest bardziej skłonny do sprintu w ich kierunku.]]
 
 -- Tyler
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/Igor
-SlashCo.LangTable["tyler_description"] = [[A transcendent non-corporeal entity which assumes the form of musical artist Tyler The Creator. In its passive state the entity seems to enjoy dancing as if on stage, and using its unexplainable power to create objects out of thin air. The entity can also manifest in an alternate form; "Tyler: The Destroyer." FUEL will become considerably more scarce with this Slasher present, Tyler The Creator will have to be found within a limited time: otherwise he will become Tyler: The Destroyer for a short duration. He can be found by listening out for his music, the volume of which decreases with [ANGER]. Tyler: The Destroyer can DESTROY various ITEMS, and doing so will shorten his duration.]]
+SlashCo.LangTable["tyler_description"] = [[Transcendentna bezcielesna istota, która przyjmuje postać artysty muzycznego Tylera The Creatora. W stanie pasywnym istota wydaje się tańczyć jak na scenie i wykorzystywać swoją niewytłumaczalną moc do tworzenia obiektów z powietrza. Istota może również manifestować się w alternatywnej formie; „Tyler: Niszczyciel”. FUEL stanie się znacznie rzadszy, gdy ten Slasher będzie obecny, Tyler The Creator będzie musiał zostać znaleziony w ograniczonym czasie: w przeciwnym razie stanie się Tylerem: Niszczycielem na krótki czas. Można go znaleźć, nasłuchując jego muzyki, której głośność zmniejsza się wraz z [ANGER]. Tyler: Niszczyciel może ZNISZCZYĆ różne PRZEDMIOTY, co skróci jego czas działania]].
 SlashCo.LangTable["tyler_description_additional"] = [[]]
 
 -- Watcher
 -- NOTE: The Description is straight out of the SlashCo VR wiki -> https://slashco-vr.fandom.com/wiki/The_Watcher
-SlashCo.LangTable["the watcher_description"] = [[An umbra entity, taking the form of an extremely tall old man wearing an olive overcoat, round glasses and a hat. The entity awkwardly stumbles when moving, and has mostly been reported to observe victims patiently while hidden in the dark. This Slasher has been reported to prefer to stay in groups, and has shown to be a brutal killer when acting alone.]]
-SlashCo.LangTable["the watcher_description_additional"] = [[This Slasher cannot passively gain [ANGER]. The Watcher will VERY RAPIDLY gain [ANGER] when observing a victim.]]
+SlashCo.LangTable["the watcher_description"] = [[Istota umbry, przybierająca postać niezwykle wysokiego starca w oliwkowym płaszczu, okrągłych okularach i kapeluszu. Istota niezgrabnie potyka się podczas poruszania się i najczęściej cierpliwie obserwuje ofiary, ukrywając się w ciemności. Według doniesień, ten Slasher woli przebywać w grupach i okazał się być brutalnym zabójcą, gdy działał sam.]]
+SlashCo.LangTable["the watcher_description_additional"] = [[Ten Slasher nie może pasywnie zdobywać [ANGER]. Obserwator BARDZO SZYBKO zyskuje [Gniew], gdy obserwuje ofiarę.]]
