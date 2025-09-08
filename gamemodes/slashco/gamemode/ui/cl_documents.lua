@@ -363,22 +363,6 @@ hook.Add("SlashCo:LanguageChanged", "NukeTextCache", function()
 	BuildSlasherPages()
 end)
 
-local marker_hook_added = false
-local screen_width, screen_height = ScrW(), ScrH()
-
-local function draw_documents_screen_marker(draw_marker)
-	if draw_marker and not marker_hook_added then
-		hook.Add("HUDPaint", "documents_screen_crosshair", function()
-			surface.DrawCircle(screen_width / 2, screen_height / 2, 5, Color(190, 24, 24))
-		end)
-		marker_hook_added = true
-
-	elseif not draw_marker and marker_hook_added then
-		hook.Remove("HUDPaint", "documents_screen_crosshair")
-		marker_hook_added = false
-	end
-end
-
 hook.Add("PostDrawOpaqueRenderables", "LobbyDocumentScreen", function(bDrawingDepth, bDrawingSkybox, isDraw3DSkybox)
 	if not GameData.IsLobby then
 		return
